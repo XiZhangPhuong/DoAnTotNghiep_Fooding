@@ -25,7 +25,7 @@ class LoginPages extends GetView<LoginController> {
           body: Center(
             child: ElevatedButton(
               onPressed: () {
-                controller.gotoottomBar();
+                controller.gotoBottomBar();
               },
               child: Text('Login'),
               
