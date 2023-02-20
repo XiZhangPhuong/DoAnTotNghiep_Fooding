@@ -1,5 +1,5 @@
 import 'package:fooding_project/screens/home/home_binding.dart';
-import 'package:fooding_project/screens/home/home_screen.dart';
+import 'package:fooding_project/screens/home/home_pages.dart';
 import 'package:get/get.dart';
 
 class HomeRoutes {

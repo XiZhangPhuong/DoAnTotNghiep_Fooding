@@ -3,7 +3,7 @@ import 'package:fooding_project/routes/app_routes.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/routes/routes_path/login_routes.dart';
 import 'package:fooding_project/screens/bottombar/bottombar_pages.dart';
-import 'package:fooding_project/screens/home/home_screen.dart';
+import 'package:fooding_project/screens/home/home_pages.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
 void main() {

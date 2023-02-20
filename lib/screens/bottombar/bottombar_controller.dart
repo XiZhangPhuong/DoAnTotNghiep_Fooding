@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:fooding_project/screens/cart/cart_pages.dart';
-import 'package:fooding_project/screens/home/home_screen.dart';
+import 'package:fooding_project/screens/home/home_pages.dart';
 import 'package:get/get.dart';
 
 class BottomBarController extends GetxController{

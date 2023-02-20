@@ -17,6 +17,13 @@ class HomeScreenPage extends GetView<HomeController> {
             centerTitle: true,
             leading: const Icon(Icons.menu),
           ),
+          body: SingleChildScrollView(
+            child: SafeArea(
+              child: Container(
+                padding: const EdgeInsets.only(top: 10,left: 5,right: 5),
+              ),
+            ),
+          ),
         );
       },
    );
