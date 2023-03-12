@@ -14,7 +14,6 @@ class CartPage extends GetView<CartController> {
           appBar: AppBar(
             title: const Text('Cart Page'),
             centerTitle: true,
-            leading: const Icon(Icons.menu),
           ),
         );
       },

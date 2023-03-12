@@ -1,4 +1,4 @@
-import 'package:fooding_project/screens/login/login_controller.dart';
+import 'package:fooding_project/screens/auth/login/login_controller.dart';
 import 'package:get/get.dart';
 
 class LoginBinding extends Bindings{

@@ -1,10 +1,14 @@
+import 'package:fooding_project/routes/routes_path/auth_routes.dart';
+import 'package:fooding_project/routes/routes_path/cart_routes.dart';
+import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
-import 'package:fooding_project/routes/routes_path/login_routes.dart';
 import 'package:get/get.dart';
 
-class AppPages{
+class AppPages {
   static List<GetPage> list = [
-    ...LoginRoutes.list,
-    ...HomeRoutes.list
+    ...HomeRoutes.list,
+    ...AuthRoutes.list,
+    ...CartRoutes.list,
+    ...DashBoardRoutes.list,
   ];
 }
