@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fooding_project/screens/cart/cart_pages.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
+import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:get/get.dart';
 
 class DashBoardScreen extends GetView {
@@ -39,8 +41,15 @@ class DashBoardScreen extends GetView {
               ),
             ],
           ),
-          body:
-              Obx(() => controller.pages[controller.curenIndex.value]['page']),
+          body: IndexedStack(
+            index: controller.curenIndex.value,
+            children: const [
+              HomeScreenPage(),
+              CartPage(),
+              CartPage(),
+              CartPage(),
+            ],
+          ),
         );
       },
     );
