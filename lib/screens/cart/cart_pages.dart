@@ -10,12 +10,13 @@ class CartPage extends GetView<CartController> {
     return GetBuilder(
       init: CartController(),
       builder: (controller) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Cart Page'),
-            centerTitle: true,
-            leading: const Icon(Icons.menu),
-          ),
+        return GetBuilder(
+          init: CartController(),
+          builder: (controller) {
+            return Scaffold(
+              
+            );
+          },
         );
       },
     );

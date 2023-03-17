@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:fooding_project/screens/login/login_controller.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginPages extends GetView<LoginController> {
   const LoginPages({super.key});
@@ -23,13 +24,7 @@ class LoginPages extends GetView<LoginController> {
             leading: const Icon(Icons.menu),
           ),
           body: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                controller.gotoBottomBar();
-              },
-              child: Text('Login'),
-              
-            ),
+            child: Lottie.asset('assets/images/image_login.json'),
           ),
         );
         
