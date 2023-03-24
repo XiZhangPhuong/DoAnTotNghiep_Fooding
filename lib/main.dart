@@ -1,24 +1,17 @@
-import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/routes/app_routes.dart';
-import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
-import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  data_User.child("User").once().then((value) {
-    
-  });
-
+  
   runApp(const MyApp());
 }
 
