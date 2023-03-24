@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/screens/cart/cart_controller.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +15,7 @@ class CartPage extends GetView<CartController> {
           appBar: AppBar(
             title: const Text('Cart Page'),
             centerTitle: true,
+
           ),
         );
       },

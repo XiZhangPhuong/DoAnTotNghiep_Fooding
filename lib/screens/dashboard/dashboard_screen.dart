@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fooding_project/screens/cart/cart_pages.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
+import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
 
 class DashBoardScreen extends GetView {
@@ -14,8 +15,8 @@ class DashBoardScreen extends GetView {
       builder: (controller) {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: Colors.red,
-            unselectedItemColor: Colors.black,
+            selectedItemColor: ColorResources.RED,
+            unselectedItemColor: ColorResources.BLACK,
             backgroundColor: Colors.white,
             type: BottomNavigationBarType.fixed,
             currentIndex: controller.curenIndex.value,
@@ -32,7 +33,7 @@ class DashBoardScreen extends GetView {
                 label: controller.pages[1]['label'],
               ),
               BottomNavigationBarItem(
-                icon: const Icon(Icons.card_giftcard),
+                icon: const Icon(Icons.shopping_cart),
                 label: controller.pages[2]['label'],
               ),
               BottomNavigationBarItem(

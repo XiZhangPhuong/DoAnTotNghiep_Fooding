@@ -1,4 +1,5 @@
 // ignore_for_file: unnecessary_null_comparison
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,6 +14,9 @@ const String FCM_TOPIC_DEFAULT = 'fcm_all';
 const String NOTIFICATION_KEY = 'notification_key';
 const String NOTIFICATION_TITLE = 'title';
 const String NOTIFICATION_BODY = 'body';
+
+// firebase Database
+DatabaseReference data_User = FirebaseDatabase.instance.reference();
 
 ///
 /// Muốn set ngôn ngữ tự động theo ngôn ngữ máy
