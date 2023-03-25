@@ -1,18 +1,40 @@
-
-import 'package:flutter/material.dart';
-import 'package:fooding_project/routes/app_routes.dart';
-import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fooding_project/routes/app_routes.dart';
+import 'package:fooding_project/routes/routes_path/auth_routes.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'app_binding.dart';
+import 'di_container.dart' as di;
 import 'firebase_options.dart';
+import 'helper/izi_timezone.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await di.init();
+
+  // Set timezone
+  IZITimeZone().initializeTimeZones();
+
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
+
+  // Set Device Orientation.
+  setOrientation();
+
   runApp(const MyApp());
+}
+
+///
+/// Set Device Orientation.
+///
+void setOrientation() {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
 }
 
 class MyApp extends StatelessWidget {
@@ -23,8 +45,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: DashBoardRoutes.DASHBOARD,
+      initialRoute: AuthRoutes.SPLASH,
       getPages: AppPages.list,
+      initialBinding: AppBinding(),
     );
   }
 }
