@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/screens/cart/cart_pages.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
@@ -15,10 +16,12 @@ class DashBoardScreen extends GetView {
       builder: (controller) {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: ColorResources.RED,
+            selectedItemColor: ColorResources.RED2,
             unselectedItemColor: ColorResources.BLACK,
             backgroundColor: Colors.white,
             type: BottomNavigationBarType.fixed,
+            selectedFontSize: 12.0,
+            unselectedFontSize: 12.0,
             currentIndex: controller.curenIndex.value,
             onTap: (value) {
               controller.changePage(value);

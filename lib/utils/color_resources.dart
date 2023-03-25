@@ -30,6 +30,8 @@ class ColorResources {
 
   static const Color LIGHT_GREY = Color(0xffBFBDBD);
   static const Color RED = Color(0xffF90B0B);
+ static const Color RED2 = Color(0xffff4d4d);
+  
 
   static const Color BACK_GROUND = Color(0xFFF6F6F7);
 

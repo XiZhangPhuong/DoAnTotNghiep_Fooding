@@ -15,7 +15,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  List<String> list=  [];
   data_User.child("User").once().then((value) {
+     final user  =  value.snapshot.value;
     
   });
 
