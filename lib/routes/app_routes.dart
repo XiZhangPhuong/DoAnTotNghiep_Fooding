@@ -1,6 +1,5 @@
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/cart_routes.dart';
-import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +8,5 @@ class AppPages {
     ...HomeRoutes.list,
     ...AuthRoutes.list,
     ...CartRoutes.list,
-    ...DashBoardRoutes.list,
   ];
 }

@@ -1,8 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/screens/auth/login/login_controller.dart';
+import 'package:fooding_project/screens/components/button_app.dart';
 import 'package:get/get.dart';
+
+import '../../../base_widget/izi_input.dart';
+import '../../../helper/izi_validate.dart';
+import '../../../utils/color_resources.dart';
 
 class LoginPages extends GetView<LoginController> {
   const LoginPages({super.key});
@@ -14,28 +20,34 @@ class LoginPages extends GetView<LoginController> {
     return GetBuilder(
       init: LoginController(),
       builder: (controller) {
-        return Scaffold(
-          body: Padding(
-            padding: EdgeInsets.all(h * 0.03),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Spacer(),
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Scaffold(
+            body: Padding(
+              padding: EdgeInsets.all(h * 0.03),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Spacer(),
 
-                //header of page
-                _header(h),
+                  //header of page
+                  _header(h),
 
-                SizedBox(
-                  height: h * 0.01,
-                ),
+                  SizedBox(
+                    height: h * 0.01,
+                  ),
 
-                // Login.
-                _formLogin(h, w),
-                Spacer(),
+                  // Login.
+                  _formLogin(h, w),
 
-                // Footer of page
-                _footer(w),
-              ],
+                  Spacer(),
+
+                  // Footer of page
+                  _footer(w),
+                ],
+              ),
             ),
           ),
         );
@@ -69,56 +81,11 @@ class LoginPages extends GetView<LoginController> {
   Column _formLogin(double h, double w) {
     return Column(
       children: [
-        TextFormField(
-          decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.green, width: 2.0),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.blueGrey.shade800,
-              ),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.blueGrey.shade800,
-              ),
-            ),
-            prefixIcon: Icon(
-              Icons.person,
-              color: Colors.amber,
-            ),
-            hintText: 'Your Phone',
-            border: OutlineInputBorder(),
-          ),
-        ),
+        phoneInput(),
         SizedBox(
           height: h * 0.01,
         ),
-        //password
-        TextFormField(
-          decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.blue, width: 2.0),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.blueGrey.shade800,
-              ),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.blueGrey.shade800,
-              ),
-            ),
-            prefixIcon: Icon(
-              Icons.lock,
-            ),
-            suffixIcon: Icon(Icons.remove_red_eye),
-            hintText: 'password',
-            border: OutlineInputBorder(),
-          ),
-        ),
+        passwordInput(),
         SizedBox(
           height: h * 0.02,
         ),
@@ -141,16 +108,10 @@ class LoginPages extends GetView<LoginController> {
           child: SizedBox(
             height: h * 0.055,
             width: w * 0.6,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor:
-                    Colors.white, // change background color of button
-                backgroundColor: Colors.brown.shade400,
-              ),
-              onPressed: () {},
-              child: Text(
-                'Đăng nhập',
-              ),
+            child: ButtonFooding(
+              text: "ĐĂNG NHẬP",
+              ontap: () => controller.goToDashBoard(),
+              border: IZIDimensions.BORDER_RADIUS_3X,
             ),
           ),
         ),
@@ -160,6 +121,7 @@ class LoginPages extends GetView<LoginController> {
 
   Column _header(double h) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Chào mừng quay trở lại',
@@ -180,6 +142,75 @@ class LoginPages extends GetView<LoginController> {
           ),
         ),
       ],
+    );
+  }
+
+  ///
+  /// Phone Input.
+  ///
+  Widget phoneInput() {
+    return Padding(
+      padding: EdgeInsets.all(
+        IZIDimensions.SPACE_SIZE_2X,
+      ),
+      child: IZIInput(
+        type: IZIInputType.PHONE,
+        placeHolder: 'Nhập số điện thoại',
+        fillColor: ColorResources.NEUTRALS_5.withOpacity(0.25),
+        borderRadius: 5,
+        textInputAction: TextInputAction.next,
+        disbleError: true,
+        onChanged: (val) {},
+        prefixIcon: (val) {
+          return Icon(
+            Icons.phone,
+            color: IZIValidate.nullOrEmpty(val)
+                ? ColorResources.NEUTRALS_4
+                : val!.hasFocus
+                    ? ColorResources.COLOR_BUTTON
+                    : ColorResources.NEUTRALS_4,
+          );
+        },
+        cursorColor: ColorResources.NEUTRALS_5,
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          color: ColorResources.COLOR_BUTTON,
+        ),
+      ),
+    );
+  }
+
+  ///
+  /// Password input.
+  ///
+  Widget passwordInput() {
+    return Padding(
+      padding: EdgeInsets.all(
+        IZIDimensions.SPACE_SIZE_2X,
+      ),
+      child: IZIInput(
+        type: IZIInputType.PASSWORD,
+        placeHolder: 'Nhập password',
+        disbleError: true,
+        prefixIcon: (val) {
+          return Icon(
+            Icons.lock,
+            color: IZIValidate.nullOrEmpty(val)
+                ? ColorResources.NEUTRALS_4
+                : val!.hasFocus
+                    ? ColorResources.COLOR_BUTTON
+                    : ColorResources.NEUTRALS_4,
+          );
+        },
+        cursorColor: ColorResources.NEUTRALS_5,
+        fillColor: ColorResources.NEUTRALS_5.withOpacity(0.25),
+        borderRadius: 5,
+        onChanged: (val) {},
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          color: ColorResources.COLOR_BUTTON,
+        ),
+      ),
     );
   }
 }
