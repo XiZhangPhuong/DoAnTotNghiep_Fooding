@@ -5,6 +5,7 @@ class User {
   String? id;
   String? fullName;
   String? phone;
+  String? email;
   String? passWord;
   String? avatar;
   String? typeUser;
@@ -13,6 +14,7 @@ class User {
     this.id,
     this.fullName,
     this.phone,
+    this.email,
     this.passWord,
     this.avatar,
     this.typeUser,
@@ -24,6 +26,7 @@ class User {
       'id': id,
       'fullName': fullName,
       'phone': phone,
+      'email': email,
       'passWord': passWord,
       'avatar': avatar,
       'typeUser': typeUser,
@@ -36,6 +39,7 @@ class User {
       id: map['id'] != null ? map['id'] as String : null,
       fullName: map['fullName'] != null ? map['fullName'] as String : null,
       phone: map['phone'] != null ? map['phone'] as String : null,
+      email: map['email'] != null ? map['email'] as String : null,
       passWord: map['passWord'] != null ? map['passWord'] as String : null,
       avatar: map['avatar'] != null ? map['avatar'] as String : null,
       typeUser: map['typeUser'] != null ? map['typeUser'] as String : null,

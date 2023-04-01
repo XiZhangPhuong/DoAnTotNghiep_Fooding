@@ -171,8 +171,8 @@ class SingupPage extends GetView {
             height: IZIDimensions.SPACE_SIZE_3X,
           ),
           GestureDetector(
-            onTap: ()   {
-               controller.gotoOTP();
+            onTap: () async {
+               await controller.gotoOTP();
             },
             child: Container(
               height: IZIDimensions.ONE_UNIT_SIZE * 90,

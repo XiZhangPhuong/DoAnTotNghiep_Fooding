@@ -89,8 +89,8 @@ class ForgotPasswordPage extends GetView {
                     height: IZIDimensions.ONE_UNIT_SIZE * 90,
                     child: Center(
                       child: GestureDetector(
-                        onTap: ()  {
-                           controller.gotoOTP();
+                        onTap: () async  {
+                           await controller.gotoOTP();
                         },
                         child: Container(
                           height: IZIDimensions.ONE_UNIT_SIZE * 90,

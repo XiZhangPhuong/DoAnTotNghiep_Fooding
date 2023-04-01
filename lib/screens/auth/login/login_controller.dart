@@ -12,16 +12,26 @@ class LoginController extends GetxController {
   void dispose() {
     super.dispose();
     phoneEditingController.dispose();
+    passwordEditingController.dispose();
   }
 
+  ///
+  /// Go to DashBoard.
+  ///
   void gotoDashBoard() {
     Get.toNamed(AuthRoutes.DASHBOARD);
   }
 
+  ///
+  /// Go to forgot Password.
+  ///
   void goToForgotPassword() {
     Get.toNamed(AuthRoutes.FORGOT_PASSWORD);
   }
 
+  ///
+  /// Go to sing up.
+  ///
   void goToSingUp() {
     Get.toNamed(AuthRoutes.SINGUP);
   }
