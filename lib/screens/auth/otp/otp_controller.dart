@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +12,7 @@ class OTPController extends GetxController {
   void onInit() {
     super.onInit();
     countDown();
+    sendOTP();
   }
 
   ///
@@ -28,14 +29,30 @@ class OTPController extends GetxController {
     });
   }
 
+  ///
+  /// On page change.
+  ///
   void onPageChange() {
-    String result = Get.arguments as String;
-    if (result == "create") {
+    final result = Get.arguments as List<String>;
+    if (result[0] == "create") {
       Get.close(2);
     } else {
       Get.toNamed(
         AuthRoutes.RESET,
       );
     }
+  }
+
+  Future<void> sendOTP() async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: '+840332854541',
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {},
+      codeSent: (String verificationId, int? resendToken) {},
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+    print("123");
   }
 }
