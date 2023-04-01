@@ -5,6 +5,7 @@ import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
+import 'package:badges/badges.dart';
 
 class DashBoardScreen extends GetView {
   const DashBoardScreen({super.key});
@@ -36,7 +37,16 @@ class DashBoardScreen extends GetView {
                 label: controller.pages[1]['label'],
               ),
               BottomNavigationBarItem(
-                icon: const Icon(Icons.shopping_cart),
+                icon: Badge(
+                  badgeContent: Text('3',style: TextStyle(
+                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT*0.8,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Nunito',
+                    color: ColorResources.WHITE,
+                  ),),
+                  badgeColor : ColorResources.RED2,
+                  child: const Icon(Icons.shopping_cart),
+                ),
                 label: controller.pages[2]['label'],
               ),
               BottomNavigationBarItem(

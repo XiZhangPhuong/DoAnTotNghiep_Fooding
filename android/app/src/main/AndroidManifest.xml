@@ -4,6 +4,8 @@
         android:label="fooding_project"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+          <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -34,6 +36,23 @@
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
+                    <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="demozpdk"
+                    android:host="app" />
+    </intent-filter>
+  
+   <meta-data
+            android:name="com.vng.zalo.sdk.APP_ID"
+            android:value="2553" />
+   <meta-data
+            android:name="com.vng.zalo.sdk.URI_SCHEME"
+            android:value="demozpdk://app" />
+   <meta-data
+            android:name="com.vng.zalo.sdk.ENVIRONMENT"
+            android:value="SANDBOX" /> // OR value="PRODUCTION"
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"

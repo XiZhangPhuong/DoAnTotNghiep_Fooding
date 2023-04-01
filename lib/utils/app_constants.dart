@@ -16,7 +16,11 @@ const String NOTIFICATION_TITLE = 'title';
 const String NOTIFICATION_BODY = 'body';
 
 // firebase Database
-DatabaseReference data_User = FirebaseDatabase.instance.reference();
+final DatabaseReference databaseCategory = FirebaseDatabase.instance.reference().child('Category');
+final DatabaseReference databaseFood = FirebaseDatabase.instance.reference().child('Food');
+final DatabaseReference databaseUser = FirebaseDatabase.instance.reference().child('User');
+final DatabaseReference databaseHistory = FirebaseDatabase.instance.reference().child('History');
+final DatabaseReference database_list= FirebaseDatabase.instance.reference().child('Category');
 
 ///
 /// Muốn set ngôn ngữ tự động theo ngôn ngữ máy

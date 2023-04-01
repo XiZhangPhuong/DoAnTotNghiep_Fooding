@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 // ignore: avoid_classes_with_only_static_members
@@ -6,7 +8,7 @@ class ColorResources {
   static const Color GREEN = Color(0xff23CB60);
 
   //color Text Tabbar
-  static const Color colorTextTabbar = Color(0xffff677275);
+  static const Color colorTextTabbar = Color(0xff677275);
 
   static const Color PRIMARY_1 = Color(0xff39C0ED); //0xffF64A4C
   static const Color PRIMARY_2 = Color(0xffEBFAFF);
@@ -38,40 +40,11 @@ class ColorResources {
   // Color dialog.
   static const Color COLOR_DIALOG = Color(0XFF3B71CA);
 
-  //happy learning
-  static const Color text1 = Color.fromRGBO(0, 0, 0, 1);
-  static const Color textAppbar = Color.fromRGBO(13, 18, 60, 1);
-  static const Color colorCircle = Color.fromRGBO(64, 37, 133, 1);
-  static const Color colorBorderCircle = Color.fromRGBO(143, 75, 213, 1);
+
+  // color button
+  static const Color COLOR_BUTTON = Color(0xFF188A90); 
+
   static const Color camNhat = Color.fromRGBO(255, 131, 87, 1);
-  static const Color ColorCapital = Color.fromRGBO(255, 241, 241, 1);
-  static const Color camDo = Color.fromRGBO(226, 91, 69, 1);
-  static const Color colorIconAppbar = Color.fromRGBO(24, 19, 19, 0.370);
-  static const Color ColorBGIconAppbar = Color.fromRGBO(216, 215, 215, 0.4);
-  static const Color colorIconAppBar = Color.fromRGBO(24, 19, 19, 0.37);
-
-  //detail country
-  static const Color textTitle = Color.fromRGBO(126, 119, 218, 1);
-  static const Color textContent = Color(0xff535354);
-
-  static const Color colorTextP = Color(0xff0D123C);
-  static const Color colorBGR = Color(0xffEEEEEE);
-  static const Color borderSide = Color(0xffEAEAEA);
-  static const Color border = Color(0xffecebfa);
-  static const Color borderAvatar = Color(0xffFFD6DD);
-  static const Color borderIcon = Color(0xffD8D7D7);
-  static const Color icon_back = Color(0xff181313);
-  static const Color border_quocgia = Color(0xffA7C9E1);
-  static const Color cam = Color(0xffFF8357);
-  static const Color black3 = Color(0xff000000);
-  static const Color chiaseApp = Color(0xff402585);
-  static const Color xam = Color(0xff6F6666);
-  static const Color diviDer = Color(0xffD8D2D2);
-  static const Color hinhtron= Color(0xff7E77DA); 
- static const Color hinhtron2= Color(0xff402585);  
- static const Color star = Color(0xffffff80);  
- 
-  
 
   
   //introduction
