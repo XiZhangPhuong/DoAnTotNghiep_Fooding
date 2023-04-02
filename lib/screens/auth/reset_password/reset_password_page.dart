@@ -112,8 +112,6 @@ class ResetPasswordPage extends GetView {
                   child: GestureDetector(
                     onTap: () async {
                       await controller.updatePassword();
-
-
                     },
                     child: Container(
                       height: IZIDimensions.ONE_UNIT_SIZE * 90,

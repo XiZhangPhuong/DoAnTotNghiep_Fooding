@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,7 @@ class LoginController extends GetxController {
   //Init value.
   TextEditingController phoneEditingController = TextEditingController();
   TextEditingController passwordEditingController = TextEditingController();
-  bool isCheck = true;
+  bool isCheck = false;
 
   @override
   void dispose() {
@@ -31,11 +32,11 @@ class LoginController extends GetxController {
   ///
   Future<void> gotoDashBoard() async {
     if (validateLogin()) {
+      EasyLoading.show(status: "Đang đăng nhập");
       User? user = await _userRepository.getUserDetails(
           phoneEditingController.text, passwordEditingController.text);
       if (user != null) {
         sl<SharedPreferenceHelper>().setIdUser(user.id!);
-        await _userRepository.findUser();
         IZIAlert().success(message: "Đăng nhập thành công");
         if (isCheck) {
           sl<SharedPreferenceHelper>().setLogged(status: true);
@@ -50,6 +51,7 @@ class LoginController extends GetxController {
           IZIAlert().error(message: "Tài khoản chưa được đăng kí");
         }
       }
+      EasyLoading.dismiss();
     }
   }
 
