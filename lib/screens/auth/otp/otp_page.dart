@@ -62,7 +62,7 @@ class OTPPage extends GetView {
                                 text: 'Đã gửi mã OTP tới ',
                               ),
                               TextSpan(
-                                text: "0332854541",
+                                text: controller.result[1],
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                 ),

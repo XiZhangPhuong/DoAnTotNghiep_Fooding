@@ -210,7 +210,9 @@ class LoginPage extends GetView {
                   ),
                   activeColor: ColorResources.PRIMARY_3,
                   value: controller.isCheck,
-                  onChanged: (v) {},
+                  onChanged: (v) {
+                    controller.oncheckboxChange(v!);
+                  },
                   checkColor: ColorResources.checkBoxColor,
                 ),
               ),
@@ -228,8 +230,8 @@ class LoginPage extends GetView {
             height: IZIDimensions.SPACE_SIZE_1X,
           ),
           GestureDetector(
-            onTap: () {
-              controller.gotoDashBoard();
+            onTap: () async {
+              await controller.gotoDashBoard();
             },
             child: Container(
               height: IZIDimensions.ONE_UNIT_SIZE * 90,

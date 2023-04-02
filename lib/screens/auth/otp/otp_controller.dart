@@ -1,16 +1,20 @@
 import 'dart:async';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/repository/auth_repository.dart';
+import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
 class OTPController extends GetxController {
   final AuthRepository _authRepository = GetIt.I.get<AuthRepository>();
+  final UserRepository _userRepository = GetIt.I.get<UserRepository>();
   bool isClick = false;
   Timer? timer;
   int count = 50;
   String otpCode = '';
+  final result = Get.arguments as List<String>;
 
   @override
   void onInit() {
@@ -36,19 +40,29 @@ class OTPController extends GetxController {
   /// On page change.
   ///
   Future<void> onPageChange() async {
-    final result = Get.arguments as List<String>;
+    EasyLoading.show(status: "Đang cập nhật dữ liệu");
     if (result[0] == "create") {
       try {
-        bool ischeck = await _authRepository.verifyOTP(otpCode);
-        if (ischeck) {
-          IZIAlert().success(message: "Đăng kí tài khoản thành công");
+        if (otpCode.isNotEmpty) {
+          bool ischeck = await _authRepository.verifyOTP(otpCode);
+          if (ischeck) {
+            IZIAlert().success(message: "Đăng kí tài khoản thành công");
 
-          // Add data to FireStore.
-          Get.close(2);
+            // Add data to FireStore.
+            await _userRepository.addUser(
+              result[1],
+              result[2],
+            );
+
+            Get.close(2);
+          } else {
+            IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
+          }
         } else {
-          IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
+          IZIAlert().error(message: "Mã OTP đang trống");
         }
       } catch (e) {
+        EasyLoading.dismiss();
         IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
       }
     } else {
@@ -56,5 +70,6 @@ class OTPController extends GetxController {
         AuthRoutes.RESET,
       );
     }
+    EasyLoading.dismiss();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:fooding_project/repository/auth_repository.dart';
+import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,4 +15,7 @@ Future<void> init() async {
 
   // Auth Repository.
   sl.registerLazySingleton<AuthRepository>(() => AuthRepository());
+
+  // User Repository.
+  sl.registerLazySingleton<UserRepository>(() => UserRepository());
 }
