@@ -4,6 +4,7 @@ import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/izi_input.dart';
 import 'package:fooding_project/base_widget/izi_list_view.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/images_path.dart';
@@ -17,7 +18,7 @@ class HomeScreenPage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return GetBuilder(
       init: HomeController(),
-      builder: (controller) {
+      builder: (HomeController controller) {
         return Scaffold(
           body: GestureDetector(
             onTap: () {
@@ -43,7 +44,9 @@ class HomeScreenPage extends GetView<HomeController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // imagesliderShow
-                            _imageShow(controller),
+                            // _imageShow(controller),
+                            _imageSliderShow(controller),
+                            _hinhTronPageView(controller),
                             SizedBox(
                               height: IZIDimensions.ONE_UNIT_SIZE * 15,
                             ),
@@ -96,7 +99,7 @@ class HomeScreenPage extends GetView<HomeController> {
               textStyle: TextStyle(
                 color: ColorResources.WHITE,
                 fontFamily: 'Mali',
-                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL*0.9,
+                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.9,
                 fontWeight: FontWeight.w700,
               ),
               decoration: const BoxDecoration(
@@ -114,12 +117,14 @@ class HomeScreenPage extends GetView<HomeController> {
           height: IZIDimensions.ONE_UNIT_SIZE * 400,
           width: IZIDimensions.iziSize.width,
           child: ListView.builder(
-            // shrinkWrap: true,
+             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
-            itemCount: controller.listFood.length,
+            itemCount: 10,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  controller.gotoDetailFood();
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius:
@@ -139,7 +144,8 @@ class HomeScreenPage extends GetView<HomeController> {
                             borderRadius: BorderRadius.circular(
                                 IZIDimensions.BORDER_RADIUS_3X),
                             child: IZIImage(
-                              controller.listFood[index].image_Food!,
+                            
+                               'https://i.ytimg.com/vi/cY0rHIw52kU/maxresdefault.jpg' ,
                               height: IZIDimensions.ONE_UNIT_SIZE * 200,
                               width: IZIDimensions.ONE_UNIT_SIZE * 200,
                               fit: BoxFit.cover,
@@ -150,20 +156,23 @@ class HomeScreenPage extends GetView<HomeController> {
                             top: -IZIDimensions.SPACE_SIZE_1X,
                             child: Container(
                               padding: EdgeInsets.symmetric(
-                                 vertical: IZIDimensions.SPACE_SIZE_1X,
-                                 horizontal: IZIDimensions.SPACE_SIZE_3X,
+                                vertical: IZIDimensions.SPACE_SIZE_1X,
+                                horizontal: IZIDimensions.SPACE_SIZE_3X,
                               ),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
+                                borderRadius: BorderRadius.circular(
+                                    IZIDimensions.BORDER_RADIUS_5X),
                                 color: ColorResources.WHITE,
-                                border: Border.all(width: 1,color: ColorResources.RED2),
+                                border: Border.all(
+                                    width: 1, color: ColorResources.RED2),
                               ),
                               child: Text(
                                 '20% OFF',
                                 style: TextStyle(
                                   color: ColorResources.RED2,
                                   fontFamily: 'Nunito',
-                                  fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.7,
+                                  fontSize:
+                                      IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.7,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -177,17 +186,19 @@ class HomeScreenPage extends GetView<HomeController> {
                       SizedBox(
                         height: IZIDimensions.ONE_UNIT_SIZE * 40,
                         child: Text(
-                          controller.listFood[index].name_Food!,
-                          textAlign: TextAlign.center,
+                        // controller.listFood[index].name_Food!,
+                        '',
+                          textAlign: TextAlign.left,
                           style: TextStyle(
                               color: ColorResources.BLACK,
-                              fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                              fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL*1.1,
                               fontFamily: 'Nunito',
                               fontWeight: FontWeight.w600),
                         ),
                       ),
                       Text(
-                        'đ ${controller.listFood[index].price_Food!}',
+                        // 'đ ${controller.listFood[index].price_Food!}',
+                         'đ ${120.000}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: ColorResources.RED2,
@@ -210,7 +221,8 @@ class HomeScreenPage extends GetView<HomeController> {
                             '4.8',
                             style: TextStyle(
                                 color: ColorResources.BLACK,
-                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL*0.9,
+                                fontSize:
+                                    IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.9,
                                 fontFamily: 'Nunito',
                                 fontWeight: FontWeight.w600),
                           ),
@@ -219,7 +231,8 @@ class HomeScreenPage extends GetView<HomeController> {
                             '1.2k đã bán',
                             style: TextStyle(
                                 color: ColorResources.BLACK,
-                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL *0.9,
+                                fontSize:
+                                    IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.9,
                                 fontFamily: 'Nunito',
                                 fontWeight: FontWeight.w600),
                           ),
@@ -258,12 +271,12 @@ class HomeScreenPage extends GetView<HomeController> {
         GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: controller.listCategory.length ,
-          
+          itemCount: controller.listCategory.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Get.snackbar('Notification', controller.listCategory[index].name_Category!);
+                Get.snackbar('Notification',
+                    controller.listCategory[index].name_Category!);
               },
               child: Column(
                 children: [
@@ -280,7 +293,7 @@ class HomeScreenPage extends GetView<HomeController> {
                     height: IZIDimensions.SPACE_SIZE_1X,
                   ),
                   Text(
-                    controller.listCategory[index].name_Category! ,
+                    controller.listCategory[index].name_Category!,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: ColorResources.BLACK,
@@ -324,6 +337,75 @@ class HomeScreenPage extends GetView<HomeController> {
                   fit: BoxFit.fill,
                 )))
             .toList(),
+      ),
+    );
+  }
+
+  ///
+  /// image slider show using pageview
+  ///
+  Widget _imageSliderShow(HomeController controller) {
+    return Container(
+      height: IZIDimensions.ONE_UNIT_SIZE * 250,
+      margin: EdgeInsets.symmetric(
+          // horizontal: IZIDimensions.ONE_UNIT_SIZE*30,
+          vertical: IZIDimensions.SPACE_SIZE_5X),
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: controller.pageController,
+            onPageChanged: (value) {
+              controller.onChanGeSlideShow(value);
+            },
+            itemCount: controller.listImageSlider.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: IZIDimensions.SPACE_SIZE_5X),
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
+                  child: IZIImage(controller.listImageSlider[index]),
+                ),
+              );
+            },
+          ),
+          Positioned(
+            right: IZIDimensions.SPACE_SIZE_5X,
+            bottom: 0,
+            child:   Text(
+              '${controller.index+1}/${controller.listImageSlider.length}',
+              style: TextStyle(
+                color: ColorResources.BLACK,
+                fontFamily: 'Nunito',
+                fontSize: IZIDimensions.FONT_SIZE_H6,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ///
+  /// hinhtronPageView
+  ///
+  Widget _hinhTronPageView(HomeController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        controller.listImageSlider.length,
+        (index) => Container(
+          margin: EdgeInsets.only(right: IZIDimensions.SPACE_SIZE_3X),
+          height: IZIDimensions.ONE_UNIT_SIZE * 15,
+          width: IZIDimensions.ONE_UNIT_SIZE * 15,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle, color:
+               controller.index==index?
+               ColorResources.RED2 : ColorResources.GREY,
+               ),
+        ),
       ),
     );
   }

@@ -1,25 +1,41 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:fooding_project/model/category.dart';
 import 'package:fooding_project/model/food/food.dart';
+import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class HomeController extends GetxController{
+  PageController pageController = PageController(initialPage: 0);
+  List<Category> listCategory = [];
+  List<Food> listFood = [];
   // list string imageslidershow
-  List<String> listImageSlider = ['https://images.foody.vn/res/g103/1025384/prof/s640x400/file_restaurant_photo_trld_16180-41e8a93c-210410223323.jpg',
-  'https://images.foody.vn/res/g99/981415/prof/s640x400/foody-upload-api-foody-mobile-chao-ech-191119105448.jpg',
-  'https://images.foody.vn/res/g112/1110497/prof/s640x400/file_restaurant_photo_3xxm_16380-02563484-211128121644.jpeg'];
-
+  List<String> listImageSlider = ['https://intphcm.com/data/upload/poster-quang-cao-web-do-an.jpg',
+  'https://intphcm.com/data/upload/poster-quang-cao-web-do-an.jpg',
+  'https://i.ytimg.com/vi/cY0rHIw52kU/maxresdefault.jpg'];
+  int index = 0;
+  void onChanGeSlideShow(int value){
+    index = value;
+    if(value==listImageSlider.length-1){
+       Timer(const Duration(seconds: 1), () {
+          pageController.jumpToPage(0);
+        });
+    }
+    update();
+  }
   @override
   void onInit() {
     super.onInit();
     _getDataCategory();
-    _getDataFood();
+   // _getDataFood();
+   getDataFood();
   }
 
-  List<Category> listCategory = [];
-  List<Food> listFood = [];
+
 
   ///
   /// get all data category from firebasee
@@ -37,20 +53,43 @@ class HomeController extends GetxController{
     });
   }
   ///
+  /// gotoDetailFood
+  ///
+  void gotoDetailFood(){
+      Get.toNamed(HomeRoutes.DETAIL_FOOD);
+  }
+  ///
   /// get all data food form firebase
   ///
-  void _getDataFood(){
-    databaseFood.onValue.listen((event) { 
-       listFood.clear();
-      final data = event.snapshot.value as Map<dynamic,dynamic>;
-      data.forEach((key, value) { 
-        Food food = Food(id_Food: value['id_Food'],name_Food: value['name_Food'],category_Food: value['category_Food'],
-        image_Food: value['image_Food'],information_Food: value['information_Food'],quantity: value['quantity'],price_Food: value['price_Food']
+  // void _getDataFood(){
+  //   databaseFood.onValue.listen((event) { 
+  //      listFood.clear();
+  //     final data = event.snapshot.value as Map<dynamic,dynamic>;
+  //     data.forEach((key, value) { 
+  //       Food food = Food(id_Food: value['id_Food'],name_Food: value['name_Food'],category_Food: value['category_Food'],
+  //       image_Food: value['image_Food'],information_Food: value['information_Food'],quantity: value['quantity'],price_Food: value['price_Food']
         
-        );
-        listFood.add(food);
-        update();
+  //       );
+  //       listFood.add(food);
+  //       update();
+  //     });
+  //   });
+  // }
+
+  Future<void> getDataFood() async {
+    databaseFood.onValue.listen((event) {
+       listFood.clear();
+     // Lặp qua từng đối tượng và thêm vào danh sách
+     final values = event.snapshot.value as Map<dynamic,dynamic>;
+     values.forEach((key, value) {
+      Food food = Food(id_Food: values['id_Food'],name_Food:  values['name_Food'],
+      category_Food:  values['category_Food'],image_Food: values['image_Food'] ,
+      information_Food: values['information_Food'],quantity: values['quantity'] ,price_Food: values['price_Food'] );
+      listFood.add(food);
+    
       });
+      print(listFood.length.toString());
+      update();
     });
   }
 }
