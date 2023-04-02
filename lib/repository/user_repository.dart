@@ -3,7 +3,6 @@ import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
-import 'package:uuid/uuid.dart';
 
 class UserRepository {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
@@ -11,10 +10,10 @@ class UserRepository {
   ///
   /// Add user to database.
   ///
-  Future<void> addUser(String phone, String password) async {
+  Future<void> addUser(String phone, String password, String id) async {
     try {
       model.User userRequest = model.User();
-      userRequest.id = const Uuid().v1();
+      userRequest.id = id;
       userRequest.phone = phone;
       userRequest.passWord = password;
       userRequest.avatar = "";
@@ -83,10 +82,7 @@ class UserRepository {
   ///
   /// Update User.
   ///
-  Future<void> updateUser(model.User userResquest) async {
-    _fireStore
-        .collection("users")
-        .doc(sl<SharedPreferenceHelper>().getIdUser)
-        .update(userResquest.toMap());
+  Future<void> updateUser(model.User userResquest, String id) async {
+    _fireStore.collection("users").doc(id).update(userResquest.toMap());
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fooding_project/helper/izi_validate.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class User {
   String? id;
@@ -10,6 +12,9 @@ class User {
   String? avatar;
   String? typeUser;
   bool? isDeleted;
+  String? address;
+  String? banner;
+  DateTime? dateOfBirth;
   User({
     this.id,
     this.fullName,
@@ -19,18 +24,24 @@ class User {
     this.avatar,
     this.typeUser,
     this.isDeleted,
+    this.address,
+    this.banner,
+    this.dateOfBirth,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
-      'fullName': fullName,
-      'phone': phone,
-      'email': email,
-      'passWord': passWord,
-      'avatar': avatar,
-      'typeUser': typeUser,
-      'isDeleted': isDeleted,
+      if (!IZIValidate.nullOrEmpty(id)) 'id': id,
+      if (!IZIValidate.nullOrEmpty(fullName)) 'fullName': fullName,
+      if (!IZIValidate.nullOrEmpty(phone)) 'phone': phone,
+      if (!IZIValidate.nullOrEmpty(email)) 'email': email,
+      if (!IZIValidate.nullOrEmpty(passWord)) 'passWord': passWord,
+      if (!IZIValidate.nullOrEmpty(avatar)) 'avatar': avatar,
+      if (!IZIValidate.nullOrEmpty(typeUser)) 'typeUser': typeUser,
+      if (!IZIValidate.nullOrEmpty(isDeleted)) 'isDeleted': isDeleted,
+      if (!IZIValidate.nullOrEmpty(address)) 'address': address,
+      if (!IZIValidate.nullOrEmpty(banner)) 'banner': banner,
+      if (!IZIValidate.nullOrEmpty(dateOfBirth)) 'dateOfBirth': dateOfBirth,
     };
   }
 
@@ -44,6 +55,9 @@ class User {
       avatar: map['avatar'] != null ? map['avatar'] as String : null,
       typeUser: map['typeUser'] != null ? map['typeUser'] as String : null,
       isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
+      address: map['address'] != null ? map['address'] as String : null,
+      banner: map['banner'] != null ? map['banner'] as String : null,
+      dateOfBirth: map['dateOfBirth'] != null ? DateTime.fromMillisecondsSinceEpoch(map['dateOfBirth'] as int) : null,
     );
   }
 

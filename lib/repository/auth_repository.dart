@@ -33,7 +33,7 @@ class AuthRepository {
   ///
   /// verify OTP.
   ///
-  Future<bool> verifyOTP(String otp) async {
+  Future<UserCredential> verifyOTP(String otp) async {
     var credentials = await _auth
         .signInWithCredential(
           PhoneAuthProvider.credential(
@@ -42,6 +42,6 @@ class AuthRepository {
           ),
         );
       
-    return credentials.user != null ? true : false;
+    return credentials;
   }
 }

@@ -35,13 +35,14 @@ class LoginController extends GetxController {
           phoneEditingController.text, passwordEditingController.text);
       if (user != null) {
         sl<SharedPreferenceHelper>().setIdUser(user.id!);
+        await _userRepository.findUser();
         IZIAlert().success(message: "Đăng nhập thành công");
         if (isCheck) {
           sl<SharedPreferenceHelper>().setLogged(status: true);
         } else {
           sl<SharedPreferenceHelper>().setLogged(status: false);
         }
-        Get.toNamed(AuthRoutes.DASHBOARD);
+        Get.offAllNamed(AuthRoutes.DASHBOARD);
       } else {
         if (await _userRepository.checPhone(phoneEditingController.text)) {
           IZIAlert().error(message: "Tài khoản hoặc mật khẩu sai");
@@ -56,7 +57,10 @@ class LoginController extends GetxController {
   /// Go to forgot Password.
   ///
   void goToForgotPassword() {
-    Get.toNamed(AuthRoutes.FORGOT_PASSWORD);
+    Get.toNamed(
+      AuthRoutes.FORGOT_PASSWORD,
+      arguments: phoneEditingController.text,
+    );
   }
 
   ///

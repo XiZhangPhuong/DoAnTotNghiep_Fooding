@@ -73,9 +73,8 @@ class ResetPasswordPage extends GetView {
                           textInputAction: TextInputAction.next,
                           disbleError: true,
                           placeHolder: 'Nhập mật khẩu mới',
-                          onChanged: (value) {
-                            
-                          },
+                          controller: controller.passwordEditingController,
+                          onChanged: (value) {},
                         ),
                       ),
                       SizedBox(
@@ -90,9 +89,8 @@ class ResetPasswordPage extends GetView {
                           disbleError: true,
                           fillColor: ColorResources.backgroundTextField,
                           placeHolder: 'Xác nhận mật khẩu mới',
-                          onChanged: (value) {
-                           
-                          },
+                          controller: controller.confirmPasswordController,
+                          onChanged: (value) {},
                         ),
                       ),
                     ],
@@ -112,8 +110,10 @@ class ResetPasswordPage extends GetView {
                 height: IZIDimensions.ONE_UNIT_SIZE * 90,
                 child: Center(
                   child: GestureDetector(
-                    onTap: () {
-                      Get.close(3);
+                    onTap: () async {
+                      await controller.updatePassword();
+
+
                     },
                     child: Container(
                       height: IZIDimensions.ONE_UNIT_SIZE * 90,
