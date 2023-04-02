@@ -62,7 +62,7 @@ class OTPPage extends GetView {
                                 text: 'Đã gửi mã OTP tới ',
                               ),
                               TextSpan(
-                                text: "0332854541",
+                                text: controller.result[1],
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -74,11 +74,13 @@ class OTPPage extends GetView {
                       height: IZIDimensions.SPACE_SIZE_5X,
                     ),
                     SizedBox(
-                      width: IZIDimensions.iziSize.width * 0.6,
+                      width: IZIDimensions.iziSize.width * 0.8,
                       child: PinCodeTextField(
                         appContext: context,
-                        length: 4,
-                        onChanged: (value) {},
+                        length: 6,
+                        onChanged: (value) {
+                          controller.otpCode = value;
+                        },
                         pinTheme: PinTheme(
                           shape: PinCodeFieldShape.box,
                           borderRadius: BorderRadius.circular(
@@ -118,18 +120,18 @@ class OTPPage extends GetView {
                       ),
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text: TextSpan(
-                            style: const TextStyle(
+                        text: const TextSpan(
+                            style: TextStyle(
                               fontFamily: 'Outfit',
                               color: ColorResources.colorTextContentForgot,
                             ),
                             children: [
-                              const TextSpan(
+                              TextSpan(
                                 text: 'Bạn chưa nhận được mã? ',
                               ),
                               TextSpan(
                                 text: 'Gửi lại',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                 ),
                                 // recognizer: TapGestureRecognizer()
@@ -157,8 +159,8 @@ class OTPPage extends GetView {
                 height: IZIDimensions.ONE_UNIT_SIZE * 90,
                 child: Center(
                   child: GestureDetector(
-                    onTap: () {
-                      controller.onPageChange();
+                    onTap: () async {
+                      await controller.onPageChange();
                     },
                     child: Container(
                       height: IZIDimensions.ONE_UNIT_SIZE * 90,

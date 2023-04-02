@@ -53,6 +53,7 @@ class SingupPage extends GetView {
         fillColor: ColorResources.NEUTRALS_5.withOpacity(0.25),
         borderRadius: 5,
         textInputAction: TextInputAction.next,
+        controller: controller.phoneEditingController,
         disbleError: true,
         onChanged: (val) {},
         prefixIcon: (val) {
@@ -88,6 +89,7 @@ class SingupPage extends GetView {
         fillColor: ColorResources.NEUTRALS_5.withOpacity(0.25),
         borderRadius: 5,
         disbleError: true,
+        controller: controller.passwordEditingController,
         textInputAction: TextInputAction.next,
         onChanged: (val) {
         },
@@ -121,6 +123,7 @@ class SingupPage extends GetView {
       child: IZIInput(
         type: IZIInputType.PASSWORD,
         placeHolder: 'Nhập lại mật khẩu',
+          controller: controller.confirmPasswordController,
         disbleError: true,
         prefixIcon: (val) {
           return Icon(
@@ -168,8 +171,8 @@ class SingupPage extends GetView {
             height: IZIDimensions.SPACE_SIZE_3X,
           ),
           GestureDetector(
-            onTap: ()   {
-               controller.gotoOTP();
+            onTap: () async {
+               await controller.gotoOTP();
             },
             child: Container(
               height: IZIDimensions.ONE_UNIT_SIZE * 90,
