@@ -6,6 +6,9 @@ class AuthRepository {
   final _auth = FirebaseAuth.instance;
   var verificationId = ''.obs;
 
+  ///
+  /// vPhone authentication.
+  ///
   Future<void> phoneAuthentication(String phoneNumber) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: "+84$phoneNumber",
@@ -18,7 +21,6 @@ class AuthRepository {
         IZIAlert().error(
           message: error.toString(),
         );
-        print(error.toString());
       },
       codeSent: (verificationId, forceResendingToken) {
         this.verificationId.value = verificationId;
@@ -28,8 +30,10 @@ class AuthRepository {
       },
     );
   }
-
-  Future<bool> verifyOTP(String otp) async {
+  ///
+  /// verify OTP.
+  ///
+  Future<UserCredential> verifyOTP(String otp) async {
     var credentials = await _auth
         .signInWithCredential(
           PhoneAuthProvider.credential(
@@ -38,6 +42,6 @@ class AuthRepository {
           ),
         );
       
-    return credentials.user != null ? true : false;
+    return credentials;
   }
 }
