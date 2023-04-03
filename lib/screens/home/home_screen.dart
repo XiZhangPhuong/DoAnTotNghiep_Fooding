@@ -12,14 +12,14 @@ class HomeScreenPage extends GetView<HomeController> {
     return GetBuilder(
       init: HomeController(),
       builder: (controller) {
-        return  Scaffold(
+        return Scaffold(
           body: Column(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
-                child: IZIImage('https://images.foody.vn/res/g95/947982/prof/s640x400/foody-upload-api-foody-mobile-68376773_26762228859-190814144905.jpg',
-             
-                fit: BoxFit.fill,
+                borderRadius:
+                    BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
+                child: IZIImage(
+                  'https://images.foody.vn/res/g95/947982/prof/s640x400/foody-upload-api-foody-mobile-68376773_26762228859-190814144905.jpg',
                 ),
               ),
             ],
