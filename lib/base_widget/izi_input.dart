@@ -469,11 +469,11 @@ class _IZIInputState extends State<IZIInput> {
                           widget.cupertinoDatePickerMode ==
                               CupertinoDatePickerMode.dateAndTime) {
                         final String date =
-                            IZIDate.formatDate(now, format: 'MM/dd/yyyy HH:mm');
+                            IZIDate.formatDate(now, format: 'dd/MM/yyyy HH:mm');
                         getController(widget.type).text = date;
                         if (!IZIValidate.nullOrEmpty(widget.onChanged)) {
                           widget.onChanged!(IZIDate.formatDate(now,
-                              format: 'MM/dd/yyyy HH:mm'));
+                              format: 'dd/MM/yyyy HH:mm'));
                         }
                       } else {
                         // final String date = IZIDate.formatDate(now, format: 'MM/dd/yyyy');
@@ -485,17 +485,17 @@ class _IZIInputState extends State<IZIInput> {
                             IZIDate.formatDate(now, format: 'HH:mm'); //date;
                         if (!IZIValidate.nullOrEmpty(widget.onChanged)) {
                           widget.onChanged!(IZIDate.formatDate(now,
-                              format: 'MM/dd/yyyy HH:mm'));
+                              format: 'dd/MM/yyyy HH:mm'));
                         }
                       }
                       IZIOther.primaryFocus();
                     } else {
                       final String date =
-                          IZIDate.formatDate(now, format: 'MM/dd/yyyy');
+                          IZIDate.formatDate(now, format: 'dd/MM/yyyy');
                       getController(widget.type).text = date;
                       if (!IZIValidate.nullOrEmpty(widget.onChanged)) {
                         widget.onChanged!(
-                            IZIDate.formatDate(now, format: 'MM/dd/yyyy'));
+                            IZIDate.formatDate(now, format: 'dd/MM/yyyy'));
                       }
                     }
                   }

@@ -1,5 +1,51 @@
+import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/repository/user_repository.dart';
+import 'package:fooding_project/routes/routes_path/profile_routes.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 
-class ProfileController extends GetxController{
+import '../../di_container.dart';
+import '../../model/user.dart';
+import '../../routes/routes_path/auth_routes.dart';
+import '../../sharedpref/shared_preference_helper.dart';
 
+class ProfileController extends GetxController {
+  UserRepository userRepository = GetIt.I.get<UserRepository>();
+  User? user;
+  RxBool isLoading = false.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    findUser();
+  }
+
+  ///
+  /// Go to Edit Profile.
+  ///
+  Future<void> gotoEditProfile() async {
+    await Get.toNamed(
+      ProfileRoutes.EDITPROFILE,
+    );
+    await findUser();
+  }
+
+  ///
+  /// Log out.
+  ///
+  void logout() {
+    sl<SharedPreferenceHelper>().removeLogin();
+    sl<SharedPreferenceHelper>().removeIdUser();
+    Get.offNamed(AuthRoutes.LOGIN);
+    IZIAlert().success(message: "Đăng xuất thành công");
+  }
+
+  ///
+  /// Find user.
+  ///
+  Future<void> findUser() async {
+    isLoading.value = true;
+    user = await userRepository.findUser();
+    isLoading.value = false;
+    update();
+  }
 }
