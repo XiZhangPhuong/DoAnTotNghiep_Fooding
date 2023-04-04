@@ -235,6 +235,7 @@ class ProfilePage extends GetView {
                     )
                   : IZIImage(
                       controller.user!.avatar!,
+                      fit: BoxFit.cover,
                     ),
             ),
           ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
@@ -79,6 +80,7 @@ class EditProfileController extends GetxController {
       if (!validateProfile()) {
         return;
       }
+      EasyLoading.show(status: "Đang cập nhật dữ liệu...");
       final User user = User();
       user.fullName = txtName.text.trim();
       user.dateOfBirth = dateOfBirth;
@@ -90,10 +92,12 @@ class EditProfileController extends GetxController {
       }
       await profileCTL.userRepository
           .updateUser(user, sl<SharedPreferenceHelper>().getIdUser);
+      EasyLoading.dismiss();
       Get.back();
       IZIAlert().success(message: "Cập nhật thành công");
     } catch (e) {
       IZIAlert().error(message: e.toString());
+      EasyLoading.dismiss();
     }
   }
 
