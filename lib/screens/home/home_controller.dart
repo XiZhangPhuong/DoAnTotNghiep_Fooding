@@ -14,9 +14,9 @@ class HomeController extends GetxController{
   List<Category> listCategory = [];
   List<Food> listFood = [];
   // list string imageslidershow
-  List<String> listImageSlider = ['https://intphcm.com/data/upload/poster-quang-cao-web-do-an.jpg',
-  'https://intphcm.com/data/upload/poster-quang-cao-web-do-an.jpg',
-  'https://i.ytimg.com/vi/cY0rHIw52kU/maxresdefault.jpg'];
+  List<String> listImageSlider = ['https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
+  'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
+  'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot'];
   int index = 0;
   void onChanGeSlideShow(int value){
     index = value;
@@ -32,7 +32,7 @@ class HomeController extends GetxController{
     super.onInit();
     _getDataCategory();
    // _getDataFood();
-   getDataFood();
+ //  getDataFood();
   }
 
 

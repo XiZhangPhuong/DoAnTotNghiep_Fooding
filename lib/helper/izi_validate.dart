@@ -198,4 +198,20 @@ class IZIValidate {
 
     return double.tryParse(s) != null || int.tryParse(s) != null;
   }
+  ///
+  /// Check null phone.
+  ///
+  static bool phoneNumber(String? value) {
+    final RegExp reg = RegExp('(0|84)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])+([0-9]{7})');
+    if (nullOrEmpty(value)) {
+      return false;
+    }
+    if (reg.hasMatch(value!)) {
+      // phone validate
+      return true;
+    }
+
+    return false;
+  }
+  
 }

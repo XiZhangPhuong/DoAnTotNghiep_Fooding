@@ -270,7 +270,7 @@ class _IZIInputState extends State<IZIInput> {
     if (type == IZIInputType.NUMBER) {
       return widget.controller ?? numberEditingController!;
     } else if (type == IZIInputType.PASSWORD) {
-      return textEditingController!;
+      return widget.controller ?? textEditingController!;
     } else if (type == IZIInputType.PRICE) {
       return widget.controller ?? numberEditingController!;
     } else if (type == IZIInputType.TEXT) {

@@ -40,7 +40,9 @@ class ColorResources {
   // Color dialog.
   static const Color COLOR_DIALOG = Color(0XFF3B71CA);
 
-
+  //Check box Color.
+  static const Color checkBoxColor = Color(0xff573353);
+  
   // color button
   static const Color COLOR_BUTTON = Color(0xFF188A90); 
 
@@ -65,4 +67,27 @@ class ColorResources {
   static const Color colorButton1Login = Color(0xff06B6DD);
   static const Color colorButton2Login = Color(0xffFA9233);
   static const Color colorButton3Login = Color(0xff3F3731);
+
+
+  // Background.
+  static const colorBackground = Color(0xffF6F6F7);
+
+  //Login.
+  static const titleLogin = Color(0xFF081434);
+  static const colorDivider = Color(0xffFFF3E9);
+
+  //Singup.
+  static const backgroundTextField = Color(0xffEAEAEA);
+
+  //Forgot password.
+  static const colorTextContentForgot = Color(0xff5B5858);
+
+  // OTP.
+  static const colorOTP = Color(0xffF6F6F6);
+
+  // shoppe food
+   static const colorShoppeMain = Color(0xffFF6600);
+   static const colorShoppe_XD = Color(0xff00BFA5);
+   
+  
 }

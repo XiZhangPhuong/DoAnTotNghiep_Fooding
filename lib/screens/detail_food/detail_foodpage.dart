@@ -20,40 +20,20 @@ class DetailFoodPage extends GetView<DetailFoodController> {
               margin: EdgeInsets.only(bottom: IZIDimensions.ONE_UNIT_SIZE * 50),
               child: Column(
                 children: [
-                  IZIImage(
-                    'https://images.foody.vn/res/g109/1086127/prof/s640x400/foody-upload-api-foody-mobile-sa-786d0887-210713161816.jpeg',
-                    height: IZIDimensions.ONE_UNIT_SIZE * 300,
-                    fit: BoxFit.cover,
+                  Stack(
+                    children: [
+                      IZIImage(
+                        'https://images.foody.vn/res/g109/1086127/prof/s640x400/foody-upload-api-foody-mobile-sa-786d0887-210713161816.jpeg',
+                        height: IZIDimensions.ONE_UNIT_SIZE * 400,
+                        fit: BoxFit.fill,
+                      ),
+
+                    ],
                   ),
                   SizedBox(
                     height: IZIDimensions.SPACE_SIZE_3X,
                   ),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: IZIDimensions.SPACE_SIZE_3X),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Com chien Thu Phuong',
-                          style: TextStyle(
-                            color: ColorResources.BLACK,
-                            fontFamily: 'Nunito',
-                            fontSize: IZIDimensions.FONT_SIZE_H4,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            
-                          },
-                          child: Icon(Icons.favorite,color: 
-                          controller.isCheckFavorite==false? ColorResources.BLACK : ColorResources.RED2
-                          ,),
-                        ),
-                      ],
-                    ),
-                  ),
+                  
                 ],
               )),
         );

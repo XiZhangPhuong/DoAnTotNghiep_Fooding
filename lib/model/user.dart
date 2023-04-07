@@ -2,26 +2,35 @@ import 'dart:convert';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class User {
-   String? id;
-   String? fullName;
-   String? phoneNumber;
-   String? passWord;
-   
+  String? id;
+  String? fullName;
+  String? phone;
+  String? email;
+  String? passWord;
+  String? avatar;
+  String? typeUser;
+  bool? isDeleted;
   User({
     this.id,
     this.fullName,
-    this.phoneNumber,
+    this.phone,
+    this.email,
     this.passWord,
+    this.avatar,
+    this.typeUser,
+    this.isDeleted,
   });
-
-   
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'fullName': fullName,
-      'phoneNumber': phoneNumber,
+      'phone': phone,
+      'email': email,
       'passWord': passWord,
+      'avatar': avatar,
+      'typeUser': typeUser,
+      'isDeleted': isDeleted,
     };
   }
 
@@ -29,12 +38,17 @@ class User {
     return User(
       id: map['id'] != null ? map['id'] as String : null,
       fullName: map['fullName'] != null ? map['fullName'] as String : null,
-      phoneNumber: map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
+      phone: map['phone'] != null ? map['phone'] as String : null,
+      email: map['email'] != null ? map['email'] as String : null,
       passWord: map['passWord'] != null ? map['passWord'] as String : null,
+      avatar: map['avatar'] != null ? map['avatar'] as String : null,
+      typeUser: map['typeUser'] != null ? map['typeUser'] as String : null,
+      isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory User.fromJson(String source) =>
+      User.fromMap(json.decode(source) as Map<String, dynamic>);
 }

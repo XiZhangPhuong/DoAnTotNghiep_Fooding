@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
 
 import '../../routes/routes_path/auth_routes.dart';
@@ -61,6 +63,7 @@ class IntroductionController extends GetxController {
   /// on Auth Page
   ///
   void onAuthPage() {
+    sl<SharedPreferenceHelper>().setSplash(status: true);
     Get.toNamed(AuthRoutes.LOGIN);
   }
 }
