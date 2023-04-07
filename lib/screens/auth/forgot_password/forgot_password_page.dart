@@ -68,6 +68,7 @@ class ForgotPasswordPage extends GetView {
                       type: IZIInputType.PHONE,
                       fillColor: ColorResources.backgroundTextField,
                       placeHolder: 'Nhập số điện thoại',
+                      controller: controller.phoneEditingController,
                   
                     ),
                   ),

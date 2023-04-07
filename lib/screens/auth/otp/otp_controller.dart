@@ -14,11 +14,12 @@ class OTPController extends GetxController {
   Timer? timer;
   int count = 50;
   String otpCode = '';
-  final result = Get.arguments as List<String>;
+  var result = [];
 
   @override
   void onInit() {
     super.onInit();
+    result = Get.arguments as List<String>;
     countDown();
   }
 
@@ -40,20 +41,22 @@ class OTPController extends GetxController {
   /// On page change.
   ///
   Future<void> onPageChange() async {
-    EasyLoading.show(status: "Đang cập nhật dữ liệu");
     if (result[0] == "create") {
+      EasyLoading.show(status: "Đang cập nhật dữ liệu");
       try {
         if (otpCode.isNotEmpty) {
-          bool ischeck = await _authRepository.verifyOTP(otpCode);
-          if (ischeck) {
+          final credential = await _authRepository.verifyOTP(otpCode);
+
+          if (credential.user != null) {
             IZIAlert().success(message: "Đăng kí tài khoản thành công");
 
             // Add data to FireStore.
             await _userRepository.addUser(
               result[1],
               result[2],
+              credential.user!.uid,
             );
-
+            EasyLoading.dismiss();
             Get.close(2);
           } else {
             IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
@@ -66,10 +69,23 @@ class OTPController extends GetxController {
         IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
       }
     } else {
-      Get.toNamed(
-        AuthRoutes.RESET,
-      );
+      try {
+        if (otpCode.isNotEmpty) {
+          final credential = await _authRepository.verifyOTP(otpCode);
+          if (credential.user != null) {
+            Get.toNamed(
+              AuthRoutes.RESET,
+              arguments: credential.user!.uid,
+            );
+          } else {
+            IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
+          }
+        } else {
+          IZIAlert().error(message: "Mã OTP đang trống");
+        }
+      } catch (e) {
+        IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
+      }
     }
-    EasyLoading.dismiss();
   }
 }
