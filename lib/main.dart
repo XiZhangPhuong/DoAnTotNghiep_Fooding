@@ -67,19 +67,22 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // Đặt ứng dụng ở chế độ full màn hình
-    // SystemChrome.setEnabledSystemUIOverlays([]);
-    SystemChrome.setSystemUIOverlayStyle(
-       SystemUiOverlayStyle(
-        statusBarColor: ColorResources.RED2, // Thiết lập màu sắc
-        statusBarIconBrightness: Brightness.light, // Thiết lập màu icon
-      ),
-    );
+   // Đặt ứng dụng ở chế độ full màn hình
+   // SystemChrome.setEnabledSystemUIOverlays([]);
+    // SystemChrome.setSystemUIOverlayStyle(
+    //    SystemUiOverlayStyle(
+    //     statusBarColor: ColorResources.RED2, // Thiết lập màu sắc
+    //     statusBarIconBrightness: Brightness.light, // Thiết lập màu icon
+    //   ),
+    // );
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: AuthRoutes.DASHBOARD,
       getPages: AppPages.list,
       initialBinding: AppBinding(),
+      theme: ThemeData(
+        primaryColor: ColorResources.BACK_GROUND
+      ),
       builder: EasyLoading.init(
         builder: (context, widget) {
           return MediaQuery(

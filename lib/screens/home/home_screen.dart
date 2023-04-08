@@ -1,11 +1,15 @@
+import 'package:fan_carousel_image_slider/fan_carousel_image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:fooding_project/base_widget/custom_scrollbar_gridview.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/izi_input.dart';
 import 'package:fooding_project/base_widget/izi_list_view.dart';
+import 'package:fooding_project/base_widget/izi_text.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/screens/home/home_controller.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
@@ -20,56 +24,33 @@ class HomeScreenPage extends GetView<HomeController> {
       init: HomeController(),
       builder: (HomeController controller) {
         return Scaffold(
-          backgroundColor: ColorResources.BACK_GROUND,
+          backgroundColor: ColorResources.WHITE,
           body: SafeArea(
-            child: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).unfocus();
-              },
+            child: Container(
+              color: ColorResources.WHITE,
+              // margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_2X),
+              padding: EdgeInsets.symmetric(
+                  horizontal: IZIDimensions.SPACE_SIZE_3X,
+                  vertical: IZIDimensions.SPACE_SIZE_3X),
               child: Column(
                 children: [
-                  // appBar
-                  Column(
-                    children: [
-                      _appBarShoppee(),
-                      // textfield search shopppe
-                      _textFieldShoppee(),
-                    ],
+                  // address
+                  _andressCustomer(),
+                  SizedBox(
+                    height: IZIDimensions.SPACE_SIZE_3X,
                   ),
+                  // search
+                  _searchView(),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // ImageSlider show
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: IZIDimensions.SPACE_SIZE_3X,
-                              left: IZIDimensions.SPACE_SIZE_2X,
-                              right: IZIDimensions.SPACE_SIZE_2X,
-                            ),
-                            height: IZIDimensions.ONE_UNIT_SIZE * 200,
-                            child: PageView.builder(
-                              controller: controller.pageController,
-                              onPageChanged: (value) {
-                                controller.onChanGeSlideShow(value);
-                              },
-                              itemCount: controller.listImageSlider.length,
-                              itemBuilder: (context, index) {
-                                return ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      IZIDimensions.BORDER_RADIUS_3X),
-                                  child: IZIImage(
-                                    controller.listImageSlider[index],
-                                    fit: BoxFit.fill,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          // Danh mục sản phẩm
-                          _category(controller),
-                          _flashSale(controller),
+                          // image slideshow
+                          _imageSlideShow(controller),
+                          // category
+                          _categoryFood(),
+                          // flash sale
+                          _flashSale(),
                         ],
                       ),
                     ),
@@ -83,279 +64,118 @@ class HomeScreenPage extends GetView<HomeController> {
     );
   }
 
-  Widget _textFieldShoppee() {
-    return Container(
-      color: ColorResources.WHITE,
-      padding: EdgeInsets.only(
-       // top: IZIDimensions.SPACE_SIZE_3X,
-        left: IZIDimensions.SPACE_SIZE_2X,
-        right: IZIDimensions.SPACE_SIZE_2X,
-      ),
-      child: IZIInput(
-        type: IZIInputType.TEXT,
-        height: IZIDimensions.ONE_UNIT_SIZE * 50,
-        fillColor: const Color(0xffe6e6e6),
-        prefixIcon: (focusNode) {
-          return Icon(
-            Icons.search,
-            color: ColorResources.BLACK,
-            size: IZIDimensions.ONE_UNIT_SIZE * 35,
-          );
-        },
-        textInputAction: TextInputAction.next,
-        placeHolder: 'Bạn muốn ăn gì hôm nay ? ',
-        hintStyle: TextStyle(
-            fontFamily: 'Nunito',
-            fontWeight: FontWeight.w400,
-            fontSize: IZIDimensions.FONT_SIZE_SPAN,
-            color: ColorResources.GREY),
-      ),
-    );
-  }
-
   ///
-  /// appbar shoppee
+  /// flastSale
   ///
-  Widget _appBarShoppee() {
+  Widget _flashSale() {
     return Container(
-      color: ColorResources.WHITE,
-      padding: EdgeInsets.only(
-        left: IZIDimensions.SPACE_SIZE_2X,
-        right: IZIDimensions.SPACE_SIZE_2X,
-        top: IZIDimensions.ONE_UNIT_SIZE * 30,
-        bottom: IZIDimensions.SPACE_SIZE_5X
-      ),
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_1X),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Giao đến: ',
-            style: TextStyle(
-              color: ColorResources.GREY,
-              fontFamily: 'Roboto',
-              fontSize: IZIDimensions.FONT_SIZE_SPAN,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          SizedBox(
-            height: IZIDimensions.SPACE_SIZE_1X,
-          ),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Icon(
-                Icons.location_on,
-                color: ColorResources.colorShoppeMain,
-                size: IZIDimensions.ONE_UNIT_SIZE * 35,
+              Text(
+                'Đang giảm giá',
+                style: TextStyle(
+                  color: ColorResources.titleLogin,
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w600,
+                  fontSize: IZIDimensions.FONT_SIZE_H5,
+                ),
               ),
               SizedBox(
                 width: IZIDimensions.SPACE_SIZE_2X,
               ),
-              Text(
-                'H23,H500,Xiang 103 ShangHai',
-                style: TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                  color: ColorResources.BLACK,
-                  fontFamily: 'Nunito',
-                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const Spacer(),
-              // Icon(
-              //   Icons.keyboard_arrow_right,
-              //   color: ColorResources.GREY,
-              //   size: IZIDimensions.ONE_UNIT_SIZE * 40,
-              // ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  ///
-  /// search view
-  ///
-  Widget _searchView(HomeController controller) {
-    return Container();
-  }
-
-  ///
-  /// Flast Sale
-  ///
-  Widget _flashSale(HomeController controller) {
-    return Container(
-      margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
-      color: ColorResources.WHITE,
-      padding: EdgeInsets.symmetric(
-        vertical: IZIDimensions.SPACE_SIZE_2X,
-        horizontal: IZIDimensions.SPACE_SIZE_2X,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                'Flash Sale',
-                style: TextStyle(
-                  color: ColorResources.colorShoppeMain,
-                  fontFamily: 'Nunito',
-                  fontSize: IZIDimensions.FONT_SIZE_H6,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(
-                width: IZIDimensions.SPACE_SIZE_1X,
-              ),
               SlideCountdownSeparated(
                 duration: const Duration(hours: 5),
-                height: IZIDimensions.ONE_UNIT_SIZE * 40,
-                width: IZIDimensions.ONE_UNIT_SIZE * 40,
-                textStyle: TextStyle(
-                  color: ColorResources.WHITE,
-                  fontFamily: 'Roboto',
-                  fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.9,
-                  fontWeight: FontWeight.w700,
-                ),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(4)),
-                  color: ColorResources.RED2,
+                  color: ColorResources.colorMain,
                 ),
-                onDone: () {},
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                    color: ColorResources.WHITE),
+                height: IZIDimensions.ONE_UNIT_SIZE * 40,
+                width: IZIDimensions.ONE_UNIT_SIZE * 40,
               )
             ],
           ),
           SizedBox(
-            height: IZIDimensions.ONE_UNIT_SIZE * 20,
+            height: IZIDimensions.SPACE_SIZE_3X,
           ),
-          SizedBox(
+          Container(
             height: IZIDimensions.ONE_UNIT_SIZE * 400,
-            width: IZIDimensions.iziSize.width,
-            child: ListView.builder(
+            color: ColorResources.WHITE,
+            child: 
+            ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: 10,
+              itemCount: 5,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    controller.gotoDetailFood();
+                    controller.gotoDetailFood('123');
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
-                      color: ColorResources.WHITE,
-                    ),
-                    width: IZIDimensions.ONE_UNIT_SIZE * 250,
-                    margin:
-                        EdgeInsets.only(right: IZIDimensions.SPACE_SIZE_1X * 1.3),
-                    padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  IZIDimensions.BORDER_RADIUS_3X),
-                              child: IZIImage(
-                                'https://i.ytimg.com/vi/cY0rHIw52kU/maxresdefault.jpg',
-                                height: IZIDimensions.ONE_UNIT_SIZE * 200,
-                                width: IZIDimensions.ONE_UNIT_SIZE * 200,
-                                fit: BoxFit.cover,
-                              ),
+                  child: Card(
+                    elevation: 1,
+                    child: Container(
+                      width: IZIDimensions.ONE_UNIT_SIZE * 300,
+                      margin:
+                          EdgeInsets.only(right: IZIDimensions.SPACE_SIZE_3X),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                            IZIDimensions.BORDER_RADIUS_5X),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                IZIDimensions.BORDER_RADIUS_3X),
+                            child: IZIImage(
+                              'https://images.foody.vn/res/g100001/1000000008/prof/s280x175/foody-upload-api-foody-mobile-dd-200414154651.jpg',
+                              height: IZIDimensions.ONE_UNIT_SIZE * 230,
+                              width: IZIDimensions.ONE_UNIT_SIZE * 300,
+                              fit: BoxFit.cover,
                             ),
-                            Positioned(
-                              right: -IZIDimensions.SPACE_SIZE_3X,
-                              top: -IZIDimensions.SPACE_SIZE_1X,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: IZIDimensions.SPACE_SIZE_1X,
-                                  horizontal: IZIDimensions.SPACE_SIZE_3X,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      IZIDimensions.BORDER_RADIUS_5X),
-                                  color: ColorResources.WHITE,
-                                  border: Border.all(
-                                      width: 1, color: ColorResources.RED2),
-                                ),
-                                child: Text(
-                                  '20% OFF',
-                                  style: TextStyle(
-                                    color: ColorResources.RED2,
-                                    fontFamily: 'Nunito',
-                                    fontSize:
-                                        IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.7,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: IZIDimensions.SPACE_SIZE_1X,
-                        ),
-                        SizedBox(
-                          height: IZIDimensions.ONE_UNIT_SIZE * 40,
-                          child: Text(
-                            // controller.listFood[index].name_Food!,
-                            'Mì sảo hải sản',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: ColorResources.BLACK,
-                                fontSize:
-                                    IZIDimensions.FONT_SIZE_SPAN_SMALL * 1.1,
-                                fontFamily: 'Nunito',
-                                fontWeight: FontWeight.w600),
                           ),
-                        ),
-                        Text(
-                          // 'đ ${controller.listFood[index].price_Food!}',
-                          'đ ${120.000}',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: ColorResources.RED2,
-                              fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                              fontFamily: 'Nunito',
-                              fontWeight: FontWeight.w600),
-                        ),
-                        SizedBox(
-                          height: IZIDimensions.SPACE_SIZE_1X,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            IZIImage(
-                              ImagesPath.icon_star,
-                              width: IZIDimensions.ONE_UNIT_SIZE * 30,
-                            ),
-                            SizedBox(width: IZIDimensions.SPACE_SIZE_1X),
-                            Text(
-                              '4.8',
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: IZIDimensions.SPACE_SIZE_2X),
+                            child: Text(
+                              'Cơm chiên trứng',
                               style: TextStyle(
-                                  color: ColorResources.BLACK,
-                                  fontSize:
-                                      IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.9,
-                                  fontFamily: 'Nunito',
-                                  fontWeight: FontWeight.w600),
+                                color: ColorResources.titleLogin,
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w600,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: IZIDimensions.FONT_SIZE_H6,
+                              ),
                             ),
-                            const Spacer(),
-                            Text(
-                              '1.2k đã bán',
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: IZIDimensions.SPACE_SIZE_2X),
+                            child: Text(
+                              '25/4 Phan Thanh,phường Thạc Gián',
                               style: TextStyle(
-                                  color: ColorResources.BLACK,
-                                  fontSize:
-                                      IZIDimensions.FONT_SIZE_SPAN_SMALL * 0.9,
-                                  fontFamily: 'Nunito',
-                                  fontWeight: FontWeight.w600),
+                                color: ColorResources.GREY,
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w400,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                              ),
                             ),
-                          ],
-                        )
-                      ],
+                          ),
+                          const Divider(),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -368,148 +188,179 @@ class HomeScreenPage extends GetView<HomeController> {
   }
 
   ///
-  /// category
+  /// Category Food
   ///
-  Widget _category(HomeController controller) {
+  Widget _categoryFood() {
     return Container(
-      color: ColorResources.WHITE,
-      //   margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_2X),
-      padding: EdgeInsets.symmetric(
-        horizontal: IZIDimensions.SPACE_SIZE_2X,
-        vertical: IZIDimensions.SPACE_SIZE_2X,
-      ),
+      margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Danh mục',
             style: TextStyle(
-              color: ColorResources.colorShoppeMain,
-              fontFamily: 'Nunito',
-              fontSize: IZIDimensions.FONT_SIZE_H6,
-              fontWeight: FontWeight.w700,
+              color: ColorResources.titleLogin,
+              fontFamily: NUNITO,
+              fontWeight: FontWeight.w600,
+              fontSize: IZIDimensions.FONT_SIZE_H5,
             ),
           ),
           SizedBox(
-            height: IZIDimensions.ONE_UNIT_SIZE * 15,
+            height: IZIDimensions.SPACE_SIZE_3X,
           ),
-          GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: controller.listCategory.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  Get.snackbar('Notification',
-                      controller.listCategory[index].name_Category!);
-                },
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
-                      child: IZIImage(
-                        controller.listCategory[index].image_Category!,
-                        height: IZIDimensions.ONE_UNIT_SIZE * 70,
-                        width: IZIDimensions.ONE_UNIT_SIZE * 70,
-                      ),
-                    ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_1X,
-                    ),
-                    Text(
-                      controller.listCategory[index].name_Category!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: ColorResources.BLACK,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                          fontFamily: 'Nunito',
-                          fontWeight: FontWeight.w600),
-                    )
-                  ],
-                ),
-              );
-            },
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: IZIDimensions.SPACE_SIZE_3X,
-                childAspectRatio: 1),
+          Container(
+            height: IZIDimensions.iziSize.height * .34,
+            child: CustomScrollbar(
+                itemCount: controller.listCategory.length,
+                alignment: Alignment.bottomCenter,
+                thumbColor: Colors.red,
+                strokeWidth:
+                    (IZIDimensions.iziSize.width * 0.246).ceilToDouble(),
+                strokeHeight:
+                    (IZIDimensions.iziSize.width * 0.045).ceilToDouble(),
+                scrollbarMargin: const EdgeInsets.only(bottom: 15),
+                padding: EdgeInsets.symmetric(
+                    horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
+                child: (index) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                bottom: IZIDimensions.SPACE_SIZE_2X),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  IZIDimensions.BORDER_RADIUS_7X),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  IZIDimensions.BORDER_RADIUS_7X),
+                              child: IZIImage(
+                                controller.listCategory[index].image_Category!,
+                                width: IZIDimensions.ONE_UNIT_SIZE * 90,
+                                height: IZIDimensions.ONE_UNIT_SIZE * 90,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                        ),
+                        IZIText(
+                          text: controller.listCategory[index].name_Category!,
+                          maxLine: 2,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            fontWeight: FontWeight.w600,
+                            fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                            color: const Color(0xff464647),
+                          ),
+                        ),
+                      ],
+                    )),
           ),
         ],
       ),
     );
   }
 
-  
-
   ///
-  /// image slider show using pageview
+  /// image slide show
   ///
-  Widget _imageSliderShow(HomeController controller) {
+  Container _imageSlideShow(HomeController controller) {
     return Container(
-      height: IZIDimensions.ONE_UNIT_SIZE * 250,
-      margin: EdgeInsets.symmetric(
-          // horizontal: IZIDimensions.ONE_UNIT_SIZE*30,
-          vertical: IZIDimensions.SPACE_SIZE_5X),
-      child: Stack(
-        children: [
-          PageView.builder(
-            controller: controller.pageController,
-            onPageChanged: (value) {
-              controller.onChanGeSlideShow(value);
-            },
-            itemCount: controller.listImageSlider.length,
-            itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: IZIDimensions.SPACE_SIZE_5X),
-                child: ClipRRect(
+      margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
+      child: ImageSlideshow(
+        indicatorColor: ColorResources.colorMain,
+        indicatorRadius: 4,
+        isLoop: true,
+        children: List.generate(
+            controller.listImageSlider.length,
+            (index) => ClipRRect(
                   borderRadius:
                       BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
                   child: IZIImage(controller.listImageSlider[index]),
-                ),
-              );
-            },
-          ),
-          Positioned(
-            right: IZIDimensions.SPACE_SIZE_5X,
-            bottom: 0,
-            child: Text(
-              '${controller.index + 1}/${controller.listImageSlider.length}',
-              style: TextStyle(
-                color: ColorResources.BLACK,
-                fontFamily: 'Nunito',
-                fontSize: IZIDimensions.FONT_SIZE_H6,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
+                )),
       ),
     );
   }
 
   ///
-  /// hinhtronPageView
+  /// search view
   ///
-  Widget _hinhTronPageView(HomeController controller) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        controller.listImageSlider.length,
-        (index) => Container(
-          margin: EdgeInsets.only(right: IZIDimensions.SPACE_SIZE_3X),
-          height: IZIDimensions.ONE_UNIT_SIZE * 15,
-          width: IZIDimensions.ONE_UNIT_SIZE * 15,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: controller.index == index
-                ? ColorResources.RED2
-                : ColorResources.GREY,
-          ),
+  GestureDetector _searchView() {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: IZIDimensions.SPACE_SIZE_3X,
+          horizontal: IZIDimensions.SPACE_SIZE_2X,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+          color: ColorResources.BACK_GROUND,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.search,
+              color: ColorResources.BLACK,
+              size: IZIDimensions.ONE_UNIT_SIZE * 30,
+            ),
+            SizedBox(
+              width: IZIDimensions.SPACE_SIZE_1X,
+            ),
+            Text(
+              'Bạn muốn ăn gì hôm nay ? ',
+              style: TextStyle(
+                color: ColorResources.GREY,
+                fontFamily: NUNITO,
+                fontWeight: FontWeight.w400,
+                fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
+  ///
+  /// _andressCustomer
+  ///
+  Row _andressCustomer() {
+    return Row(
+      children: [
+        Icon(
+          Icons.location_on_outlined,
+          color: ColorResources.colorMain,
+          size: IZIDimensions.ONE_UNIT_SIZE * 35,
+        ),
+        SizedBox(
+          width: IZIDimensions.SPACE_SIZE_2X,
+        ),
+        Text(
+          '123 Lê Hữu Trác',
+          maxLines: 1,
+          style: TextStyle(
+            color: ColorResources.titleLogin,
+            fontFamily: NUNITO,
+            fontWeight: FontWeight.w600,
+            overflow: TextOverflow.ellipsis,
+            fontSize: IZIDimensions.FONT_SIZE_H6,
+          ),
+        ),
+        SizedBox(
+          width: IZIDimensions.SPACE_SIZE_1X,
+        ),
+        Icon(
+          Icons.keyboard_arrow_right,
+          color: ColorResources.GREY,
+          size: IZIDimensions.ONE_UNIT_SIZE * 35,
+        ),
+      ],
+    );
+  }
 }

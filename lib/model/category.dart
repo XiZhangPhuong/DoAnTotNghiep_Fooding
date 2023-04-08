@@ -2,6 +2,8 @@
 
 import 'dart:convert';
 
+import 'package:fooding_project/helper/izi_validate.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Category {
    String? id_category;
@@ -20,9 +22,9 @@ class Category {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id_category': id_category,
-      'image_Category': image_Category,
-      'name_Category': name_Category,
+      if(!IZIValidate.nullOrEmpty(id_category)) 'id_category': id_category,
+      if(!IZIValidate.nullOrEmpty(image_Category)) 'image_Category': image_Category,
+      if(!IZIValidate.nullOrEmpty(name_Category)) 'name_Category': name_Category,
     };
   }
 

@@ -26,4 +26,9 @@ class ImagesPath {
 
   //star
   static String icon_star = 'assets/icons/icon_start.png';
+
+  // cart 
+   static String icon_minus = 'assets/icons/icon_minus.png';
+
+  static String icon_delete = 'assets/icons/icon_delete.png';
 }

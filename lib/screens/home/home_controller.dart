@@ -13,10 +13,11 @@ class HomeController extends GetxController{
   PageController pageController = PageController(initialPage: 0);
   List<Category> listCategory = [];
   List<Food> listFood = [];
+ 
   // list string imageslidershow
   List<String> listImageSlider = ['https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
-  'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
-  'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot'];
+  'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-4898-1679481632?w=600&amp;type=o&quot',
+  'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-4747-1676348590?w=600&amp;type=o&quot'];
   int index = 0;
   void onChanGeSlideShow(int value){
     index = value;
@@ -55,8 +56,8 @@ class HomeController extends GetxController{
   ///
   /// gotoDetailFood
   ///
-  void gotoDetailFood(){
-      Get.toNamed(HomeRoutes.DETAIL_FOOD);
+  void gotoDetailFood(String id){
+      Get.toNamed(HomeRoutes.DETAIL_FOOD,arguments: id);
   }
   ///
   /// get all data food form firebase

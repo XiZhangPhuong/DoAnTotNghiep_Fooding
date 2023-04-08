@@ -36,7 +36,7 @@ class AuthRoutes {
     ),
     GetPage(
       name: DASHBOARD,
-      page: () => const DashBoardScreen(),
+      page: () => const  DashBoardScreen(),
       binding: DashBoardBinding(),
     ),
     GetPage(

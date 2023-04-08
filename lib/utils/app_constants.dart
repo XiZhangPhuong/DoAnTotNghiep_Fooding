@@ -22,6 +22,9 @@ final DatabaseReference databaseUser = FirebaseDatabase.instance.reference().chi
 final DatabaseReference databaseHistory = FirebaseDatabase.instance.reference().child('History');
 final DatabaseReference database_list= FirebaseDatabase.instance.reference().child('Category');
 
+// font 
+const  String NUNITO  = 'Nunito';
+
 ///
 /// Muốn set ngôn ngữ tự động theo ngôn ngữ máy
 ///

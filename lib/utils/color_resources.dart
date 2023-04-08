@@ -32,8 +32,7 @@ class ColorResources {
 
   static const Color LIGHT_GREY = Color(0xffBFBDBD);
   static const Color RED = Color(0xffF90B0B);
- static const Color RED2 = Color(0xffff4d4d);
-  
+  static const Color RED2 = Color(0xffff4d4d);
 
   static const Color BACK_GROUND = Color(0xFFF6F6F7);
 
@@ -42,13 +41,12 @@ class ColorResources {
 
   //Check box Color.
   static const Color checkBoxColor = Color(0xff573353);
-  
+
   // color button
-  static const Color COLOR_BUTTON = Color(0xFF188A90); 
+  static const Color COLOR_BUTTON = Color(0xFF188A90);
 
   static const Color camNhat = Color.fromRGBO(255, 131, 87, 1);
 
-  
   //introduction
   static const Color colorBackgroudIntroduction1 =
       Color.fromRGBO(137, 213, 201, 1);
@@ -68,7 +66,6 @@ class ColorResources {
   static const Color colorButton2Login = Color(0xffFA9233);
   static const Color colorButton3Login = Color(0xff3F3731);
 
-
   // Background.
   static const colorBackground = Color(0xffF6F6F7);
 
@@ -86,8 +83,8 @@ class ColorResources {
   static const colorOTP = Color(0xffF6F6F6);
 
   // shoppe food
-   static const colorShoppeMain = Color(0xffFF6600);
-   static const colorShoppe_XD = Color(0xff00BFA5);
-   
-  
+  static const colorShoppeMain = Color(0xffFF6600);
+  static const colorShoppe_XD = Color(0xff00BFA5);
+
+  static const colorMain = Color(0xfff64a4c);
 }
