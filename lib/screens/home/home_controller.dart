@@ -1,15 +1,18 @@
 import 'dart:async';
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fooding_project/model/category.dart';
 import 'package:fooding_project/model/food/food.dart';
+import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:get_it/get_it.dart';
 
 class HomeController extends GetxController{
+  
+  final CategoryRepository _categoryRepository = GetIt.I.get<CategoryRepository>();
+
   PageController pageController = PageController(initialPage: 0);
   List<Category> listCategory = [];
   List<Food> listFood = [];
@@ -34,9 +37,15 @@ class HomeController extends GetxController{
     _getDataCategory();
    // _getDataFood();
  //  getDataFood();
+ _pushListCategory();
   }
-
-
+  
+  ///
+  ///
+  ///
+void _pushListCategory(){
+  _categoryRepository.pushListCategory();
+}
 
   ///
   /// get all data category from firebasee

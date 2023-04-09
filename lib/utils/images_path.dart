@@ -31,4 +31,8 @@ class ImagesPath {
    static String icon_minus = 'assets/icons/icon_minus.png';
 
   static String icon_delete = 'assets/icons/icon_delete.png';
+
+  // payment
+  static String icon_money = 'assets/icons/icon_money.png';
+  static String icon_zalo = 'assets/icons/icon_zalo.png';
 }
