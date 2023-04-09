@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/user.dart' as model;
@@ -6,6 +9,7 @@ import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
 class UserRepository {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   ///
   /// Add user to database.
@@ -84,5 +88,19 @@ class UserRepository {
   ///
   Future<void> updateUser(model.User userResquest, String id) async {
     _fireStore.collection("users").doc(id).update(userResquest.toMap());
+  }
+
+  ///
+  /// Up load Image.
+  ///
+  Future<String> unloadToStorage(File image) async {
+    Reference ref = _storage
+        .ref()
+        .child('profilePics')
+        .child(sl<SharedPreferenceHelper>().getIdUser);
+    UploadTask uploadTask = ref.putFile(image);
+    TaskSnapshot snap = await uploadTask;
+    String downloadUrl = await snap.ref.getDownloadURL();
+    return downloadUrl;
   }
 }

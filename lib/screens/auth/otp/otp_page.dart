@@ -186,6 +186,32 @@ class OTPPage extends GetView {
                 ),
               ),
             ),
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          Get.back();
+        },
+        child: Container(
+          height: IZIDimensions.ONE_UNIT_SIZE * 70,
+          width: IZIDimensions.ONE_UNIT_SIZE * 70,
+          margin: EdgeInsets.only(
+            top: IZIDimensions.SPACE_SIZE_2X,
+          ),
+          decoration: BoxDecoration(
+            color: ColorResources.borderIcon.withOpacity(0.4),
+            shape: BoxShape.circle,
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: IZIDimensions.SPACE_SIZE_1X * 1.5,
+            ),
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: ColorResources.icon_back.withOpacity(0.37),
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
 }

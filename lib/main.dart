@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/routes/app_routes.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'app_binding.dart';
@@ -20,12 +21,11 @@ Future<void> main() async {
   // Set timezone
   IZITimeZone().initializeTimeZones();
 
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-    /// Instance Easy Loading.
+  /// Instance Easy Loading.
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 1500)
     ..indicatorType = EasyLoadingIndicatorType.fadingCircle
@@ -71,8 +71,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AuthRoutes.SPLASH,
       getPages: AppPages.list,
+      locale: const Locale('vi', 'VN'),
+      localizationsDelegates: localizationsDelegates,
       initialBinding: AppBinding(),
-            builder: EasyLoading.init(
+      builder: EasyLoading.init(
         builder: (context, widget) {
           return MediaQuery(
             //

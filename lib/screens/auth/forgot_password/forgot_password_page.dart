@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 import '../../../../helper/izi_dimensions.dart';
 import '../../../base_widget/izi_image.dart';
 import '../../../base_widget/izi_input.dart';
@@ -69,7 +68,6 @@ class ForgotPasswordPage extends GetView {
                       fillColor: ColorResources.backgroundTextField,
                       placeHolder: 'Nhập số điện thoại',
                       controller: controller.phoneEditingController,
-                  
                     ),
                   ),
                 ],
@@ -90,8 +88,8 @@ class ForgotPasswordPage extends GetView {
                     height: IZIDimensions.ONE_UNIT_SIZE * 90,
                     child: Center(
                       child: GestureDetector(
-                        onTap: () async  {
-                           await controller.gotoOTP();
+                        onTap: () async {
+                          await controller.gotoOTP();
                         },
                         child: Container(
                           height: IZIDimensions.ONE_UNIT_SIZE * 90,
@@ -117,6 +115,32 @@ class ForgotPasswordPage extends GetView {
                     ),
                   ),
       ),
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          Get.back();
+        },
+        child: Container(
+          height: IZIDimensions.ONE_UNIT_SIZE * 70,
+          width: IZIDimensions.ONE_UNIT_SIZE * 70,
+          margin: EdgeInsets.only(
+            top: IZIDimensions.SPACE_SIZE_2X,
+          ),
+          decoration: BoxDecoration(
+            color: ColorResources.borderIcon.withOpacity(0.4),
+            shape: BoxShape.circle,
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: IZIDimensions.SPACE_SIZE_1X * 1.5,
+            ),
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: ColorResources.icon_back.withOpacity(0.37),
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
 }

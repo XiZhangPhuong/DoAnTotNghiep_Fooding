@@ -73,7 +73,7 @@ class OTPController extends GetxController {
         if (otpCode.isNotEmpty) {
           final credential = await _authRepository.verifyOTP(otpCode);
           if (credential.user != null) {
-            Get.toNamed(
+            Get.offNamed(
               AuthRoutes.RESET,
               arguments: credential.user!.uid,
             );
