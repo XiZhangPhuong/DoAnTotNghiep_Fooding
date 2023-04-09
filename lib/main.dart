@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/routes/app_routes.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'app_binding.dart';
@@ -79,6 +80,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AuthRoutes.DASHBOARD,
       getPages: AppPages.list,
+      locale: const Locale('vi', 'VN'),
+      localizationsDelegates: localizationsDelegates,
       initialBinding: AppBinding(),
       theme: ThemeData(
         primaryColor: ColorResources.BACK_GROUND

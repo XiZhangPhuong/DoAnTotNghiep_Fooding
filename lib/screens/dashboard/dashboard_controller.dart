@@ -1,5 +1,6 @@
 import 'package:fooding_project/screens/cart/cart_pages.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
+import 'package:fooding_project/screens/profile/profile_page.dart';
 import 'package:get/get.dart';
 
 class DashBoardController extends GetxController {
@@ -19,7 +20,7 @@ class DashBoardController extends GetxController {
     },
     {
       'label': "Tài khoản",
-      'page': const CartPage(),
+      'page': const ProfilePage(),
     },
   ];
   void changePage(int index) {

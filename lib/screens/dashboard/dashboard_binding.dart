@@ -1,6 +1,7 @@
 import 'package:fooding_project/screens/cart/cart_controller.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/screens/home/home_controller.dart';
+import 'package:fooding_project/screens/profile/profile_controller.dart';
 import 'package:get/get.dart';
 
 class DashBoardBinding extends Bindings {
@@ -10,5 +11,6 @@ class DashBoardBinding extends Bindings {
     Get.lazyPut<DashBoardController>(() => DashBoardController());
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<CartController>(() => CartController());
+    Get.lazyPut<ProfileController>(() => ProfileController());
   }
 }

@@ -47,6 +47,9 @@ class ColorResources {
 
   static const Color camNhat = Color.fromRGBO(255, 131, 87, 1);
 
+  static const Color borderIcon = Color(0xffD8D7D7);
+  static const Color icon_back = Color(0xff181313);
+
   //introduction
   static const Color colorBackgroudIntroduction1 =
       Color.fromRGBO(137, 213, 201, 1);
@@ -87,4 +90,6 @@ class ColorResources {
   static const colorShoppe_XD = Color(0xff00BFA5);
 
   static const colorMain = Color(0xfff64a4c);
+  // Acount
+  static const colorAccountRed = Color(0xffEB0F0F);
 }
