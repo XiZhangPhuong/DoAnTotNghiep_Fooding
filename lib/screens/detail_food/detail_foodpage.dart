@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
@@ -12,6 +10,8 @@ import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
 
 class DetailFoodPage extends GetView<DetailFoodController> {
+  const DetailFoodPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -49,6 +49,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                         indicatorColor: ColorResources.colorMain,
                         indicatorRadius: 4,
                         isLoop: true,
+                        onPageChanged: (value) {
+                          controller.changeSlideShow(value);
+                        },
                         children: List.generate(
                             controller.listImageSlider.length,
                             (index) => ClipRRect(
@@ -57,6 +60,48 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                   child: IZIImage(
                                       controller.listImageSlider[index]),
                                 )),
+                      ),
+                      Positioned(
+                        left: IZIDimensions.SPACE_SIZE_2X,
+                        top: IZIDimensions.ONE_UNIT_SIZE*80,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromRGBO(0, 0, 0, 0.3)
+                            ),
+                            child: Center(
+                              child: Icon(Icons.arrow_back,color: ColorResources.WHITE,size: IZIDimensions.ONE_UNIT_SIZE*40,),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Positioned(
+                        right: IZIDimensions.SPACE_SIZE_2X,
+                        bottom: IZIDimensions.ONE_UNIT_SIZE*20,
+                        child: Container(
+                          padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+                          decoration:  BoxDecoration(
+                            borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+                            color: const Color.fromRGBO(0, 0, 0, 0.3)
+                          ),
+                          child: Center(
+                            child:  Text(
+                              '${controller.currentIndex+1}/${controller.listImageSlider.length}',
+                              style: TextStyle(
+                                color: ColorResources.WHITE.withOpacity(0.7),
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w600,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: IZIDimensions.FONT_SIZE_H6,
+                              ),),
+                          ),
+                        ),
                       ),
                     ],
                   ),
