@@ -87,9 +87,5 @@ class HomeController extends GetxController{
   ///
   /// push data product
   ///
-  void pushDataProduct(){
-     for(int i = 0;i<10;i++){
-       listCategory.add(Products(id: generateRandomString(20),name: ));
-     }
-  }
+ 
 }
