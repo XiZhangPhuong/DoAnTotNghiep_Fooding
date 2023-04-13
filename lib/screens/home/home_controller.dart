@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:fooding_project/model/category.dart';
+import 'package:fooding_project/model/banner/banner.dart';
+import 'package:fooding_project/model/category/category.dart';
 import 'package:fooding_project/model/food/food.dart';
+import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/utils/app_constants.dart';
@@ -16,11 +18,15 @@ class HomeController extends GetxController{
   PageController pageController = PageController(initialPage: 0);
   List<Category> listCategory = [];
   List<Food> listFood = [];
- 
+  List<Products> listProducts = [];
+  bool isLoadingCategory = true;
   // list string imageslidershow
   List<String> listImageSlider = ['https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
   'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-4898-1679481632?w=600&amp;type=o&quot',
   'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-4747-1676348590?w=600&amp;type=o&quot'];
+
+  List<Banners> listBanners = [];
+
   int index = 0;
   void onChanGeSlideShow(int value){
     index = value;
@@ -35,54 +41,55 @@ class HomeController extends GetxController{
   void onInit() {
     super.onInit();
     _getDataCategory();
-   // _getDataFood();
- //  getDataFood();
- _pushListCategory();
   }
   
-  ///
-  ///
-  ///
-void _pushListCategory(){
-  _categoryRepository.pushListCategory();
-}
+ ///
+ /// get all data banners
+ ///
+  
+  void _getDataBanners()  {
+    databaseBanner.onValue.listen((event) { 
+      listBanners.clear();
+      final  data = event.snapshot.value as Map<dynamic,dynamic>;
+      data.forEach((key, value) { 
+        Banners banners = Banners(id: value['id'],image: value['image']);
+        listBanners.add(banners);
+      });
+    });
+  }
 
   ///
   /// get all data category from firebasee
   ///
-  void _getDataCategory(){
-    databaseCategory.onValue.listen((event) {
+  
+  Future<void> _getDataCategory() async {
+     databaseCategory.onValue.listen((event) {
        listCategory.clear();
        final data = event.snapshot.value as Map<dynamic,dynamic>;
        data.forEach((key, value) { 
-         Category category = Category(id_category: value['id_category'],image_Category: value['image_Category'],name_Category: value['name_Category']);
+         Category category = Category(id: value['id'],thumnail: value['thumnail'],name: value['name']);
          listCategory.add(category);
        });
-       
+       isLoadingCategory =false;
        update();
     });
   }
+
+ 
   ///
   /// gotoDetailFood
   ///
   void gotoDetailFood(String id){
       Get.toNamed(HomeRoutes.DETAIL_FOOD,arguments: id);
   }
+  
 
-  Future<void> getDataFood() async {
-    databaseFood.onValue.listen((event) {
-       listFood.clear();
-     // Lặp qua từng đối tượng và thêm vào danh sách
-     final values = event.snapshot.value as Map<dynamic,dynamic>;
-     values.forEach((key, value) {
-      Food food = Food(id_Food: values['id_Food'],name_Food:  values['name_Food'],
-      category_Food:  values['category_Food'],image_Food: values['image_Food'] ,
-      information_Food: values['information_Food'],quantity: values['quantity'] ,price_Food: values['price_Food'] );
-      listFood.add(food);
-    
-      });
-      print(listFood.length.toString());
-      update();
-    });
+  ///
+  /// push data product
+  ///
+  void pushDataProduct(){
+     for(int i = 0;i<10;i++){
+       listCategory.add(Products(id: generateRandomString(20),name: ));
+     }
   }
 }

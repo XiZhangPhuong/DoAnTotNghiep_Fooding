@@ -1,4 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +18,23 @@ const String NOTIFICATION_TITLE = 'title';
 const String NOTIFICATION_BODY = 'body';
 
 // firebase Database
-final DatabaseReference databaseCategory = FirebaseDatabase.instance.reference().child('Category');
-final DatabaseReference databaseFood = FirebaseDatabase.instance.reference().child('Food');
+final DatabaseReference databaseCategory = FirebaseDatabase.instance.ref().child('categorys');
+final DatabaseReference databaseBanner = FirebaseDatabase.instance.ref().child('banners');
+final DatabaseReference databaseProduct = FirebaseDatabase.instance.ref().child('products');
 final DatabaseReference databaseUser = FirebaseDatabase.instance.reference().child('User');
 final DatabaseReference databaseHistory = FirebaseDatabase.instance.reference().child('History');
 final DatabaseReference database_list= FirebaseDatabase.instance.reference().child('Category');
+
+///
+/// random ID category
+///
+String generateRandomString(int length) {
+  var random = Random();
+  var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return String.fromCharCodes(
+    List.generate(length, (index) => chars.codeUnitAt(random.nextInt(chars.length))),
+  );
+}
 
 // font 
 const  String NUNITO  = 'Nunito';
