@@ -68,23 +68,6 @@ void _pushListCategory(){
   void gotoDetailFood(String id){
       Get.toNamed(HomeRoutes.DETAIL_FOOD,arguments: id);
   }
-  ///
-  /// get all data food form firebase
-  ///
-  // void _getDataFood(){
-  //   databaseFood.onValue.listen((event) { 
-  //      listFood.clear();
-  //     final data = event.snapshot.value as Map<dynamic,dynamic>;
-  //     data.forEach((key, value) { 
-  //       Food food = Food(id_Food: value['id_Food'],name_Food: value['name_Food'],category_Food: value['category_Food'],
-  //       image_Food: value['image_Food'],information_Food: value['information_Food'],quantity: value['quantity'],price_Food: value['price_Food']
-        
-  //       );
-  //       listFood.add(food);
-  //       update();
-  //     });
-  //   });
-  // }
 
   Future<void> getDataFood() async {
     databaseFood.onValue.listen((event) {

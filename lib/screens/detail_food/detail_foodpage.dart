@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -18,25 +19,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
       init: DetailFoodController(),
       builder: (DetailFoodController controller) {
         return Scaffold(
-          bottomSheet: Container(
-            height: IZIDimensions.ONE_UNIT_SIZE * 80,
-            decoration: BoxDecoration(
-              borderRadius:
-                  BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
-              color: ColorResources.colorMain,
-            ),
-            child: Center(
-              child: Text(
-                'Thêm giỏ hàng',
-                style: TextStyle(
-                  color: ColorResources.WHITE,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w600,
-                  fontSize: IZIDimensions.FONT_SIZE_H6,
-                ),
-              ),
-            ),
-          ),
+          bottomSheet: _bottomSheet(),
           backgroundColor: ColorResources.BACK_GROUND,
           body: Container(
               margin: EdgeInsets.only(bottom: IZIDimensions.ONE_UNIT_SIZE * 50),
@@ -63,43 +46,47 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                       ),
                       Positioned(
                         left: IZIDimensions.SPACE_SIZE_2X,
-                        top: IZIDimensions.ONE_UNIT_SIZE*80,
+                        top: IZIDimensions.ONE_UNIT_SIZE * 80,
                         child: GestureDetector(
                           onTap: () {
                             Get.back();
                           },
                           child: Container(
-                            padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+                            padding:
+                                EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
                             decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color.fromRGBO(0, 0, 0, 0.3)
-                            ),
+                                shape: BoxShape.circle,
+                                color: Color.fromRGBO(0, 0, 0, 0.3)),
                             child: Center(
-                              child: Icon(Icons.arrow_back,color: ColorResources.WHITE,size: IZIDimensions.ONE_UNIT_SIZE*40,),
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: ColorResources.WHITE,
+                                size: IZIDimensions.ONE_UNIT_SIZE * 40,
+                              ),
                             ),
                           ),
                         ),
                       ),
-
                       Positioned(
                         right: IZIDimensions.SPACE_SIZE_2X,
-                        bottom: IZIDimensions.ONE_UNIT_SIZE*20,
+                        bottom: IZIDimensions.ONE_UNIT_SIZE * 20,
                         child: Container(
                           padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
-                          decoration:  BoxDecoration(
-                            borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
-                            color: const Color.fromRGBO(0, 0, 0, 0.3)
-                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  IZIDimensions.BORDER_RADIUS_3X),
+                              color: const Color.fromRGBO(0, 0, 0, 0.3)),
                           child: Center(
-                            child:  Text(
-                              '${controller.currentIndex+1}/${controller.listImageSlider.length}',
+                            child: Text(
+                              '${controller.currentIndex + 1}/${controller.listImageSlider.length}',
                               style: TextStyle(
                                 color: ColorResources.WHITE.withOpacity(0.7),
                                 fontFamily: NUNITO,
                                 fontWeight: FontWeight.w600,
                                 overflow: TextOverflow.ellipsis,
                                 fontSize: IZIDimensions.FONT_SIZE_H6,
-                              ),),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -143,7 +130,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                         Text(
                           '102 Phan Châu Trinh-Hải Châu-Đà Nẵng',
                           style: TextStyle(
-                            color: ColorResources.GREY,
+                            color: ColorResources.BLACK,
                             fontFamily: NUNITO,
                             overflow: TextOverflow.ellipsis,
                             fontWeight: FontWeight.w400,
@@ -153,12 +140,29 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                         SizedBox(
                           height: IZIDimensions.SPACE_SIZE_1X,
                         ),
-                        RatingStars(
-                          value: 4.5,
-                          starCount: 5,
-                          starSize: IZIDimensions.ONE_UNIT_SIZE * 30,
-                          starColor: Colors.yellow,
-                          onValueChanged: (value) {},
+                        Row(
+                          children: [
+                            RatingStars(
+                              value: 4.5,
+                              starCount: 5,
+                              starSize: IZIDimensions.ONE_UNIT_SIZE * 30,
+                              starColor: Colors.yellow,
+                              onValueChanged: (value) {},
+                            ),
+                            SizedBox(
+                              width: IZIDimensions.SPACE_SIZE_3X,
+                            ),
+                            Text(
+                              '1.2k đã bán',
+                              style: TextStyle(
+                                color: ColorResources.BLACK,
+                                fontFamily: NUNITO,
+                                overflow: TextOverflow.ellipsis,
+                                fontWeight: FontWeight.w400,
+                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(
                           height: IZIDimensions.SPACE_SIZE_1X,
@@ -178,7 +182,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                             Text(
                               'Đang mở cửa : 8:30 - 22:30',
                               style: TextStyle(
-                                color: ColorResources.GREY,
+                                color: ColorResources.BLACK,
                                 fontFamily: NUNITO,
                                 fontWeight: FontWeight.w400,
                                 fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
@@ -228,7 +232,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                 child: Card(
                                   elevation: 1,
                                   child: Container(
-                                    width: IZIDimensions.iziSize.width*0.9,
+                                    width: IZIDimensions.iziSize.width * 0.9,
                                     margin: EdgeInsets.only(
                                         right: IZIDimensions.SPACE_SIZE_3X),
                                     decoration: BoxDecoration(
@@ -236,7 +240,8 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                           IZIDimensions.BORDER_RADIUS_5X),
                                     ),
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(
@@ -251,38 +256,41 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                             fit: BoxFit.cover,
                                           ),
                                         ),
-                                        
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    left:
-                                                        IZIDimensions.SPACE_SIZE_2X),
+                                                    left: IZIDimensions
+                                                        .SPACE_SIZE_2X),
                                                 child: Text(
                                                   'Cơm chiên trứng',
                                                   style: TextStyle(
-                                                    color: ColorResources.titleLogin,
+                                                    color: ColorResources
+                                                        .titleLogin,
                                                     fontFamily: NUNITO,
                                                     fontWeight: FontWeight.w600,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    fontSize:
-                                                        IZIDimensions.FONT_SIZE_H6,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontSize: IZIDimensions
+                                                        .FONT_SIZE_H6,
                                                   ),
                                                 ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    left:
-                                                        IZIDimensions.SPACE_SIZE_2X),
+                                                    left: IZIDimensions
+                                                        .SPACE_SIZE_2X),
                                                 child: Text(
                                                   'Đã bán 1.2k',
                                                   style: TextStyle(
-                                                    color: ColorResources.GREY,
+                                                    color: ColorResources.BLACK,
                                                     fontFamily: NUNITO,
                                                     fontWeight: FontWeight.w400,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     fontSize: IZIDimensions
                                                         .FONT_SIZE_SPAN_SMALL,
                                                   ),
@@ -290,15 +298,17 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    left:
-                                                        IZIDimensions.SPACE_SIZE_2X),
+                                                    left: IZIDimensions
+                                                        .SPACE_SIZE_2X),
                                                 child: Text(
                                                   '255000 vnđ',
                                                   style: TextStyle(
-                                                    color: ColorResources.colorMain,
+                                                    color: ColorResources
+                                                        .colorMain,
                                                     fontFamily: NUNITO,
                                                     fontWeight: FontWeight.w600,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     fontSize: IZIDimensions
                                                         .FONT_SIZE_SPAN_SMALL,
                                                   ),
@@ -322,6 +332,75 @@ class DetailFoodPage extends GetView<DetailFoodController> {
               )),
         );
       },
+    );
+  }
+
+  ///
+  /// bottom sheet
+  ///
+  Widget _bottomSheet() {
+    return Container(
+      height: IZIDimensions.ONE_UNIT_SIZE * 80,
+      width: IZIDimensions.iziSize.width,
+      margin: EdgeInsets.only(
+        bottom: IZIDimensions.SPACE_SIZE_5X,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: IZIDimensions.SPACE_SIZE_3X,
+      ),
+      child: Row(
+        children: [
+          // cart count
+          Expanded(
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    IZIDimensions.BORDER_RADIUS_3X,
+                  ),
+                  border: Border.all(width: 1, color: ColorResources.colorMain)),
+                  child: Center(
+                    child: Badge(
+                  badgeContent: Text(
+                    '3',
+                    style: TextStyle(
+                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Nunito',
+                      color: ColorResources.WHITE,
+                    ),
+                  ),
+                  child:  Icon(Icons.shopping_cart,size: IZIDimensions.ONE_UNIT_SIZE*40,color: ColorResources.colorMain,),
+                ),
+                  ),
+            ),
+          ),
+          SizedBox(width: IZIDimensions.SPACE_SIZE_3X,),
+          // button pay ment
+          Expanded(
+            flex: 4,
+            child: Container(
+              decoration: BoxDecoration(
+                color: ColorResources.colorMain,
+                borderRadius: BorderRadius.circular(
+                  IZIDimensions.BORDER_RADIUS_4X,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  'Trang thanh toán',
+                  style: TextStyle(
+                    color: ColorResources.WHITE,
+                    fontFamily: NUNITO,
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

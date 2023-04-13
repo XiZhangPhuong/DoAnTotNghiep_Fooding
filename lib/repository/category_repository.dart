@@ -10,7 +10,7 @@ class CategoryRepository{
    /// Push list Category to FireStore
    ///
    Future<void> pushListCategory() async{
-      try{
+      try{ 
         List<Category> listCate = [
           Category(id: '1',thumnail: "https://tea-3.lozi.vn/v1/images/resized/category-web-1565-1590397916?w=240&amp;type=s",name: "Cơm"),
           Category(id: '2',thumnail: "https://tea-3.lozi.vn/v1/images/resized/category-web-1533-1590653836?w=240&amp;type=s",name: "Bún|Mì"),
