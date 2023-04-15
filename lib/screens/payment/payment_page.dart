@@ -21,9 +21,7 @@ class PaymentPage extends GetView<PaymentController> {
           appBar: _appBar(),
           bottomSheet: _bottomSheet(controller),
           body: Container(
-            margin: EdgeInsets.only(
-              bottom: IZIDimensions.ONE_UNIT_SIZE*80
-            ),
+            margin: EdgeInsets.only(bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
             padding: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
             child: Column(
               children: [
@@ -221,8 +219,9 @@ class PaymentPage extends GetView<PaymentController> {
                           BorderRadius.circular(IZIDimensions.BORDER_RADIUS_2X),
                       border: Border.all(
                           width: 0.4, color: ColorResources.colorMain),
-                      color: controller.clickpayment==true ? ColorResources.colorMain : ColorResources.WHITE
-                      ),
+                      color: controller.clickpayment == true
+                          ? ColorResources.colorMain
+                          : ColorResources.WHITE),
                   child: Center(
                     child: Container(
                       padding: EdgeInsets.only(
@@ -240,7 +239,9 @@ class PaymentPage extends GetView<PaymentController> {
                           Text(
                             'Tiền mặt',
                             style: TextStyle(
-                              color: ColorResources.colorMain.withOpacity(0.8),
+                              color: controller.clickpayment == true
+                                  ? ColorResources.WHITE
+                                  : ColorResources.colorMain.withOpacity(0.8),
                               fontFamily: NUNITO,
                               fontWeight: FontWeight.w600,
                               overflow: TextOverflow.ellipsis,
@@ -264,13 +265,13 @@ class PaymentPage extends GetView<PaymentController> {
                   width: IZIDimensions.ONE_UNIT_SIZE * 250,
                   height: IZIDimensions.ONE_UNIT_SIZE * 60,
                   decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(IZIDimensions.BORDER_RADIUS_2X),
-                    border:
-                        Border.all(width: 0.4, color: ColorResources.colorMain
-                        ),
-                    color: controller.clickpayment==true ?  ColorResources.WHITE :ColorResources.colorMain 
-                  ),
+                      borderRadius:
+                          BorderRadius.circular(IZIDimensions.BORDER_RADIUS_2X),
+                      border: Border.all(
+                          width: 0.4, color: ColorResources.colorMain),
+                      color: controller.clickpayment == true
+                          ? ColorResources.WHITE
+                          : ColorResources.colorMain),
                   child: Center(
                     child: Container(
                       padding: EdgeInsets.only(
@@ -288,7 +289,9 @@ class PaymentPage extends GetView<PaymentController> {
                           Text(
                             'Ví ZaloPay',
                             style: TextStyle(
-                              color: ColorResources.colorMain.withOpacity(0.8),
+                              color: controller.clickpayment == true
+                                  ? ColorResources.WHITE
+                                  : ColorResources.colorMain.withOpacity(0.8),
                               fontFamily: NUNITO,
                               fontWeight: FontWeight.w600,
                               overflow: TextOverflow.ellipsis,
@@ -442,23 +445,20 @@ class PaymentPage extends GetView<PaymentController> {
           ),
           GestureDetector(
             onTap: () {},
-            child: Flexible(
-              flex: 1,
-              child: Container(
-                color: ColorResources.colorMain,
-                padding: EdgeInsets.symmetric(
-                  horizontal: IZIDimensions.SPACE_SIZE_5X * 1.2,
-                ),
-                child: Center(
-                  child: Text(
-                    'Đặt hàng',
-                    style: TextStyle(
-                      color: ColorResources.WHITE,
-                      fontFamily: NUNITO,
-                      fontWeight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: IZIDimensions.FONT_SIZE_H6,
-                    ),
+            child: Container(
+              color: ColorResources.colorMain,
+              padding: EdgeInsets.symmetric(
+                horizontal: IZIDimensions.SPACE_SIZE_5X * 1.2,
+              ),
+              child: Center(
+                child: Text(
+                  'Đặt hàng',
+                  style: TextStyle(
+                    color: ColorResources.WHITE,
+                    fontFamily: NUNITO,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: IZIDimensions.FONT_SIZE_H6,
                   ),
                 ),
               ),
@@ -529,8 +529,9 @@ class PaymentPage extends GetView<PaymentController> {
     return Container(
       width: IZIDimensions.iziSize.width,
       color: ColorResources.WHITE,
-      margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_1X,
-      bottom: IZIDimensions.SPACE_SIZE_2X,
+      margin: EdgeInsets.only(
+        top: IZIDimensions.SPACE_SIZE_1X,
+        bottom: IZIDimensions.SPACE_SIZE_2X,
       ),
       padding: EdgeInsets.only(
         top: IZIDimensions.SPACE_SIZE_2X,
@@ -579,8 +580,10 @@ class PaymentPage extends GetView<PaymentController> {
               ),
             ],
           ),
-          SizedBox(height: IZIDimensions.SPACE_SIZE_1X,),
-           Row(
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_1X,
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -605,8 +608,10 @@ class PaymentPage extends GetView<PaymentController> {
               ),
             ],
           ),
-           SizedBox(height: IZIDimensions.SPACE_SIZE_1X,),
-           Row(
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_1X,
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -631,9 +636,14 @@ class PaymentPage extends GetView<PaymentController> {
               ),
             ],
           ),
-           SizedBox(height: IZIDimensions.SPACE_SIZE_1X,),
-           const Divider(height: 1,color: ColorResources.GREY,),
-           Row(
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_1X,
+          ),
+          const Divider(
+            height: 1,
+            color: ColorResources.GREY,
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(

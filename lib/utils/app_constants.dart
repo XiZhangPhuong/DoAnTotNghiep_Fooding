@@ -16,19 +16,25 @@ const String NOTIFICATION_TITLE = 'title';
 const String NOTIFICATION_BODY = 'body';
 
 // firebase Database
-final DatabaseReference databaseCategory = FirebaseDatabase.instance.reference().child('Category');
-final DatabaseReference databaseFood = FirebaseDatabase.instance.reference().child('Food');
-final DatabaseReference databaseUser = FirebaseDatabase.instance.reference().child('User');
-final DatabaseReference databaseHistory = FirebaseDatabase.instance.reference().child('History');
-final DatabaseReference database_list= FirebaseDatabase.instance.reference().child('Category');
+final DatabaseReference databaseCategory =
+    FirebaseDatabase.instance.reference().child('Category');
+final DatabaseReference databaseFood =
+    FirebaseDatabase.instance.reference().child('Food');
+final DatabaseReference databaseUser =
+    FirebaseDatabase.instance.reference().child('User');
+final DatabaseReference databaseHistory =
+    FirebaseDatabase.instance.reference().child('History');
+final DatabaseReference database_list =
+    FirebaseDatabase.instance.reference().child('Category');
 
-// font 
-const  String NUNITO  = 'Nunito';
+// font
+const String NUNITO = 'Nunito';
 
 ///
 /// Muốn set ngôn ngữ tự động theo ngôn ngữ máy
 ///
-Locale localeResolutionCallback(Locale locale, Iterable<Locale> supportedLocales) {
+Locale localeResolutionCallback(
+    Locale locale, Iterable<Locale> supportedLocales) {
   if (locale == null) {
     return supportedLocales.first;
   }
@@ -83,3 +89,4 @@ const String COMMENT_ANSWER_TYPING = 'p31giaibaitap_comment-answer-typing';
 const String GOOGLE = 'GOOGLE';
 const String FACEBOOK = 'FACEBOOK';
 
+const String CUSTOMER = 'CUSTOMER';

@@ -7,7 +7,7 @@ class AuthRepository {
   var verificationId = ''.obs;
 
   ///
-  /// vPhone authentication.
+  /// Phone authentication.
   ///
   Future<void> phoneAuthentication(String phoneNumber) async {
     await _auth.verifyPhoneNumber(
@@ -16,7 +16,6 @@ class AuthRepository {
       verificationCompleted: (phoneAuthCredential) async {
         await _auth.signInWithCredential(phoneAuthCredential);
       },
-      
       verificationFailed: (error) {
         IZIAlert().error(
           message: error.toString(),
@@ -30,18 +29,19 @@ class AuthRepository {
       },
     );
   }
+
   ///
   /// verify OTP.
   ///
   Future<UserCredential> verifyOTP(String otp) async {
-    var credentials = await _auth
-        .signInWithCredential(
-          PhoneAuthProvider.credential(
-            verificationId: verificationId.value,
-            smsCode: otp,
-          ),
-        );
-      
+    var credentials = await _auth.signInWithCredential(
+      PhoneAuthProvider.credential(
+        verificationId: verificationId.value,
+        smsCode: otp,
+      ),
+    );
+
     return credentials;
   }
+
 }

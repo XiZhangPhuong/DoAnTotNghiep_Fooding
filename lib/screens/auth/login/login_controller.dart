@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import '../../../base_widget/izi_alert.dart';
@@ -32,10 +33,23 @@ class LoginController extends GetxController {
   ///
   Future<void> gotoDashBoard() async {
     if (validateLogin()) {
-      EasyLoading.show(status: "Đang đăng nhập");
+      //EasyLoading.show(status: "Đang đăng nhập");
       User? user = await _userRepository.getUserDetails(
           phoneEditingController.text, passwordEditingController.text);
       if (user != null) {
+        if (user.typeUser != CUSTOMER) {
+          IZIAlert().success(
+            message: "Tài khoản hoặc mật khẩu sai",
+          );
+          return;
+        }
+        if (user.isDeleted!) {
+          IZIAlert().success(
+            message:
+                "Tài khoản của bạn hiện đang bị khóa, Vui lòng liên hệ Admin",
+          );
+          return;
+        }
         sl<SharedPreferenceHelper>().setIdUser(user.id!);
         IZIAlert().success(message: "Đăng nhập thành công");
         if (isCheck) {
