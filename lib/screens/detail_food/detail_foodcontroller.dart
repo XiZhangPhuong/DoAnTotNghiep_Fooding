@@ -1,3 +1,4 @@
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 
 class DetailFoodController extends GetxController{
@@ -25,5 +26,12 @@ class DetailFoodController extends GetxController{
   void onInit() {
     
     super.onInit();
+  }
+
+  ///
+  /// goto payment
+  ///
+  void gotoPayment(){
+    Get.back(result: SUCCESS);
   }
 }

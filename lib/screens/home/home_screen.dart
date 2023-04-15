@@ -5,6 +5,7 @@ import 'package:fooding_project/base_widget/custom_scrollbar_gridview.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/izi_text.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
+import 'package:fooding_project/model/category/category.dart';
 import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -13,7 +14,6 @@ import 'package:slide_countdown/slide_countdown.dart';
 
 class HomeScreenPage extends GetView<HomeController> {
   const HomeScreenPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -31,7 +31,7 @@ class HomeScreenPage extends GetView<HomeController> {
               child: Column(
                 children: [
                   // address
-                  _andressCustomer(),
+                  _andressCustomer(controller),
                   SizedBox(
                     height: IZIDimensions.SPACE_SIZE_3X,
                   ),
@@ -44,7 +44,7 @@ class HomeScreenPage extends GetView<HomeController> {
                           // image slideshow
                           _imageSlideShow(controller),
                           // category
-                          _categoryFood(),
+                          _categoryFood(controller),
                           // flash sale
                           _flashSale(),
                         ],
@@ -186,7 +186,7 @@ class HomeScreenPage extends GetView<HomeController> {
   ///
   /// Category Food
   ///
-  Widget _categoryFood() {
+  Widget _categoryFood(HomeController controller,) {
     return Container(
       margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
       child: Column(
@@ -207,57 +207,59 @@ class HomeScreenPage extends GetView<HomeController> {
           SizedBox(
             height: IZIDimensions.iziSize.height * .34,
             child: 
-            CustomScrollbar(
-                itemCount: controller.listCategory.length,
-                alignment: Alignment.bottomCenter,
-                thumbColor: Colors.red,
-                strokeWidth:
-                    (IZIDimensions.iziSize.width * 0.246).ceilToDouble(),
-                strokeHeight:
-                    (IZIDimensions.iziSize.width * 0.045).ceilToDouble(),
-                scrollbarMargin: const EdgeInsets.only(bottom: 15),
-                padding: EdgeInsets.symmetric(
-                    horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
-                child: (index) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                bottom: IZIDimensions.SPACE_SIZE_2X),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                  IZIDimensions.BORDER_RADIUS_7X),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  IZIDimensions.BORDER_RADIUS_7X),
-                              child: IZIImage(
-                                controller.listCategory[index].thumnail!,
-                                width: IZIDimensions.ONE_UNIT_SIZE * 90,
-                                height: IZIDimensions.ONE_UNIT_SIZE * 90,
-                                fit: BoxFit.fill,
+            
+                CustomScrollbar(
+                  itemCount:controller.listCategory.length,
+                  alignment: Alignment.bottomCenter,
+                  thumbColor: Colors.red,
+                  strokeWidth:
+                      (IZIDimensions.iziSize.width * 0.246).ceilToDouble(),
+                  strokeHeight:
+                      (IZIDimensions.iziSize.width * 0.045).ceilToDouble(),
+                  scrollbarMargin: const EdgeInsets.only(bottom: 15),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
+                  child: (index) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  bottom: IZIDimensions.SPACE_SIZE_2X),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    IZIDimensions.BORDER_RADIUS_7X),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                    IZIDimensions.BORDER_RADIUS_7X),
+                                child: IZIImage(
+                                 controller.listCategory[index].thumnail!,
+                                  width: IZIDimensions.ONE_UNIT_SIZE * 90,
+                                  height: IZIDimensions.ONE_UNIT_SIZE * 90,
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        IZIText(
-                          text: controller.listCategory[index].name!,
-                          maxLine: 2,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Nunito',
-                            fontWeight: FontWeight.w600,
-                            fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                            color: const Color(0xff464647),
+                          IZIText(
+                            text: controller.listCategory[index].name!,
+                            maxLine: 2,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              fontWeight: FontWeight.w600,
+                              fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                              color: const Color(0xff464647),
+                            ),
                           ),
-                        ),
-                      ],
-                    )),
-          ),
+                        ],
+                      )),
+            ),
+          
         ],
       ),
     );
@@ -327,7 +329,7 @@ class HomeScreenPage extends GetView<HomeController> {
   ///
   /// _andressCustomer
   ///
-  Row _andressCustomer() {
+  Row _andressCustomer(HomeController controller) {
     return Row(
       children: [
         Icon(
@@ -338,15 +340,17 @@ class HomeScreenPage extends GetView<HomeController> {
         SizedBox(
           width: IZIDimensions.SPACE_SIZE_2X,
         ),
-        Text(
-          '123 Lê Hữu Trác',
-          maxLines: 1,
-          style: TextStyle(
-            color: ColorResources.titleLogin,
-            fontFamily: NUNITO,
-            fontWeight: FontWeight.w600,
-            overflow: TextOverflow.ellipsis,
-            fontSize: IZIDimensions.FONT_SIZE_H6,
+        Expanded(
+          child: Text(
+            controller.street,
+            maxLines: 1,
+            style: TextStyle(
+              color: ColorResources.titleLogin,
+              fontFamily: NUNITO,
+              fontWeight: FontWeight.w600,
+              overflow: TextOverflow.ellipsis,
+              fontSize: IZIDimensions.FONT_SIZE_H6,
+            ),
           ),
         ),
         SizedBox(

@@ -17,13 +17,7 @@ const String NOTIFICATION_KEY = 'notification_key';
 const String NOTIFICATION_TITLE = 'title';
 const String NOTIFICATION_BODY = 'body';
 
-// firebase Database
-final DatabaseReference databaseCategory = FirebaseDatabase.instance.ref().child('categorys');
-final DatabaseReference databaseBanner = FirebaseDatabase.instance.ref().child('banners');
-final DatabaseReference databaseProduct = FirebaseDatabase.instance.ref().child('products');
-final DatabaseReference databaseUser = FirebaseDatabase.instance.reference().child('User');
-final DatabaseReference databaseHistory = FirebaseDatabase.instance.reference().child('History');
-final DatabaseReference database_list= FirebaseDatabase.instance.reference().child('Category');
+
 
 ///
 /// random ID category
@@ -96,4 +90,6 @@ const String COMMENT_ANSWER_TYPING = 'p31giaibaitap_comment-answer-typing';
 /// Type token login.
 const String GOOGLE = 'GOOGLE';
 const String FACEBOOK = 'FACEBOOK';
+
+const String SUCCESS = 'SUCCESS';
 

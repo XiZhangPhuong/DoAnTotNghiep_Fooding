@@ -339,67 +339,77 @@ class DetailFoodPage extends GetView<DetailFoodController> {
   /// bottom sheet
   ///
   Widget _bottomSheet() {
-    return Container(
-      height: IZIDimensions.ONE_UNIT_SIZE * 80,
-      width: IZIDimensions.iziSize.width,
-      margin: EdgeInsets.only(
-        bottom: IZIDimensions.SPACE_SIZE_5X,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: IZIDimensions.SPACE_SIZE_3X,
-      ),
-      child: Row(
-        children: [
-          // cart count
-          Expanded(
-            flex: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    IZIDimensions.BORDER_RADIUS_3X,
+    return GetBuilder(
+      init: DetailFoodController(),
+      builder: (DetailFoodController controller) 
+        =>
+     Container(
+        height: IZIDimensions.ONE_UNIT_SIZE * 80,
+        width: IZIDimensions.iziSize.width,
+        margin: EdgeInsets.only(
+          bottom: IZIDimensions.SPACE_SIZE_5X,
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: IZIDimensions.SPACE_SIZE_3X,
+        ),
+        child: Row(
+          children: [
+            // cart count
+            Expanded(
+              flex: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      IZIDimensions.BORDER_RADIUS_3X,
+                    ),
+                    border: Border.all(width: 1, color: ColorResources.colorMain)),
+                    child: Center(
+                      child: Badge(
+                    badgeContent: Text(
+                      '3',
+                      style: TextStyle(
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Nunito',
+                        color: ColorResources.WHITE,
+                      ),
+                    ),
+                    child:  Icon(Icons.shopping_cart,size: IZIDimensions.ONE_UNIT_SIZE*40,color: ColorResources.colorMain,),
                   ),
-                  border: Border.all(width: 1, color: ColorResources.colorMain)),
-                  child: Center(
-                    child: Badge(
-                  badgeContent: Text(
-                    '3',
-                    style: TextStyle(
-                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Nunito',
-                      color: ColorResources.WHITE,
+                    ),
+              ),
+            ),
+            SizedBox(width: IZIDimensions.SPACE_SIZE_3X,),
+            // button pay ment
+            Expanded(
+              flex: 4,
+              child: GestureDetector(
+                onTap: () {
+                  controller.gotoPayment();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: ColorResources.colorMain,
+                    borderRadius: BorderRadius.circular(
+                      IZIDimensions.BORDER_RADIUS_4X,
                     ),
                   ),
-                  child:  Icon(Icons.shopping_cart,size: IZIDimensions.ONE_UNIT_SIZE*40,color: ColorResources.colorMain,),
-                ),
-                  ),
-            ),
-          ),
-          SizedBox(width: IZIDimensions.SPACE_SIZE_3X,),
-          // button pay ment
-          Expanded(
-            flex: 4,
-            child: Container(
-              decoration: BoxDecoration(
-                color: ColorResources.colorMain,
-                borderRadius: BorderRadius.circular(
-                  IZIDimensions.BORDER_RADIUS_4X,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  'Trang thanh toán',
-                  style: TextStyle(
-                    color: ColorResources.WHITE,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w600,
-                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                  child: Center(
+                    child: Text(
+                      'Trang thanh toán',
+                      style: TextStyle(
+                        color: ColorResources.WHITE,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

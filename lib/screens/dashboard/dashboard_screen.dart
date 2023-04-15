@@ -68,14 +68,16 @@ class DashBoardScreen extends GetView {
               ),
             ],
           ),
-          body: IndexedStack(
-            index: controller.curenIndex.value,
-            children: const [
-              HomeScreenPage(),
-              CartPage(),
-              CartPage(),
-              ProfilePage(),
-            ],
+          body: Obx(
+            () =>  IndexedStack(
+              index: controller.curenIndex.value,
+              children: const [
+                HomeScreenPage(),
+                CartPage(),
+                CartPage(),
+                ProfilePage(),
+              ],
+            ),
           ),
         );
       },

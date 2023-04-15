@@ -106,6 +106,10 @@ dependencies:
   slide_countdown: ^0.5.0
   #star
   flutter_rating_stars: ^1.0.3+4
+
+  #location
+  geocoding: ^2.1.0
+  geolocator: ^9.0.2
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
