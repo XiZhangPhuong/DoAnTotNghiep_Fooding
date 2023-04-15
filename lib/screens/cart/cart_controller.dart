@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:fooding_project/model/product/product_new.dart';
-import 'package:fooding_project/model/user.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fooding_project/routes/routes_path/cart_routes.dart';
 import 'package:get/get.dart';
 
@@ -38,7 +37,19 @@ class CartController extends GetxController {
   /// goto trang thanh toán
   ///
   Future<void> gotoPaymentPage() async {
+        await FirebaseDatabase.instance.ref('categorys').once().then((value) {
+      final data = value.snapshot.value as Map<dynamic, dynamic>;
+      data.forEach((key, value) async {
+        final fire = FirebaseFirestore.instance.collection('categorys');
+        await fire.doc(value['id']).set({
+          "id": value['id'],
+          "name": value['name'],
+          "thumnail": value['thumnail'],
+        });
+      });
+    });
     Get.toNamed(CartRoutes.PAYMENT);
+
   }
 
   @override

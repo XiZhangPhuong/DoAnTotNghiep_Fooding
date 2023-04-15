@@ -33,21 +33,23 @@ class LoginController extends GetxController {
   ///
   Future<void> gotoDashBoard() async {
     if (validateLogin()) {
-      //EasyLoading.show(status: "Đang đăng nhập");
+      EasyLoading.show(status: "Đang đăng nhập");
       User? user = await _userRepository.getUserDetails(
           phoneEditingController.text, passwordEditingController.text);
       if (user != null) {
         if (user.typeUser != CUSTOMER) {
-          IZIAlert().success(
+          IZIAlert().error(
             message: "Tài khoản hoặc mật khẩu sai",
           );
+          EasyLoading.dismiss();
           return;
         }
         if (user.isDeleted!) {
-          IZIAlert().success(
+          IZIAlert().error(
             message:
                 "Tài khoản của bạn hiện đang bị khóa, Vui lòng liên hệ Admin",
           );
+          EasyLoading.dismiss();
           return;
         }
         sl<SharedPreferenceHelper>().setIdUser(user.id!);
@@ -60,7 +62,7 @@ class LoginController extends GetxController {
         Get.offAllNamed(AuthRoutes.DASHBOARD);
       } else {
         if (await _userRepository.checPhone(phoneEditingController.text)) {
-          IZIAlert().error(message: "Tài khoản hoặc mật khẩu sai");
+          IZIAlert().error(message: "Thông tin đăng nhập chưa chính xác");
         } else {
           IZIAlert().error(message: "Tài khoản chưa được đăng kí");
         }
@@ -90,11 +92,14 @@ class LoginController extends GetxController {
     if (IZIValidate.nullOrEmpty(phoneEditingController.text)) {
       IZIAlert().error(message: "Số điện thoại không được để trống");
       return false;
+    } else if (phoneEditingController.text.length != 10) {
+      IZIAlert().error(message: "Số điện thoại phải 10 ký tự");
+      return false;
     } else if (IZIValidate.nullOrEmpty(passwordEditingController.text)) {
       IZIAlert().error(message: "Mật khẩu không được để trống");
       return false;
-    } else if (phoneEditingController.text.length != 10) {
-      IZIAlert().error(message: "Số điện thoại phải 10 ký tự");
+    } else if (passwordEditingController.text.length < 6) {
+      IZIAlert().error(message: "Mật khẩu phải 6 ký tự");
       return false;
     } else if (!IZIValidate.phoneNumber(phoneEditingController.text)) {
       IZIAlert().error(message: "Số điện thoại không đúng định dạng");

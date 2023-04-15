@@ -16,7 +16,7 @@ class AppBarFooding extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xffABC4AA),
+      backgroundColor: ColorResources.colorMain,
       elevation: 0,
       title: Text(
         title,

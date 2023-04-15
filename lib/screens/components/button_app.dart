@@ -12,7 +12,7 @@ class ButtonFooding extends StatelessWidget {
   ButtonFooding({
     Key? key,
     required this.text,
-    this.colorButton = ColorResources.COLOR_BUTTON,
+    this.colorButton = ColorResources.colorMain,
     required this.ontap,
     required this.border,
   }) : super(key: key);

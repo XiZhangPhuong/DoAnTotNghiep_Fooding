@@ -56,7 +56,7 @@ class ResetPasswordController extends GetxController {
           user,
           Get.arguments as String,
         );
-        Get.close(3);
+        Get.close(2);
         IZIAlert().success(message: "Đã đặt lại mật khẩu");
       } catch (e) {
         IZIAlert().error(message: "Hãy kiểm tra lại thông tin");

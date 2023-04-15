@@ -41,51 +41,38 @@ class OTPController extends GetxController {
   /// On page change.
   ///
   Future<void> onPageChange() async {
-    if (result[0] == "create") {
-      EasyLoading.show(status: "Đang cập nhật dữ liệu");
+    EasyLoading.show(status: "Đang cập nhật dữ liệu");
+
+    if (otpCode.isNotEmpty) {
       try {
-        if (otpCode.isNotEmpty) {
-          final credential = await _authRepository.verifyOTP(otpCode);
-
-          if (credential.user != null) {
-            IZIAlert().success(message: "Đăng kí tài khoản thành công");
-
-            // Add data to FireStore.
-            await _userRepository.addUser(
-              result[1],
-              result[2],
-              credential.user!.uid,
-            );
-            EasyLoading.dismiss();
-            Get.close(2);
-          } else {
-            IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
-          }
+        //
+        // Verify OTP.
+        final credential = await _authRepository.verifyOTP(otpCode);
+        if (result[0] == "create") {
+          //
+          // Add data to FireStore.
+          await _userRepository.addUser(
+            result[1],
+            result[2],
+            credential.user!.uid,
+          );
+          IZIAlert().success(message: "Đăng kí tài khoản thành công");
+          Get.close(2);
         } else {
-          IZIAlert().error(message: "Mã OTP đang trống");
+          //
+          // change page Reset.
+          Get.offNamed(
+            AuthRoutes.RESET,
+            arguments: credential.user!.uid,
+          );
         }
       } catch (e) {
-        EasyLoading.dismiss();
         IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
       }
     } else {
-      try {
-        if (otpCode.isNotEmpty) {
-          final credential = await _authRepository.verifyOTP(otpCode);
-          if (credential.user != null) {
-            Get.offNamed(
-              AuthRoutes.RESET,
-              arguments: credential.user!.uid,
-            );
-          } else {
-            IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
-          }
-        } else {
-          IZIAlert().error(message: "Mã OTP đang trống");
-        }
-      } catch (e) {
-        IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
-      }
+      IZIAlert().error(message: "Bạn chưa nhập mã OTP");
     }
+
+    EasyLoading.dismiss();
   }
 }

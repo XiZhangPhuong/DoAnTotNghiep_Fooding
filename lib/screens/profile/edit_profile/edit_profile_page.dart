@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/helper/izi_date.dart';
+import 'package:fooding_project/screens/components/button_app.dart';
 import 'package:fooding_project/screens/profile/edit_profile/edit_profile_controller.dart';
 import 'package:get/get.dart';
 
@@ -369,30 +370,12 @@ class EditProfilePage extends GetView {
                 width: IZIDimensions.iziSize.width,
                 height: IZIDimensions.ONE_UNIT_SIZE * 90,
                 child: Center(
-                  child: GestureDetector(
-                    onTap: () async {
-                      await controller.updateAccount();
+                  child: ButtonFooding(
+                    text: "Lưu",
+                    ontap: () {
+                      controller.updateAccount();
                     },
-                    child: Container(
-                      height: IZIDimensions.ONE_UNIT_SIZE * 90,
-                      width: IZIDimensions.iziSize.width * 0.9,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: ColorResources.COLOR_BUTTON,
-                        borderRadius: BorderRadius.circular(
-                          IZIDimensions.SPACE_SIZE_4X,
-                        ),
-                      ),
-                      child: Text(
-                        "LƯU",
-                        style: TextStyle(
-                          color: ColorResources.WHITE,
-                          fontWeight: FontWeight.w700,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: 'Manrope',
-                        ),
-                      ),
-                    ),
+                    border: IZIDimensions.BORDER_RADIUS_4X,
                   ),
                 ),
               ),
