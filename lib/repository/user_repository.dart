@@ -64,14 +64,12 @@ class UserRepository {
   Future<bool> checPhone(
     String phone,
   ) async {
-    QuerySnapshot querySnapshot = await _fireStore.collection("users").get();
-
-    for (final element in querySnapshot.docs) {
-      model.User user =
-          model.User.fromMap(element.data() as Map<String, dynamic>);
-      if (user.phone == phone) {
-        return true;
-      }
+    final querySnapshot = await _fireStore
+        .collection("users")
+        .where("phone", isEqualTo: phone)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      return true;
     }
     return false;
   }

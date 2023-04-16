@@ -90,3 +90,5 @@ const String GOOGLE = 'GOOGLE';
 const String FACEBOOK = 'FACEBOOK';
 
 const String CUSTOMER = 'CUSTOMER';
+const String CASH = "CASH";
+const String BANKING = "BANKING";

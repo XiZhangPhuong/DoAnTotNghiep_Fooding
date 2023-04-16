@@ -35,7 +35,7 @@ class ProfilePage extends GetView {
                         SizedBox(
                           height: IZIDimensions.SPACE_SIZE_3X,
                         ),
-                        listOrder(),
+                        listOrder(controller),
                         SizedBox(
                           height: IZIDimensions.SPACE_SIZE_3X,
                         ),
@@ -279,7 +279,7 @@ class ProfilePage extends GetView {
   ///
   /// List order.
   ///
-  Widget listOrder() {
+  Widget listOrder(ProfileController controller) {
     return Container(
       padding: EdgeInsets.all(
         IZIDimensions.SPACE_SIZE_4X,
@@ -303,22 +303,27 @@ class ProfilePage extends GetView {
                 ),
               ),
               const Spacer(),
-              Row(
-                children: [
-                  Text(
-                    "Xem tất cả",
-                    style: TextStyle(
-                      color: ColorResources.camNhat,
-                      fontWeight: FontWeight.w600,
-                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+              GestureDetector(
+                onTap: () {
+                  controller.gotoStatusOrder(0);
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      "Xem tất cả",
+                      style: TextStyle(
+                        color: ColorResources.camNhat,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                      ),
                     ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: ColorResources.camNhat,
-                    size: IZIDimensions.ONE_UNIT_SIZE * 30,
-                  ),
-                ],
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: ColorResources.camNhat,
+                      size: IZIDimensions.ONE_UNIT_SIZE * 30,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -330,26 +335,34 @@ class ProfilePage extends GetView {
             children: [
               _itemOrder(
                 ImagesPath.iconPeding,
-                "Chờ duyệt",
-                () {},
+                "Chờ nhận",
+                () {
+                  controller.gotoStatusOrder(0);
+                },
                 "1",
               ),
               _itemOrder(
                 ImagesPath.iconVerified,
-                "Đã duyệt",
-                () {},
+                "Đang giao",
+                () {
+                  controller.gotoStatusOrder(1);
+                },
                 "1",
               ),
               _itemOrder(
                 ImagesPath.iconCancel,
                 "Đã hủy",
-                () {},
+                () {
+                  controller.gotoStatusOrder(2);
+                },
                 "1",
               ),
               _itemOrder(
                 ImagesPath.iconElevated,
                 "Đánh giá",
-                () {},
+                () {
+                  controller.gotoStatusOrder(3);
+                },
                 "1",
               ),
             ],

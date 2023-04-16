@@ -209,19 +209,20 @@ class PaymentPage extends GetView<PaymentController> {
             children: [
               GestureDetector(
                 onTap: () {
-                  controller.clickPayMentMeThod();
+                  controller.clickPayCash();
                 },
                 child: Container(
                   width: IZIDimensions.ONE_UNIT_SIZE * 250,
                   height: IZIDimensions.ONE_UNIT_SIZE * 60,
                   decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(IZIDimensions.BORDER_RADIUS_2X),
-                      border: Border.all(
-                          width: 0.4, color: ColorResources.colorMain),
-                      color: controller.clickpayment == true
-                          ? ColorResources.colorMain
-                          : ColorResources.WHITE),
+                    borderRadius:
+                        BorderRadius.circular(IZIDimensions.BORDER_RADIUS_2X),
+                    border:
+                        Border.all(width: 0.4, color: ColorResources.colorMain),
+                    color: controller.typePayment == CASH
+                        ? ColorResources.colorMain
+                        : ColorResources.WHITE,
+                  ),
                   child: Center(
                     child: Container(
                       padding: EdgeInsets.only(
@@ -239,7 +240,7 @@ class PaymentPage extends GetView<PaymentController> {
                           Text(
                             'Tiền mặt',
                             style: TextStyle(
-                              color: controller.clickpayment == true
+                              color: controller.typePayment == CASH
                                   ? ColorResources.WHITE
                                   : ColorResources.colorMain.withOpacity(0.8),
                               fontFamily: NUNITO,
@@ -259,19 +260,20 @@ class PaymentPage extends GetView<PaymentController> {
               ),
               GestureDetector(
                 onTap: () {
-                  controller.clickPayMentMeThod();
+                  controller.clickPayBanking();
                 },
                 child: Container(
                   width: IZIDimensions.ONE_UNIT_SIZE * 250,
                   height: IZIDimensions.ONE_UNIT_SIZE * 60,
                   decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(IZIDimensions.BORDER_RADIUS_2X),
-                      border: Border.all(
-                          width: 0.4, color: ColorResources.colorMain),
-                      color: controller.clickpayment == true
-                          ? ColorResources.WHITE
-                          : ColorResources.colorMain),
+                    borderRadius:
+                        BorderRadius.circular(IZIDimensions.BORDER_RADIUS_2X),
+                    border:
+                        Border.all(width: 0.4, color: ColorResources.colorMain),
+                    color: controller.typePayment == BANKING
+                        ? ColorResources.colorMain
+                        : ColorResources.WHITE,
+                  ),
                   child: Center(
                     child: Container(
                       padding: EdgeInsets.only(
@@ -289,7 +291,7 @@ class PaymentPage extends GetView<PaymentController> {
                           Text(
                             'Ví ZaloPay',
                             style: TextStyle(
-                              color: controller.clickpayment == true
+                              color: controller.typePayment == BANKING
                                   ? ColorResources.WHITE
                                   : ColorResources.colorMain.withOpacity(0.8),
                               fontFamily: NUNITO,
@@ -444,7 +446,9 @@ class PaymentPage extends GetView<PaymentController> {
             ),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              controller.payWithZaloPay();
+            },
             child: Container(
               color: ColorResources.colorMain,
               padding: EdgeInsets.symmetric(

@@ -37,19 +37,7 @@ class CartController extends GetxController {
   /// goto trang thanh toán
   ///
   Future<void> gotoPaymentPage() async {
-        await FirebaseDatabase.instance.ref('categorys').once().then((value) {
-      final data = value.snapshot.value as Map<dynamic, dynamic>;
-      data.forEach((key, value) async {
-        final fire = FirebaseFirestore.instance.collection('categorys');
-        await fire.doc(value['id']).set({
-          "id": value['id'],
-          "name": value['name'],
-          "thumnail": value['thumnail'],
-        });
-      });
-    });
     Get.toNamed(CartRoutes.PAYMENT);
-
   }
 
   @override

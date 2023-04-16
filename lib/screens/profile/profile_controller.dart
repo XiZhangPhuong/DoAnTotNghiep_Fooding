@@ -52,4 +52,15 @@ class ProfileController extends GetxController {
     isLoading.value = false;
     update();
   }
+
+  ///
+  /// Go to status order.
+  ///
+  void gotoStatusOrder(int status) {
+    Get.toNamed(
+      ProfileRoutes.STATUSORDER,
+      arguments: status,
+    );
+  }
+
 }
