@@ -39,7 +39,7 @@ class ForgotPasswordController extends GetxController {
           ],
         );
       } else {
-        IZIAlert().error(message: "Không có số điện thoại");
+        IZIAlert().error(message: "Số điện thoại này không có");
       }
     }
   }

@@ -92,4 +92,6 @@ class ColorResources {
   static const colorMain = Color(0xfff64a4c);
   // Acount
   static const colorAccountRed = Color(0xffEB0F0F);
+  static const colorBGItemListOrder = Color(0xff188A90);
+  static const colorTextItemListOrder = Color(0xff808089);
 }

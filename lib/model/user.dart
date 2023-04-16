@@ -44,7 +44,7 @@ class User {
       if (!IZIValidate.nullOrEmpty(address)) 'address': address,
       if (!IZIValidate.nullOrEmpty(banner)) 'banner': banner,
       if (!IZIValidate.nullOrEmpty(dateOfBirth)) 'dateOfBirth': dateOfBirth,
-      if(!IZIValidate.nullOrEmpty(gender)) 'gender':gender,
+      if (!IZIValidate.nullOrEmpty(gender)) 'gender': gender,
     };
   }
 
@@ -60,9 +60,8 @@ class User {
       isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
       address: map['address'] != null ? map['address'] as String : null,
       banner: map['banner'] != null ? map['banner'] as String : null,
-      dateOfBirth: map['dateOfBirth'] != null
-          ? map['dateOfBirth'] as String
-          : null,
+      dateOfBirth:
+          map['dateOfBirth'] != null ? map['dateOfBirth'] as String : null,
       gender: map['gender'] != null ? map['gender'] as String : null,
     );
   }

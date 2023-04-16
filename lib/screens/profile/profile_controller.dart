@@ -45,7 +45,22 @@ class ProfileController extends GetxController {
   Future<void> findUser() async {
     isLoading.value = true;
     user = await userRepository.findUser();
+    if (user!.isDeleted!) {
+      await Get.toNamed(AuthRoutes.LOGIN);
+      return;
+    }
     isLoading.value = false;
     update();
   }
+
+  ///
+  /// Go to status order.
+  ///
+  void gotoStatusOrder(int status) {
+    Get.toNamed(
+      ProfileRoutes.STATUSORDER,
+      arguments: status,
+    );
+  }
+
 }
