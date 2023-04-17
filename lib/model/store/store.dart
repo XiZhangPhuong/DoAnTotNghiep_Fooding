@@ -5,8 +5,8 @@ import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/user.dart';
 
 class Store extends User {
-  int? openHour;
-  int? closeHour;
+  String? openHour;
+  String? closeHour;
   bool? isOline;
 
   Store({
@@ -23,9 +23,9 @@ class Store extends User {
     String? dateOfBirth,
     String? gender,
     // openHour default = 8:00
-    this.openHour = 28000,
+    this.openHour = '8:00',
     // closeHour default = 22:00
-    this.closeHour = 79200,
+    this.closeHour = '10:30',
     this.isOline,
   }) : super(
             id: id,
@@ -75,8 +75,8 @@ class Store extends User {
       dateOfBirth:
           map['dateOfBirth'] != null ? map['dateOfBirth'] as String : null,
       gender: map['gender'] != null ? map['gender'] as String : null,
-      openHour: map['openHour'] != null ? map['openHour'] as int : null,
-      closeHour: map['closeHour'] != null ? map['closeHour'] as int : null,
+      openHour: map['openHour'] != null ? map['openHour'] as String : null,
+      closeHour: map['closeHour'] != null ? map['closeHour'] as String : null,
       isOline: map['isOline'] != null ? map['isOline'] as bool : null,
     );
   }

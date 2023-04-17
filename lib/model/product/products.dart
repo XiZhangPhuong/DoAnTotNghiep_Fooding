@@ -35,7 +35,7 @@ class Products {
       if (!IZIValidate.nullOrEmpty(idCategory)) 'idCategory': idCategory,
       if (!IZIValidate.nullOrEmpty(description)) 'description': description,
       if (!IZIValidate.nullOrEmpty(price)) 'price': price,
-      if (!IZIValidate.nullOrEmpty(sold)) 'price': sold,
+      if (!IZIValidate.nullOrEmpty(sold)) 'sold': sold,
     };
   }
 

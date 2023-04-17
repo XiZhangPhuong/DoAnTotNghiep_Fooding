@@ -5,6 +5,7 @@ import 'package:fooding_project/base_widget/custom_scrollbar_gridview.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/izi_text.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
+import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/model/category/category.dart';
 import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
@@ -46,7 +47,7 @@ class HomeScreenPage extends GetView<HomeController> {
                           // category
                           _categoryFood(controller),
                           // flash sale
-                          _flashSale(),
+                          _flashSale(controller),
                         ],
                       ),
                     ),
@@ -63,7 +64,7 @@ class HomeScreenPage extends GetView<HomeController> {
   ///
   /// flastSale
   ///
-  Widget _flashSale() {
+  Widget _flashSale(HomeController controller) {
     return Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_1X),
@@ -109,11 +110,11 @@ class HomeScreenPage extends GetView<HomeController> {
             ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: 5,
+              itemCount: controller.listProducts.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    controller.gotoDetailFood('123');
+                    controller.gotoDetailFood(controller.listProducts[index].id!);
                   },
                   child: Card(
                     elevation: 1,
@@ -132,7 +133,8 @@ class HomeScreenPage extends GetView<HomeController> {
                             borderRadius: BorderRadius.circular(
                                 IZIDimensions.BORDER_RADIUS_3X),
                             child: IZIImage(
-                              'https://images.foody.vn/res/g100001/1000000008/prof/s280x175/foody-upload-api-foody-mobile-dd-200414154651.jpg',
+                              controller.listProducts[index].image
+                              !.first,
                               height: IZIDimensions.ONE_UNIT_SIZE * 230,
                               width: IZIDimensions.ONE_UNIT_SIZE * 300,
                               fit: BoxFit.cover,
@@ -145,7 +147,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             padding: EdgeInsets.only(
                                 left: IZIDimensions.SPACE_SIZE_2X),
                             child: Text(
-                              'Cơm chiên trứng',
+                              controller.listProducts[index].name!,
                               style: TextStyle(
                                 color: ColorResources.titleLogin,
                                 fontFamily: NUNITO,
@@ -159,13 +161,13 @@ class HomeScreenPage extends GetView<HomeController> {
                             padding: EdgeInsets.only(
                                 left: IZIDimensions.SPACE_SIZE_2X),
                             child: Text(
-                              '25/4 Phan Thanh,phường Thạc Gián',
+                              '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ',
                               style: TextStyle(
-                                color: ColorResources.GREY,
+                                color: ColorResources.colorMain,
                                 fontFamily: NUNITO,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w600,
                                 overflow: TextOverflow.ellipsis,
-                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                                fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                               ),
                             ),
                           ),

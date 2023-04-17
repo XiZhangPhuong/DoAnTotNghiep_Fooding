@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
     // );
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: AuthRoutes.DASHBOARD,
+      initialRoute: AuthRoutes.SPLASH,
       getPages: AppPages.list,
       locale: const Locale('vi', 'VN'),
       localizationsDelegates: localizationsDelegates,

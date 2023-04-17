@@ -1,21 +1,16 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_html/shims/dart_ui.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/banner/banner.dart';
 import 'package:fooding_project/model/category/category.dart';
 import 'package:fooding_project/model/food/food.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
-import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
-import 'package:fooding_project/utils/app_constants.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -60,9 +55,9 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     getCategoryList();
     _getCurrentLocation();
+    getProductList();
   }
 
   ///
@@ -82,7 +77,18 @@ class HomeController extends GetxController {
     //
     update();
   }
-
+  
+  ///
+  /// get data products
+  ///
+  Future<void> getProductList() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('products').get();
+    for(var element in querySnapshot.docs){
+      Products products = Products.fromMap(element.data() as Map<String,dynamic>);
+      listProducts.add(products);
+    }
+    update();
+  }
   ///
   /// Get current
   ///
@@ -126,47 +132,7 @@ class HomeController extends GetxController {
     }
   }
 
-  ///
-  /// get all data banners
-  ///
-
-  ///
-  /// push data Store
-  ///
-  // Future<void> pushDataStore() async {
-  //   Store store = Store();
-  //   store.id = generateRandomString(20);
-  //   store.fullName = 'Nhà hàng Hoài Phương';
-  //   store.phone = '0398797286';
-  //   store.email = 'roxtigervanphuong@gmail.com';
-  //   store.passWord = '123456';
-  //   store.typeUser = 'STORE';
-  //   store.address = '120 Phan Châu Trinh';
-  //   store.isOline = true;
-  //   for (int i = 0; i < 3; i++) {
-  //     listStore.add(store);
-  //     await databaseUser.child('STORE').child(store.id!).set(store.toMap());
-  //   }
-  // }
-
-  // ///
-  // /// push data Product
-  // ///
-  // Future<void> pushDataProduct() async {
-  //   for (int i = 0; i < 3; i++) {
-  //     String productId = generateRandomString(20);
-  //     Products products = Products(
-  //         id: productId,
-  //         idUser: 'IOx6yG9LWJg1Ns39ztGm',
-  //         name: 'Cơm chiên trứng',
-  //         image: listImageSlider,
-  //         idCategory: 'LUtEDbvPYGye8cqkZZFG',
-  //         description: 'Thơm ngon mời bạn ăn nha',
-  //         price: 30000);
-  //     listProducts.add(products);
-  //     await databaseProduct.child(products.id!).set(products.toMap());
-  //   }
-  // }
+ 
 
   ///
   /// gotoDetailFood
