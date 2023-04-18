@@ -10,18 +10,18 @@ import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
-import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 Position? currentLocation;
 
 class HomeController extends GetxController {
   final CategoryRepository _categoryRepository =
       GetIt.I.get<CategoryRepository>();
-
+  RefreshController refreshController = RefreshController();
   PageController pageController = PageController(initialPage: 0);
   List<Category> listCategory = [];
   List<Food> listFood = [];
@@ -48,6 +48,27 @@ class HomeController extends GetxController {
     update();
   }
 
+   ///
+  /// On Refreshing.
+  ///
+  void onRefreshing() {
+    getProductList();
+    getCategoryList();
+    refreshController.resetNoData();
+    refreshController.refreshCompleted();
+  }
+
+  ///
+  /// On loading.
+  ///
+  void onLoading() {
+     getProductList();
+     getCategoryList();
+     refreshController.refreshCompleted();
+    refreshController.loadComplete();
+
+  }
+
   ///
   /// get data user
   ///
@@ -68,12 +89,14 @@ class HomeController extends GetxController {
     List<Category> categoryList = [];
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('categorys').get();
+     
     for (var document in querySnapshot.docs) {
       Category category =
           Category.fromMap(document.data() as Map<String, dynamic>);
       categoryList.add(category);
     }
     listCategory = categoryList;
+    isLoadingCategory = false;
     //
     update();
   }
@@ -83,10 +106,13 @@ class HomeController extends GetxController {
   ///
   Future<void> getProductList() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('products').get();
+    listProducts.clear();
     for(var element in querySnapshot.docs){
       Products products = Products.fromMap(element.data() as Map<String,dynamic>);
       listProducts.add(products);
+
     }
+    print(listProducts.length.toString());
     update();
   }
   ///
@@ -142,9 +168,9 @@ class HomeController extends GetxController {
     if(IZIValidate.nullOrEmpty(value)){
       return;
     }
-    final controller  =   Get.find<DashBoardController>();
-    controller.curenIndex.value = 2;
-    controller.update();
+    // final controller  =   Get.find<DashBoardController>();
+    // controller.curenIndex.value = 2;
+    // controller.update();
    });
     
   }

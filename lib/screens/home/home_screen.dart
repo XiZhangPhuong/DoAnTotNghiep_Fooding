@@ -1,12 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:fooding_project/base_widget/custom_scrollbar_gridview.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
+import 'package:fooding_project/base_widget/izi_smart_refresher.dart';
 import 'package:fooding_project/base_widget/izi_text.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
-import 'package:fooding_project/model/category/category.dart';
+
 import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -39,16 +39,27 @@ class HomeScreenPage extends GetView<HomeController> {
                   // search
                   _searchView(),
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          // image slideshow
-                          _imageSlideShow(controller),
-                          // category
-                          _categoryFood(controller),
-                          // flash sale
-                          _flashSale(controller),
-                        ],
+                    child: IZISmartRefresher(
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      onLoading: () {
+                        controller.onLoading();
+                      },
+                      onRefresh: () {
+                       controller.onRefreshing();
+                      },
+                      refreshController: controller.refreshController,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            // image slideshow
+                            _imageSlideShow(controller),
+                            // category
+                            _categoryFood(controller),
+                            // flash sale
+                            _flashSale(controller),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -106,15 +117,15 @@ class HomeScreenPage extends GetView<HomeController> {
           Container(
             height: IZIDimensions.ONE_UNIT_SIZE * 400,
             color: ColorResources.WHITE,
-            child: 
-            ListView.builder(
+            child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemCount: controller.listProducts.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    controller.gotoDetailFood(controller.listProducts[index].id!);
+                    controller
+                        .gotoDetailFood(controller.listProducts[index].id!);
                   },
                   child: Card(
                     elevation: 1,
@@ -133,8 +144,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             borderRadius: BorderRadius.circular(
                                 IZIDimensions.BORDER_RADIUS_3X),
                             child: IZIImage(
-                              controller.listProducts[index].image
-                              !.first,
+                              controller.listProducts[index].image!.first,
                               height: IZIDimensions.ONE_UNIT_SIZE * 230,
                               width: IZIDimensions.ONE_UNIT_SIZE * 300,
                               fit: BoxFit.cover,
@@ -188,7 +198,9 @@ class HomeScreenPage extends GetView<HomeController> {
   ///
   /// Category Food
   ///
-  Widget _categoryFood(HomeController controller,) {
+  Widget _categoryFood(
+    HomeController controller,
+  ) {
     return Container(
       margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
       child: Column(
@@ -208,60 +220,59 @@ class HomeScreenPage extends GetView<HomeController> {
           ),
           SizedBox(
             height: IZIDimensions.iziSize.height * .34,
-            child: 
-            
-                CustomScrollbar(
-                  itemCount:controller.listCategory.length,
-                  alignment: Alignment.bottomCenter,
-                  thumbColor: Colors.red,
-                  strokeWidth:
-                      (IZIDimensions.iziSize.width * 0.246).ceilToDouble(),
-                  strokeHeight:
-                      (IZIDimensions.iziSize.width * 0.045).ceilToDouble(),
-                  scrollbarMargin: const EdgeInsets.only(bottom: 15),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
-                  child: (index) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  bottom: IZIDimensions.SPACE_SIZE_2X),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    IZIDimensions.BORDER_RADIUS_7X),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(
-                                    IZIDimensions.BORDER_RADIUS_7X),
-                                child: IZIImage(
-                                 controller.listCategory[index].thumnail!,
-                                  width: IZIDimensions.ONE_UNIT_SIZE * 90,
-                                  height: IZIDimensions.ONE_UNIT_SIZE * 90,
-                                  fit: BoxFit.fill,
+            child: controller.isLoadingCategory
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : CustomScrollbar(
+                    itemCount: controller.listCategory.length,
+                    alignment: Alignment.bottomCenter,
+                    thumbColor: Colors.red,
+                    strokeWidth:
+                        (IZIDimensions.iziSize.width * 0.246).ceilToDouble(),
+                    strokeHeight:
+                        (IZIDimensions.iziSize.width * 0.045).ceilToDouble(),
+                    scrollbarMargin: const EdgeInsets.only(bottom: 15),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
+                    child: (index) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    bottom: IZIDimensions.SPACE_SIZE_2X),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      IZIDimensions.BORDER_RADIUS_7X),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      IZIDimensions.BORDER_RADIUS_7X),
+                                  child: IZIImage(
+                                    controller.listCategory[index].thumnail!,
+                                    width: IZIDimensions.ONE_UNIT_SIZE * 90,
+                                    height: IZIDimensions.ONE_UNIT_SIZE * 90,
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          IZIText(
-                            text: controller.listCategory[index].name!,
-                            maxLine: 2,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Nunito',
-                              fontWeight: FontWeight.w600,
-                              fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                              color: const Color(0xff464647),
+                            IZIText(
+                              text: controller.listCategory[index].name!,
+                              maxLine: 2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Nunito',
+                                fontWeight: FontWeight.w600,
+                                fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                color: const Color(0xff464647),
+                              ),
                             ),
-                          ),
-                        ],
-                      )),
-            ),
-          
+                          ],
+                        )),
+          ),
         ],
       ),
     );

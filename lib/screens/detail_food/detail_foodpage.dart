@@ -189,7 +189,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
 
                                       // các món của cửa hàng
                                       Text(
-                                        'Có thể bạn thích',
+                                        'Các món của cửa hàng',
                                         style: TextStyle(
                                           color: ColorResources.BLACK,
                                           fontFamily: NUNITO,

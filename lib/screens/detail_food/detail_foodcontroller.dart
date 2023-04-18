@@ -66,7 +66,7 @@ class DetailFoodController extends GetxController {
     EasyLoading.show(status: "Đang cập nhật");
     IZIAlert().success(message: 'Thêm món ăn thành công');
     listProductsCard.add(products);
-      pushProductToFireStore(idUser,listProductsCard);
+    pushProductToFireStore(idUser, listProductsCard);
     EasyLoading.dismiss();
     update();
   }
@@ -83,22 +83,22 @@ class DetailFoodController extends GetxController {
   ///
   void gotoCard() {
     Get.back();
-    final data = Get.find<DashBoardController>();
-    data.curenIndex.value = 2;
+    final data = Get.find<BottomBarController>();
+    data.currentIndex.value = 2;
     data.update();
   }
 
   ///
   /// push product to firestore
   ///
-  Future<void> pushProductToFireStore(String userId,List<Products> listProduct)  async{
-    final cart = CartRquest(
-      idUser: userId,
-      listProduct: listProduct
-    );
-   final  CollectionReference collection_Cart = FirebaseFirestore.instance.collection("carts");
-   await collection_Cart.doc(cart.idUser!).set(cart.toMap());
+  Future<void> pushProductToFireStore(
+      String userId, List<Products> listProduct) async {
+    final cart = CartRquest(idUser: userId, listProduct: listProduct);
+    final CollectionReference collection_Cart =
+        FirebaseFirestore.instance.collection("carts");
+    await collection_Cart.doc(cart.idUser!).set(cart.toMap());
   }
+
   ///
   /// find product by id
   ///
@@ -133,14 +133,20 @@ class DetailFoodController extends GetxController {
             .collection('products')
             .where('idUser', isEqualTo: idStore)
             .get();
+     listProducts.clear();       
     if (querySnapshot.docs.isNotEmpty) {
       for (var element in querySnapshot.docs) {
         Products products = Products.fromMap(element.data());
-        listProducts.add(products);
+        if (products.id == idProduct) {
+          listProducts.insert(0, products);
+        } else {
+          listProducts.add(products);
+        }
       }
       update();
     }
   }
+
 
   ///
   /// get data cart
