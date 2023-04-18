@@ -1,9 +1,13 @@
 
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
-import 'package:fooding_project/screens/cart/cart_pages.dart';
+import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/model/cart/cart_request.dart';
+import 'package:fooding_project/model/product/products.dart';
+import 'package:fooding_project/routes/routes_path/dashboard_routes.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/screens/profile/profile_page.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 
@@ -19,12 +23,7 @@ class BottomBarController extends GetxController {
       'label': "Yêu thích",
       'icon': ImagesPath.icon_trangchu,
       'page': const HomeScreenPage(),
-    },
-    {
-      'label': "Giỏ hàng",
-      'icon': ImagesPath.icon_taikhoan,
-      'page': const CartPage(),
-    },
+    }, 
     {
       'label': "Tài khoản",
       'icon': ImagesPath.icon_taikhoan,
@@ -35,10 +34,14 @@ class BottomBarController extends GetxController {
   DateTime? currentBackPressTime;
   RxInt currentIndex = 0.obs;
   double sizeIcon = 24.0;
+  List<Products> listProductsCard = [];
+  String idUser = '';
 
   @override
   void onInit() {
     super.onInit();
+    idUser = sl.get<SharedPreferenceHelper>().getIdUser;
+    getCartList();
     if (Get.arguments != null) {
       if (Get.arguments.runtimeType == int) {
         currentIndex.value = Get.arguments as int;
@@ -54,6 +57,31 @@ class BottomBarController extends GetxController {
     update();
   }
 
+  
+  ///
+  /// get data cart
+  ///
+  Future<void> getCartList() async {
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('carts')
+            .where('idUser', isEqualTo:  idUser )
+            .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      for (var element in querySnapshot.docs) {
+        CartRquest cartRquest = CartRquest.fromMap(element.data());
+        listProductsCard = cartRquest.listProduct!;
+      }
+      update();
+    }
+  }
+ 
+ ///
+ /// gotoCart
+ ///
+ void gotoCart(){
+    Get.toNamed(DashBoardRoutes.CART);
+ }
   /// double back press
   Future<bool> onDoubleBack() {
     final DateTime now = DateTime.now();

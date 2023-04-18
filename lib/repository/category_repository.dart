@@ -76,8 +76,8 @@ List<Store> listStore = [];
       String productId = generateRandomString(20);
       Products products = Products(
           id: productId,
-          idUser: 'G5Ch5OysWV3mbCBpWhZs',
-          name: 'Cơm chiên trứng',
+          idUser: 'Gtm3gik9uSeexlQ4AUge',
+          name: 'Món ăn $i+1',
           image: listImageSlider,
           idCategory: 'LUtEDbvPYGye8cqkZZFG',
           description: 'Thơm ngon mời bạn ăn nha',

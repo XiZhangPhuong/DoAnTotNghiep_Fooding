@@ -22,7 +22,8 @@ class DetailFoodController extends GetxController {
   Products? productsModel;
   Store? userModel;
   List<Products> listProducts = [];
-  List<Products> listProductsCard = [];
+  
+  List<Products> listProductsCart = Get.find<BottomBarController>().listProductsCard;
   int quantity = 0;
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
 
@@ -53,7 +54,7 @@ class DetailFoodController extends GetxController {
     super.onInit();
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
-    getCartList();
+   // getCartList();
   }
 
   ///
@@ -65,8 +66,9 @@ class DetailFoodController extends GetxController {
     }
     EasyLoading.show(status: "Đang cập nhật");
     IZIAlert().success(message: 'Thêm món ăn thành công');
-    listProductsCard.add(products);
-    pushProductToFireStore(idUser, listProductsCard);
+    listProductsCart.add(products);
+    pushProductToFireStore(idUser, listProducts);
+    Get.find<BottomBarController>().update();
     EasyLoading.dismiss();
     update();
   }
@@ -133,7 +135,7 @@ class DetailFoodController extends GetxController {
             .collection('products')
             .where('idUser', isEqualTo: idStore)
             .get();
-     listProducts.clear();       
+    listProducts.clear();
     if (querySnapshot.docs.isNotEmpty) {
       for (var element in querySnapshot.docs) {
         Products products = Products.fromMap(element.data());
@@ -147,7 +149,6 @@ class DetailFoodController extends GetxController {
     }
   }
 
-
   ///
   /// get data cart
   ///
@@ -160,7 +161,7 @@ class DetailFoodController extends GetxController {
     if (querySnapshot.docs.isNotEmpty) {
       for (var element in querySnapshot.docs) {
         CartRquest cartRquest = CartRquest.fromMap(element.data());
-        listProductsCard = cartRquest.listProduct!;
+        listProductsCart = cartRquest.listProduct!;
       }
       update();
     }
@@ -189,7 +190,7 @@ class DetailFoodController extends GetxController {
   /// check id product add cart
   ///
   bool checkIdProduct(String idProduct) {
-    for (var i in listProductsCard) {
+    for (var i in listProductsCart) {
       if (i.id == idProduct) {
         return true;
       }

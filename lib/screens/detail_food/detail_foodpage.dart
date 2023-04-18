@@ -364,38 +364,37 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     );
   }
 
+  
+///
+/// floatting button cart
+///
   Widget _floattingButton(DetailFoodController controller) {
-    return FloatingActionButton(
+   return   controller.listProductsCart.isEmpty ?  Container() : 
+     FloatingActionButton(
         backgroundColor: ColorResources.WHITE,
         onPressed: () {
-          controller.gotoCard();
         },
-        child: Container(
-          child: controller.listProductsCard.isEmpty
-              ? Icon(
+        child: 
+             Badge(
+                badgeContent: Text(
+                  controller.listProductsCart.length.toString(),
+                  style: TextStyle(
+                    color: ColorResources.WHITE,
+                    fontFamily: NUNITO,
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+                  ),
+                ),
+                child: Icon(
                   Icons.shopping_cart,
                   size: IZIDimensions.ONE_UNIT_SIZE * 40,
                   color: ColorResources.RED,
-                )
-              : Badge(
-                  badgeContent: Text(
-                    controller.listProductsCard.length.toString(),
-                    style: TextStyle(
-                      color: ColorResources.WHITE,
-                      fontFamily: NUNITO,
-                      fontWeight: FontWeight.w600,
-                      fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.shopping_cart,
-                    size: IZIDimensions.ONE_UNIT_SIZE * 40,
-                    color: ColorResources.RED,
-                  ),
                 ),
-        ));
+              ));
   }
-
+///
+/// image slider show 
+///
   Widget _imageSlider(DetailFoodController controller) {
     return Stack(
       children: [

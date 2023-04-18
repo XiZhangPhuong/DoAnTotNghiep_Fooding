@@ -1,7 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:fooding_project/screens/cart/cart_binding.dart';
-import 'package:fooding_project/screens/cart/cart_pages.dart';
 import 'package:fooding_project/screens/payment/payment_binding.dart';
 import 'package:fooding_project/screens/payment/payment_page.dart';
 import 'package:get/get_navigation/get_navigation.dart';

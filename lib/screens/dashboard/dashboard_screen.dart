@@ -1,6 +1,8 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +13,7 @@ class BottomBarPage extends GetView<BottomBarController> {
         init: BottomBarController(),
         builder: (BottomBarController controller) => WillPopScope(
               child: Scaffold(
+                floatingActionButton: _floattingButton(controller),
                 backgroundColor: Colors.white,
                 body: Obx(() => controller.pages[controller.currentIndex.value]
                     ['page'] as Widget),
@@ -92,3 +95,35 @@ class BottomBarPage extends GetView<BottomBarController> {
     );
   }
 }
+
+
+///
+/// floatting button cart
+///
+  Widget _floattingButton(BottomBarController controller) {
+   return   controller.listProductsCard.isEmpty ?  Container() : 
+     FloatingActionButton(
+        backgroundColor: ColorResources.WHITE,
+        onPressed: (
+          
+        ) {
+          controller.gotoCart();
+        },
+        child: 
+             Badge(
+                badgeContent: Text(
+                  controller.listProductsCard.length.toString(),
+                  style: TextStyle(
+                    color: ColorResources.WHITE,
+                    fontFamily: NUNITO,
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+                  ),
+                ),
+                child: Icon(
+                  Icons.shopping_cart,
+                  size: IZIDimensions.ONE_UNIT_SIZE * 40,
+                  color: ColorResources.RED,
+                ),
+              ));
+  }
