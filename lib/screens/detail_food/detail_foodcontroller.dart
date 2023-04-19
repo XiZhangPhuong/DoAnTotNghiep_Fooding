@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
@@ -64,6 +65,10 @@ class DetailFoodController extends GetxController {
     if (checkIdProduct(products.id!)) {
       return;
     }
+    if(checkIdStore(products.idUser!)){
+      Get.dialog(chuyenTaiKhoan());
+      return ;
+    }
     EasyLoading.show(status: "Đang cập nhật");
     IZIAlert().success(message: 'Thêm món ăn thành công');
     listProductsCart.add(products);
@@ -73,6 +78,23 @@ class DetailFoodController extends GetxController {
     update();
   }
 
+  ///
+  /// showDialog if !idStore
+  ///
+Widget chuyenTaiKhoan() {
+    return DialogCustom(
+      description:
+          'Món ăn không cùng cửa hàng.Bạn có muốn thay thế không ?',
+      agree: 'Có',
+      cancel1: 'Không',
+      onTapConfirm: () {
+      FirebaseFirestore.instance.collection('carts').doc(idUser).delete();
+      },
+      onTapCancle: () {
+        Get.back();
+      },
+    );
+  }
   ///
   /// goto payment
   ///
@@ -96,11 +118,16 @@ class DetailFoodController extends GetxController {
   Future<void> pushProductToFireStore(
       String userId, List<Products> listProduct) async {
     final cart = CartRquest(idUser: userId, listProduct: listProduct);
-    final CollectionReference collection_Cart =
+    final CollectionReference collectionCart =
         FirebaseFirestore.instance.collection("carts");
-    await collection_Cart.doc(cart.idUser!).set(cart.toMap());
+    final cartDoc = await collectionCart.doc(userId).get();
+    if(cartDoc.exists){
+      await collectionCart.doc(cart.idUser!).update(cart.toMap());
+    }   
+    await collectionCart.doc(cart.idUser!).set(cart.toMap());
   }
 
+ 
   ///
   /// find product by id
   ///
@@ -149,23 +176,6 @@ class DetailFoodController extends GetxController {
     }
   }
 
-  ///
-  /// get data cart
-  ///
-  Future<void> getCartList() async {
-    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('carts')
-            .where('idUser', isEqualTo: idUser)
-            .get();
-    if (querySnapshot.docs.isNotEmpty) {
-      for (var element in querySnapshot.docs) {
-        CartRquest cartRquest = CartRquest.fromMap(element.data());
-        listProductsCart = cartRquest.listProduct!;
-      }
-      update();
-    }
-  }
 
   ///
   /// find address by idStore
@@ -198,6 +208,17 @@ class DetailFoodController extends GetxController {
     return false;
   }
 
+  ///
+  /// check idStore add cart
+  ///
+  bool checkIdStore(String idStore){
+    for(int i = 0;i<listProductsCart.length;i++){
+      if(idStore==listProductsCart[i].idUser!){
+        return true;
+      }
+    }
+    return false;
+  }
   ///
   /// on off store
   ///

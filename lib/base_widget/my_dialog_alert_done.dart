@@ -180,7 +180,7 @@ class DialogCustom extends StatelessWidget {
     this.imagesIcon,
     this.color,
     this.onTapConfirm,
-    this.onTapCancle,
+    this.onTapCancle, required String agree, required String cancel1,
   });
 
   @override
