@@ -8,8 +8,9 @@ class Products {
   String? idUser;
   String? name;
   List<dynamic>? image;
-  String? idCategory;
+  String? nameCategory;
   String? description;
+  int? quantity;
   int? price;
   int? sold;
   
@@ -18,8 +19,9 @@ class Products {
     this.idUser,
     this.name,
     this.image,
-    this.idCategory,
+    this.nameCategory,
     this.description,
+    this.quantity = 1,
     this.price,
     this.sold
   });
@@ -32,8 +34,9 @@ class Products {
       if (!IZIValidate.nullOrEmpty(idUser)) 'idUser': idUser,
       if (!IZIValidate.nullOrEmpty(name)) 'name': name,
       if (!IZIValidate.nullOrEmpty(image)) 'image': image,
-      if (!IZIValidate.nullOrEmpty(idCategory)) 'idCategory': idCategory,
+      if (!IZIValidate.nullOrEmpty(nameCategory)) 'nameCategory': nameCategory,
       if (!IZIValidate.nullOrEmpty(description)) 'description': description,
+      if (!IZIValidate.nullOrEmpty(quantity)) 'quantity': quantity,
       if (!IZIValidate.nullOrEmpty(price)) 'price': price,
       if (!IZIValidate.nullOrEmpty(sold)) 'sold': sold,
     };
@@ -47,9 +50,10 @@ class Products {
       image: map['image'] != null
           ? List<dynamic>.from((map['image'] as List<dynamic>))
           : null,
-      idCategory: map['idCategory'] != null ? map['idCategory'] as String : null,
+      nameCategory: map['nameCategory'] != null ? map['nameCategory'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
+          quantity :  map['quantity'] != null ? map['quantity'] as int : null,
       price: map['price'] != null ? map['price'] as int : null,
       sold: map['sold'] != null ? map['sold'] as int : null,
     );

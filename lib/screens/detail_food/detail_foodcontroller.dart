@@ -7,10 +7,12 @@ import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
+import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
 class DetailFoodController extends GetxController {
@@ -23,10 +25,13 @@ class DetailFoodController extends GetxController {
   Products? productsModel;
   Store? userModel;
   List<Products> listProducts = [];
-  
-  List<Products> listProductsCart = Get.find<BottomBarController>().listProductsCard;
+
+  List<Products> listProductsCart =
+      Get.find<BottomBarController>().listProductsCard;
   int quantity = 0;
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
+  final ProductsRepository _productsRepository =  GetIt.I.get<ProductsRepository>();
+  
 
   ///
   /// click favorite
@@ -55,7 +60,7 @@ class DetailFoodController extends GetxController {
     super.onInit();
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
-   // getCartList();
+    // getCartList();
   }
 
   ///
@@ -65,9 +70,9 @@ class DetailFoodController extends GetxController {
     if (checkIdProduct(products.id!)) {
       return;
     }
-    if(checkIdStore(products.idUser!)){
-      Get.dialog(chuyenTaiKhoan());
-      return ;
+    if (checkIdStore(products.idUser!)) {
+      Get.dialog(showDialog(idUser,products));
+      return;
     }
     EasyLoading.show(status: "Đang cập nhật");
     IZIAlert().success(message: 'Thêm món ăn thành công');
@@ -81,20 +86,27 @@ class DetailFoodController extends GetxController {
   ///
   /// showDialog if !idStore
   ///
-Widget chuyenTaiKhoan() {
+  Widget showDialog(String id,Products products){
     return DialogCustom(
-      description:
-          'Món ăn không cùng cửa hàng.Bạn có muốn thay thế không ?',
+      description: 'Món ăn không cùng cửa hàng.Bạn có muốn thay thế không ?',
       agree: 'Có',
       cancel1: 'Không',
       onTapConfirm: () {
-      FirebaseFirestore.instance.collection('carts').doc(idUser).delete();
+        _productsRepository.deleteCartByUserId(id);
+        IZIAlert().success(message: 'Thay thế cửa hàng thành công');
+        Get.back();
+        listProductsCart.clear();
+        listProductsCart.add(products);
+        pushProductToFireStore(idUser,listProductsCart);
+        Get.find<BottomBarController>().update();
+        update();
       },
       onTapCancle: () {
         Get.back();
       },
     );
   }
+
   ///
   /// goto payment
   ///
@@ -121,16 +133,15 @@ Widget chuyenTaiKhoan() {
     final CollectionReference collectionCart =
         FirebaseFirestore.instance.collection("carts");
     final cartDoc = await collectionCart.doc(userId).get();
-    if(cartDoc.exists){
+    if (cartDoc.exists) {
       await collectionCart.doc(cart.idUser!).update(cart.toMap());
-    }   
+    }
     await collectionCart.doc(cart.idUser!).set(cart.toMap());
   }
 
- 
   ///
   /// find product by id
-  ///
+  /// 
   Future<void> findProductByID(String idProduct) async {
     final QuerySnapshot<Map<String, dynamic>> querySnapshot =
         await FirebaseFirestore.instance
@@ -176,7 +187,6 @@ Widget chuyenTaiKhoan() {
     }
   }
 
-
   ///
   /// find address by idStore
   ///
@@ -211,14 +221,15 @@ Widget chuyenTaiKhoan() {
   ///
   /// check idStore add cart
   ///
-  bool checkIdStore(String idStore){
-    for(int i = 0;i<listProductsCart.length;i++){
-      if(idStore==listProductsCart[i].idUser!){
+  bool checkIdStore(String idStore) {
+    for (int i = 0; i < listProductsCart.length; i++) {
+      if (idStore != listProductsCart[i].idUser!) {
         return true;
       }
     }
     return false;
   }
+
   ///
   /// on off store
   ///

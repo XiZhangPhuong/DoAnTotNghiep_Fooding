@@ -65,7 +65,7 @@ class HomeController extends GetxController {
      getProductList();
      getCategoryList();
      refreshController.refreshCompleted();
-    refreshController.loadComplete();
+     refreshController.loadComplete();
 
   }
 
@@ -76,6 +76,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+   // _categoryRepository.pushDataProduct();
     getCategoryList();
     _getCurrentLocation();
     getProductList();

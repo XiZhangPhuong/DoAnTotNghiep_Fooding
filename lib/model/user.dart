@@ -55,10 +55,10 @@ class User {
       phone: map['phone'] != null ? map['phone'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
       passWord: map['passWord'] != null ? map['passWord'] as String : null,
-      avatar: map['avatar'] != null ? map['avatar'] as String : null,
+      avatar: map['avatar'] != null ? map['avatar'] as String : 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/342070550_923272142250296_1881831047475036228_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=t2GycJz-I4cAX8Cxmx3&_nc_ht=scontent.fhan2-5.fna&oh=03_AdRG_tSsBdfsfSl1BEGps-rG7XVTwRXEaMzvB6tNb5Y8PA&oe=646789F0',
       typeUser: map['typeUser'] != null ? map['typeUser'] as String : null,
       isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
-      address: map['address'] != null ? map['address'] as String : null,
+      address: map['address'] != null ? map['address'] as String : '120 Lý Thái Tông',
       banner: map['banner'] != null ? map['banner'] as String : null,
       dateOfBirth: map['dateOfBirth'] != null
           ? map['dateOfBirth'] as String

@@ -77,15 +77,48 @@ List<Store> listStore = [];
       Products products = Products(
           id: productId,
           idUser: 'Gtm3gik9uSeexlQ4AUge',
-          name: 'Món ăn $i+1',
+          name: 'Món ăn ${i+1}',
           image: listImageSlider,
-          idCategory: 'LUtEDbvPYGye8cqkZZFG',
+          nameCategory: 'Cơm',
           description: 'Thơm ngon mời bạn ăn nha',
           price: 30000,
           sold: 15,    
           );
       listProducts.add(products);
-      await collectionProduct.doc(products.id!).set(products.toMap());
+    }
+
+    for (int i = 0; i < 3; i++) {
+      String productId = generateRandomString(20);
+      Products products = Products(
+          id: productId,
+          idUser: 'G5Ch5OysWV3mbCBpWhZs',
+          name: 'Món ăn ${i+1}',
+          image: listImageSlider,
+          nameCategory: 'Đồ uống',
+          description: 'Thơm ngon mời bạn ăn nha',
+          price: 40000,
+          sold: 15,    
+          );
+      listProducts.add(products);
+    }
+
+    for (int i = 0; i < 3; i++) {
+      String productId = generateRandomString(20);
+      Products products = Products(
+          id: productId,
+          idUser: 'A25KnRaprtKUDaCTv7RB',
+          name: 'Món ăn ${i+1}',
+          image: listImageSlider,
+          nameCategory: 'Ăn vặt',
+          description: 'Thơm ngon mời bạn ăn nha',
+          price: 50000,
+          sold: 15,    
+          );
+      listProducts.add(products);
+    }
+
+    for(var i in listProducts){
+      await collectionProduct.doc(i.id!).set(i.toMap());
     }
   }
 }
