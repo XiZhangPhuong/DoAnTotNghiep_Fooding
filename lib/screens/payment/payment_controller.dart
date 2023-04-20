@@ -1,36 +1,28 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_zalopay_sdk/flutter_zalopay_sdk.dart';
-import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../repo/payment.dart';
+import '../../repository/order_repository.dart';
 
 class PaymentController extends GetxController {
+  //
+  // Declare API
+  OrderResponsitory _orderResponsitory = GetIt.I.get<OrderResponsitory>();
+
+  // Init value.
   String typePayment = CASH;
-  List<String> listBenh = [
-    'Răng-Hàm-Mặt',
-    'Viêm xoan',
-    'Khám thai',
-    'Đau họng'
-  ];
-  String selectedBenh = "Răng-Hàm-Mặt";
   String zpTransToken = "", payResult = "";
+  bool isLoading = false;
 
-  void setSelectedBenh(String value) {
-    selectedBenh = value;
-    update();
-  }
-
-  List<String> listImageSlider = [
-    'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
-    'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-4898-1679481632?w=600&amp;type=o&quot',
-    'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-4747-1676348590?w=600&amp;type=o&quot'
-  ];
-
+  CartRquest cartResponse = CartRquest();
   @override
   void onInit() {
     super.onInit();
+    getAllCart();
   }
 
   ///
@@ -79,5 +71,24 @@ class PaymentController extends GetxController {
           break;
       }
     });
+  }
+
+  ///
+  /// Get all order.
+  ///
+  void getAllCart() {
+    isLoading = true;
+    _orderResponsitory.getCart(
+      (onSucces) {
+        if (!IZIValidate.nullOrEmpty(onSucces.listProduct)) {
+          cartResponse = onSucces;
+          isLoading = false;
+          update();
+        }
+      },
+      (e) {
+        print(e.toString());
+      },
+    );
   }
 }
