@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/repository/user_repository.dart';
@@ -34,10 +35,14 @@ class LoginController extends GetxController {
   Future<void> gotoDashBoard() async {
     if (validateLogin()) {
       EasyLoading.show(status: "Đang đăng nhập");
-      User? user = await _userRepository.getUserDetails(
-          phoneEditingController.text, passwordEditingController.text);
+      User? user =
+          await _userRepository.getUserDetails(phoneEditingController.text);
       if (user != null) {
-        if (user.typeUser != CUSTOMER) {
+        if (user.typeUser != CUSTOMER ||
+            !BCrypt.checkpw(
+              passwordEditingController.text,
+              user.passWord!,
+            )) {
           IZIAlert().error(
             message: "Tài khoản hoặc mật khẩu sai",
           );

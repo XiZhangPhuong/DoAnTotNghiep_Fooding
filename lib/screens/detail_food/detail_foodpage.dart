@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
@@ -376,7 +376,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
         onPressed: () {
         },
         child: 
-             Badge(
+             badge.Badge(
                 badgeContent: Text(
                   controller.listProductsCart.length.toString(),
                   style: TextStyle(
@@ -491,7 +491,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                     border:
                         Border.all(width: 1, color: ColorResources.colorMain)),
                 child: Center(
-                  child: Badge(
+                  child: badge.Badge(
                     badgeContent: Text(
                       '3',
                       style: TextStyle(

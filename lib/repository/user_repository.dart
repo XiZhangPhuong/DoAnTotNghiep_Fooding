@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'package:bcrypt/bcrypt.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
-import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
@@ -19,7 +19,10 @@ class UserRepository {
       model.User userRequest = model.User();
       userRequest.id = id;
       userRequest.phone = phone;
-      userRequest.passWord = password;
+      userRequest.passWord = BCrypt.hashpw(
+        password,
+        BCrypt.gensalt(),
+      );
       userRequest.avatar = "";
       userRequest.fullName = "";
       userRequest.email = "";
@@ -40,15 +43,10 @@ class UserRepository {
   ///
   Future<model.User?> getUserDetails(
     String phone,
-    String password,
   ) async {
     final querySnapshot = await _fireStore
         .collection("users")
         .where("phone", isEqualTo: phone)
-        .where(
-          "passWord",
-          isEqualTo: password,
-        )
         .get();
     if (querySnapshot.docs.isNotEmpty) {
       model.User user = model.User.fromMap(querySnapshot.docs[0].data());

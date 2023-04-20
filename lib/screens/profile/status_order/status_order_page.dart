@@ -30,6 +30,7 @@ class StatusOrderPage extends GetView {
                 colorText: const Color(0xffF8775C),
                 disbleColorText: ColorResources.BLACK,
               ),
+              Text("Test 1"),
             ],
           ),
         ),
