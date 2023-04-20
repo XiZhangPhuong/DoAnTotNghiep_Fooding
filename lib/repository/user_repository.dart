@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
@@ -42,16 +42,20 @@ class UserRepository {
     String phone,
     String password,
   ) async {
-    QuerySnapshot querySnapshot = await _fireStore.collection("users").get();
-
-    for (final element in querySnapshot.docs) {
-      model.User user =
-          model.User.fromMap(element.data() as Map<String, dynamic>);
-      if (user.phone == phone && user.passWord == password) {
-        return user;
-      }
+    final querySnapshot = await _fireStore
+        .collection("users")
+        .where("phone", isEqualTo: phone)
+        .where(
+          "passWord",
+          isEqualTo: password,
+        )
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      model.User user = model.User.fromMap(querySnapshot.docs[0].data());
+      return user;
+    } else {
+      return null;
     }
-    return null;
   }
 
   ///
@@ -60,14 +64,12 @@ class UserRepository {
   Future<bool> checPhone(
     String phone,
   ) async {
-    QuerySnapshot querySnapshot = await _fireStore.collection("users").get();
-
-    for (final element in querySnapshot.docs) {
-      model.User user =
-          model.User.fromMap(element.data() as Map<String, dynamic>);
-      if (user.phone == phone) {
-        return true;
-      }
+    final querySnapshot = await _fireStore
+        .collection("users")
+        .where("phone", isEqualTo: phone)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      return true;
     }
     return false;
   }

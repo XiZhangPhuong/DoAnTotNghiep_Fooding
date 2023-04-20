@@ -87,9 +87,7 @@ class _HomeZaloPayState extends State<HomeZaloPay> {
               });
           var result = await createOrder(amount);
           if (result != null) {
-            Navigator.pop(context);
             zpTransToken = result.zptranstoken!;
-            print("zpTransToken $zpTransToken'.");
             setState(() {
               zpTransToken = result.zptranstoken!;
               showResult = true;

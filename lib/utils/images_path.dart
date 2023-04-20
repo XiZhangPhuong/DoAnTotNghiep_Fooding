@@ -37,4 +37,10 @@ class ImagesPath {
   // payment
   static String icon_money = 'assets/icons/icon_money.png';
   static String icon_zalo = 'assets/icons/icon_zalo.png';
+
+  // profile.
+  static String iconPeding = 'assets/icons/iconPeding.png';
+  static String iconVerified = 'assets/icons/iconVerified.png';
+  static String iconCancel = 'assets/icons/iconCancel.png';
+  static String iconElevated = 'assets/icons/iconElevated.png';
 }

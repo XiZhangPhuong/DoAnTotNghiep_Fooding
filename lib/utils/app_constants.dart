@@ -30,13 +30,14 @@ String generateRandomString(int length) {
   );
 }
 
-// font 
-const  String NUNITO  = 'Nunito';
+// font
+const String NUNITO = 'Nunito';
 
 ///
 /// Muốn set ngôn ngữ tự động theo ngôn ngữ máy
 ///
-Locale localeResolutionCallback(Locale locale, Iterable<Locale> supportedLocales) {
+Locale localeResolutionCallback(
+    Locale locale, Iterable<Locale> supportedLocales) {
   if (locale == null) {
     return supportedLocales.first;
   }
@@ -93,3 +94,6 @@ const String FACEBOOK = 'FACEBOOK';
 
 const String SUCCESS = 'SUCCESS';
 
+const String CUSTOMER = 'CUSTOMER';
+const String CASH = "CASH";
+const String BANKING = "BANKING";
