@@ -3,10 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
-import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
-
 class UserRepository {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
