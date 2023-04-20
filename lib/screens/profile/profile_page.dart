@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:fooding_project/helper/izi_date.dart';
@@ -422,8 +423,8 @@ class ProfilePage extends GetView {
               height: IZIDimensions.ONE_UNIT_SIZE * 35,
               width: IZIDimensions.ONE_UNIT_SIZE * 35,
               child: Badge(
-                label: Text(count),
-                textColor: ColorResources.WHITE,
+                badgeContent: Text(count),
+                badgeColor: ColorResources.WHITE,
               ),
             ),
           )

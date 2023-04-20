@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/screens/cart/cart_pages.dart';
@@ -47,7 +48,7 @@ class DashBoardScreen extends GetView {
               ),
               BottomNavigationBarItem(
                 icon: Badge(
-                  label: Text(
+                  badgeContent: Text(
                     '3',
                     style: TextStyle(
                       fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
@@ -56,7 +57,7 @@ class DashBoardScreen extends GetView {
                       color: ColorResources.WHITE,
                     ),
                   ),
-                  textColor: ColorResources.colorMain,
+                  badgeColor: ColorResources.colorMain,
                   child: const Icon(Icons.shopping_cart),
                 ),
                 label: controller.pages[2]['label'],
