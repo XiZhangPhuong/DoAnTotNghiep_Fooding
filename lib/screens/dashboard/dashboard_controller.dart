@@ -1,30 +1,102 @@
-import 'package:fooding_project/screens/cart/cart_pages.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/model/cart/cart_request.dart';
+import 'package:fooding_project/model/product/products.dart';
+import 'package:fooding_project/routes/routes_path/dashboard_routes.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/screens/profile/profile_page.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 
-class DashBoardController extends GetxController {
-  RxInt curenIndex = 0.obs;
-  List<Map<String, dynamic>> pages = [
+
+class BottomBarController extends GetxController {
+  final List<Map<String, dynamic>> pages = [
     {
-      'label': "Trang chủ",
+      'label': "Home",
+      'icon': ImagesPath.icon_trangchu,
       'page': const HomeScreenPage(),
     },
     {
       'label': "Yêu thích",
-      'page': const CartPage(),
-    },
-    {
-      'label': "Giỏ hàng",
-      'page': const CartPage(),
-    },
+      'icon': ImagesPath.icon_trangchu,
+      'page': const HomeScreenPage(),
+    }, 
     {
       'label': "Tài khoản",
-      'page': const ProfilePage(),
+      'icon': ImagesPath.icon_taikhoan,
+      'page': const ProfilePage() ,
     },
   ];
-  void changePage(int index) {
-    curenIndex.value = index;
+
+  DateTime? currentBackPressTime;
+  RxInt currentIndex = 0.obs;
+  double sizeIcon = 24.0;
+  List<Products> listProductsCard = [];
+  String idUser = '';
+
+  @override
+  void onInit() {
+    super.onInit();
+    idUser = sl.get<SharedPreferenceHelper>().getIdUser;
+    getCartList();
+    if (Get.arguments != null) {
+      if (Get.arguments.runtimeType == int) {
+        currentIndex.value = Get.arguments as int;
+      }
+    }
+  }
+
+  ///
+  /// Change page
+  ///
+  void onChangedPage(int index) {
+    currentIndex.value = index;
     update();
+  }
+
+  
+  ///
+  /// get data cart
+  ///
+  Future<void> getCartList() async {
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('carts')
+            .where('idUser', isEqualTo:  idUser )
+            .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      for (var element in querySnapshot.docs) {
+        CartRquest cartRquest = CartRquest.fromMap(element.data());
+        listProductsCard = cartRquest.listProduct!;
+      }
+      update();
+    }
+  }
+ 
+ ///
+ /// gotoCart
+ ///
+ void gotoCart(){
+    Get.toNamed(DashBoardRoutes.CART);
+ }
+  /// double back press
+  Future<bool> onDoubleBack() {
+    final DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      IZIAlert().info(message: "Do you want exit the application.");
+      return Future.value(false);
+    }
+    return Future.value(true);
+  }
+
+  @override
+  void onClose() {
+    currentIndex.close();
+    super.onClose();
   }
 }
