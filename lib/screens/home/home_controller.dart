@@ -134,6 +134,7 @@ class HomeController extends GetxController {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      street = "Vui lòng bật vị trí";
       return Future.error('Location services are disabled.');
     }
 
@@ -166,7 +167,7 @@ class HomeController extends GetxController {
       update();
     }
   }
-  
+
   ///
   /// gotoDetailFood
   ///
@@ -184,5 +185,4 @@ class HomeController extends GetxController {
   ///
   /// push data product
   ///
-
 }

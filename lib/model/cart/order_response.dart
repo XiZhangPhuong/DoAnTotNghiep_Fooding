@@ -32,7 +32,8 @@ class OrderResponse {
     return <String, dynamic>{
       if (!IZIValidate.nullOrEmpty(id)) 'id': id,
       if (!IZIValidate.nullOrEmpty(idCustomer)) 'idCustomer': idCustomer,
-      if (!IZIValidate.nullOrEmpty(idProduct)) 'idProduct': idProduct,
+      if (!IZIValidate.nullOrEmpty(idProduct))
+        'idProduct': idProduct!.map((e) => e.toMap()).toList(),
       if (!IZIValidate.nullOrEmpty(shipPrice)) 'shipPrice': shipPrice,
       if (!IZIValidate.nullOrEmpty(totalPrice)) 'totalPrice': totalPrice,
       if (!IZIValidate.nullOrEmpty(typePayment)) 'typePayment': typePayment,

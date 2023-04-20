@@ -26,44 +26,47 @@ class PaymentPage extends GetView<PaymentController> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : Container(
-                  margin:
-                      EdgeInsets.only(bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
-                  padding: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
-                  child: Column(
-                    children: [
-                      //
-                      SizedBox(
-                        height: IZIDimensions.SPACE_SIZE_2X,
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              // Adress.
-                              _address(controller),
-
-                              // listview cart
-                              _listiCart(controller),
-
-                              // Phương thức thanh toán
-                              _phuongThucThanhToan(controller),
-
-                              // voucher của shop
-                              _voucherStore(controller),
-
-                              // tin nhắn cho tài xế
-                              // _messageForDriver(controller),
-
-                              // tổng tiền hàng
-                              _totalPriceOrder(controller),
-                            ],
+              : IZIValidate.nullOrEmpty(controller.cartResponse)
+                  ? Text("Chưa có món nao trong giỏ hàng!")
+                  : Container(
+                      margin: EdgeInsets.only(
+                          bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
+                      padding:
+                          EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
+                      child: Column(
+                        children: [
+                          //
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
                           ),
-                        ),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  // Adress.
+                                  _address(controller),
+
+                                  // listview cart
+                                  _listiCart(controller),
+
+                                  // Phương thức thanh toán
+                                  _phuongThucThanhToan(controller),
+
+                                  // voucher của shop
+                                  _voucherStore(controller),
+
+                                  // tin nhắn cho tài xế
+                                  // _messageForDriver(controller),
+
+                                  // tổng tiền hàng
+                                  _totalPriceOrder(controller),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
         );
       },
     );
@@ -266,7 +269,9 @@ class PaymentPage extends GetView<PaymentController> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            controller.clickDelete(index);
+                          },
                           child: IZIImage(
                             ImagesPath.icon_delete,
                             width: IZIDimensions.ONE_UNIT_SIZE * 35,
@@ -309,7 +314,9 @@ class PaymentPage extends GetView<PaymentController> {
                         ),
                         const Spacer(),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            controller.onClickMinus(index);
+                          },
                           child: Container(
                             height: IZIDimensions.ONE_UNIT_SIZE * 35,
                             width: IZIDimensions.ONE_UNIT_SIZE * 35,
@@ -344,7 +351,9 @@ class PaymentPage extends GetView<PaymentController> {
                           width: IZIDimensions.SPACE_SIZE_2X,
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            controller.onClickPlus(index);
+                          },
                           child: Container(
                             height: IZIDimensions.ONE_UNIT_SIZE * 35,
                             width: IZIDimensions.ONE_UNIT_SIZE * 35,
@@ -540,7 +549,7 @@ class PaymentPage extends GetView<PaymentController> {
                 ),
               ),
               Text(
-                '25.000 vnđ',
+                '${IZIPrice.currencyConverterVND(controller.tamtinh)}vnđ',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -558,7 +567,7 @@ class PaymentPage extends GetView<PaymentController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Phí vận chuyển',
+                'Phí vận chuyển(3 km)',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -596,7 +605,7 @@ class PaymentPage extends GetView<PaymentController> {
                 ),
               ),
               Text(
-                '- 12.000 vnđ',
+                '12.000 vnđ',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -652,7 +661,7 @@ Widget _address(PaymentController controller) {
                 Row(
                   children: [
                     Text(
-                      'Trương Đình Quyền ',
+                      '${IZIValidate.nullOrEmpty(controller.userResponse.fullName) ? "No Name" : controller.userResponse.fullName} ',
                       style: TextStyle(
                         color: ColorResources.GREY,
                         fontFamily: NUNITO,
@@ -662,7 +671,7 @@ Widget _address(PaymentController controller) {
                       ),
                     ),
                     Text(
-                      '| 0332854541',
+                      '| ${IZIValidate.nullOrEmpty(controller.userResponse.phone) ? "No Name" : controller.userResponse.phone}',
                       style: TextStyle(
                         color: ColorResources.GREY,
                         fontFamily: NUNITO,
