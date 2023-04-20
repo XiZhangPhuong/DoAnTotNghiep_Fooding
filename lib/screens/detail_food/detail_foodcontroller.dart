@@ -68,6 +68,7 @@ class DetailFoodController extends GetxController {
   ///
   Future<void> addCart(Products products) async {
     if (checkIdProduct(products.id!)) {
+      IZIAlert().error(message: 'Đã có trong giỏ hàng');
       return;
     }
     if (checkIdStore(products.idUser!)) {

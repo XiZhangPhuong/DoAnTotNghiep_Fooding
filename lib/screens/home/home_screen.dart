@@ -37,7 +37,7 @@ class HomeScreenPage extends GetView<HomeController> {
                     height: IZIDimensions.SPACE_SIZE_3X,
                   ),
                   // search
-                  _searchView(),
+                  _searchView(controller),
                   Expanded(
                     child: IZISmartRefresher(
                       enablePullDown: true,
@@ -302,9 +302,11 @@ class HomeScreenPage extends GetView<HomeController> {
   ///
   /// search view
   ///
-  Widget _searchView() {
+  Widget _searchView(HomeController controller) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        controller.gotoSearchPage();
+      },
       child: Container(
         padding: EdgeInsets.symmetric(
           vertical: IZIDimensions.SPACE_SIZE_3X,

@@ -350,6 +350,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                           );
                                         },
                                       )
+                                  
                                     ],
                                   ),
                                 ),

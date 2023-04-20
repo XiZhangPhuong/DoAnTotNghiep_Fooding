@@ -48,7 +48,7 @@ class HomeController extends GetxController {
     update();
   }
 
-   ///
+  ///
   /// On Refreshing.
   ///
   void onRefreshing() {
@@ -62,11 +62,10 @@ class HomeController extends GetxController {
   /// On loading.
   ///
   void onLoading() {
-     getProductList();
-     getCategoryList();
-     refreshController.refreshCompleted();
-     refreshController.loadComplete();
-
+    getProductList();
+    getCategoryList();
+    refreshController.refreshCompleted();
+    refreshController.loadComplete();
   }
 
   ///
@@ -76,10 +75,17 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-   // _categoryRepository.pushDataProduct();
+    // _categoryRepository.pushDataProduct();
     getCategoryList();
     _getCurrentLocation();
     getProductList();
+  }
+
+  ///
+  /// go to SearchPage
+  ///
+  void gotoSearchPage() {
+    Get.toNamed(HomeRoutes.SEARCH);
   }
 
   ///
@@ -90,7 +96,7 @@ class HomeController extends GetxController {
     List<Category> categoryList = [];
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('categorys').get();
-     
+
     for (var document in querySnapshot.docs) {
       Category category =
           Category.fromMap(document.data() as Map<String, dynamic>);
@@ -101,21 +107,23 @@ class HomeController extends GetxController {
     //
     update();
   }
-  
+
   ///
   /// get data products
   ///
   Future<void> getProductList() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('products').get();
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('products').get();
     listProducts.clear();
-    for(var element in querySnapshot.docs){
-      Products products = Products.fromMap(element.data() as Map<String,dynamic>);
+    for (var element in querySnapshot.docs) {
+      Products products =
+          Products.fromMap(element.data() as Map<String, dynamic>);
       listProducts.add(products);
-
     }
     print(listProducts.length.toString());
     update();
   }
+
   ///
   /// Get current
   ///
@@ -159,21 +167,18 @@ class HomeController extends GetxController {
     }
   }
 
- 
-
   ///
   /// gotoDetailFood
   ///
-  void gotoDetailFood(String id)  {
-   Get.toNamed(HomeRoutes.DETAIL_FOOD, arguments: id)?.then((value) {
-    if(IZIValidate.nullOrEmpty(value)){
-      return;
-    }
-    // final controller  =   Get.find<DashBoardController>();
-    // controller.curenIndex.value = 2;
-    // controller.update();
-   });
-    
+  void gotoDetailFood(String id) {
+    Get.toNamed(HomeRoutes.DETAIL_FOOD, arguments: id)?.then((value) {
+      if (IZIValidate.nullOrEmpty(value)) {
+        return;
+      }
+      // final controller  =   Get.find<DashBoardController>();
+      // controller.curenIndex.value = 2;
+      // controller.update();
+    });
   }
 
   ///
