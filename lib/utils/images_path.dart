@@ -4,7 +4,9 @@ class ImagesPath {
   //
   // Logo application path.
   static String logoApp = 'assets/images/logo_app.png';
-
+  // bottombar
+   static String icon_trangchu = 'assets/icons/icon_trangchu.png';
+   static String icon_taikhoan = 'assets/icons/icon_taikhoan.png';
   // Alert.
   static String successAlert = 'assets/icons/success.svg';
   static String helpAlert = 'assets/icons/help.svg';
