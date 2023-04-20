@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
@@ -110,7 +110,7 @@ class BottomBarPage extends GetView<BottomBarController> {
           controller.gotoCart();
         },
         child: 
-             Badge(
+             badge.Badge(
                 badgeContent: Text(
                   controller.listProductsCard.length.toString(),
                   style: TextStyle(

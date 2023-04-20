@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/user_repository.dart';
@@ -51,7 +52,10 @@ class ResetPasswordController extends GetxController {
     if (validateSingup()) {
       try {
         User user = User();
-        user.passWord = passwordEditingController.text;
+        user.passWord = BCrypt.hashpw(
+          passwordEditingController.text,
+          BCrypt.gensalt(),
+        );
         await _userRepository.updateUser(
           user,
           Get.arguments as String,

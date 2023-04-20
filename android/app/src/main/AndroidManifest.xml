@@ -1,17 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.fooding_project">
 
-<<<<<<< HEAD
-     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-=======
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
->>>>>>> c3a5f28a6ac821bb00d2f9986060e4a92fe6441e
    <application
         android:label="fooding_project"
         android:name="${applicationName}"
