@@ -174,7 +174,6 @@ class DetailFoodController extends GetxController {
       // ignore: avoid_print
       print(productsModel!.toMap());
       update();
-      print
     }
   }
 
