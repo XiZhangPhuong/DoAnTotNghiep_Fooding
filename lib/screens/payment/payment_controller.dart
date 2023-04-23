@@ -105,6 +105,7 @@ class PaymentController extends GetxController {
       },
       (e) {
         print(e.toString());
+        print("hihi");
       },
     );
   }
