@@ -49,7 +49,9 @@ class PaymentPage extends GetView<PaymentController> {
                                   _address(controller),
 
                                   // listview cart
-                                  _listiCart(controller),
+                                  if (!IZIValidate.nullOrEmpty(
+                                      controller.cartResponse.listProduct))
+                                    _listiCart(controller),
 
                                   // Phương thức thanh toán
                                   _phuongThucThanhToan(controller),
@@ -429,7 +431,7 @@ class PaymentPage extends GetView<PaymentController> {
           ),
           GestureDetector(
             onTap: () {
-              controller.payWithZaloPay();
+              //controller.payWithZaloPay();
             },
             child: Container(
               color: ColorResources.colorMain,
