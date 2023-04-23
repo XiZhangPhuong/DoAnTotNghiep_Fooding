@@ -8,6 +8,7 @@ import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/repository/products_repository.dart';
+import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
@@ -18,6 +19,7 @@ import 'package:intl/intl.dart';
 class DetailFoodController extends GetxController {
   bool isCheckFavorite = false;
   bool isLoading = false;
+  bool isLoadingStore = false;
   int currentIndex = 0;
   String idProduct = "";
   String idStore = "";
@@ -40,6 +42,17 @@ class DetailFoodController extends GetxController {
     isCheckFavorite = !isCheckFavorite;
     update();
   }
+  ///
+  /// format  sold product
+  ///
+  String formatSold(int sales) {
+  if (sales >= 1000) {
+    double formattedSales = sales / 1000;
+    return '${formattedSales.toStringAsFixed(1)}k đã bán';
+  } else {
+    return '$sales đã bán';
+  }
+}
 
   ///
   /// change page slide show
@@ -156,15 +169,21 @@ class DetailFoodController extends GetxController {
       productsModel = products;
       idStore = productsModel!.idUser!;
       findAddress();
-      getProductList();
-      print(idStore);
+      getProductList();(idStore);
       isLoading = true;
       // ignore: avoid_print
       print(productsModel!.toMap());
       update();
+      print
     }
   }
 
+  ///
+  ///  go to store
+  ///
+   void gotoStore(String idStore){
+    Get.toNamed(DetailtFoodRoutes.STORE,arguments:  idStore);
+   }
   ///
   /// get data products
   ///
@@ -202,6 +221,7 @@ class DetailFoodController extends GetxController {
       userModel = user;
       // ignore: avoid_print1
       gettimeStore(user.openHour!, user.closeHour!);
+      isLoadingStore = true;
       print(userModel!.toMap());
       update();
     }

@@ -7,7 +7,7 @@ class ProductsRepository {
       FirebaseFirestore.instance.collection("products");
   CollectionReference collectionStore =
       FirebaseFirestore.instance.collection("users");
-
+   
   ///
   /// delete product
   ///
@@ -36,4 +36,21 @@ Future<void> deleteCartByUserId(String idUser) async {
   final cartRef = FirebaseFirestore.instance.collection('carts').doc(idUser);
   await cartRef.delete();
 }
+
+///
+  /// get data products filter name category
+  ///
+  Future<List<Products>> getProductList(String nameCategpry) async {
+    List<Products> listProducts  =  [];
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('products')
+        .where('nameCategory',isEqualTo: nameCategpry)
+        .get();
+    for (var element in querySnapshot.docs) {
+      Products products =
+          Products.fromMap(element.data() as Map<String, dynamic>);
+      listProducts.add(products);
+    }
+    return listProducts;
+  }
 }

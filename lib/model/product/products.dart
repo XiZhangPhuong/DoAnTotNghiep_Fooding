@@ -17,14 +17,14 @@ class Products {
   Products({
     this.id,
     this.idUser,
-    this.name,
-    this.image,
-    this.nameCategory,
-    this.description,
-    this.quantity = 1,
-    this.price,
-    this.sold
-  });
+      this.name,
+      this.image,
+      this.nameCategory,
+      this.description,
+      this.quantity = 1,
+      this.price,
+      this.sold
+    });
 
   
 

@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
@@ -19,7 +19,8 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     return GetBuilder(
       init: DetailFoodController(),
       builder: (DetailFoodController controller) {
-        return controller.isLoading == false
+        return controller.isLoading == false &&
+                controller.isLoadingStore == false
             ? const Center(
                 child: CircularProgressIndicator(),
               )
@@ -115,7 +116,8 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                             width: IZIDimensions.SPACE_SIZE_3X,
                                           ),
                                           Text(
-                                            '${controller.productsModel!.sold} đã bán',
+                                            controller.formatSold(controller
+                                                .productsModel!.sold!),
                                             style: TextStyle(
                                               color: ColorResources.BLACK,
                                               fontFamily: NUNITO,
@@ -187,6 +189,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                         child: const Divider(),
                                       ),
 
+                                      // infor store
+                                      _inforStore(controller),
+                                      const Divider(),
                                       // các món của cửa hàng
                                       Text(
                                         'Các món của cửa hàng',
@@ -260,7 +265,11 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                                 .SPACE_SIZE_1X,
                                                           ),
                                                           Text(
-                                                            '${controller.listProducts[index].sold!} đã bán',
+                                                            controller.formatSold(
+                                                                controller
+                                                                    .listProducts[
+                                                                        index]
+                                                                    .sold!),
                                                             style: TextStyle(
                                                               color:
                                                                   ColorResources
@@ -350,7 +359,6 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                           );
                                         },
                                       )
-                                  
                                     ],
                                   ),
                                 ),
@@ -365,37 +373,129 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     );
   }
 
-  
-///
-/// floatting button cart
-///
-  Widget _floattingButton(DetailFoodController controller) {
-   return   controller.listProductsCart.isEmpty ?  Container() : 
-     FloatingActionButton(
-        backgroundColor: ColorResources.WHITE,
-        onPressed: () {
-        },
-        child: 
-             Badge(
-                badgeContent: Text(
-                  controller.listProductsCart.length.toString(),
-                  style: TextStyle(
-                    color: ColorResources.WHITE,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w600,
-                    fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+  ///
+  /// infor store
+  ///
+  Widget _inforStore(DetailFoodController controller) {
+    return controller.isLoadingStore == false
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : GestureDetector(
+          onTap: () {
+            
+          },
+          child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: IZIDimensions.SPACE_SIZE_1X,
+              //  vertical: IZIDimensions.SPACE_SIZE_1X,
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: ColorResources.WHITE,
+                    backgroundImage: NetworkImage(
+                      IZIValidate.nullOrEmpty(controller.userModel!.avatar)
+                          ? controller.listImageSlider.first
+                          : controller.userModel!.avatar!,
+                    ),
                   ),
-                ),
-                child: Icon(
-                  Icons.shopping_cart,
-                  size: IZIDimensions.ONE_UNIT_SIZE * 40,
-                  color: ColorResources.RED,
-                ),
-              ));
+                  SizedBox(
+                    width: IZIDimensions.SPACE_SIZE_2X,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        IZIValidate.nullOrEmpty(controller.userModel!.fullName)
+                            ? 'Nhà hàng Bắc Phi'
+                            : controller.userModel!.fullName!,
+                        style: TextStyle(
+                          color: ColorResources.titleLogin,
+                          fontFamily: NUNITO,
+                          fontWeight: FontWeight.w600,
+                          fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                          overflow: TextOverflow.ellipsis
+                        ),
+                      ),
+                      Text(
+                        '${controller.listProducts.length} sản phẩm',
+                        style: TextStyle(
+                          color: ColorResources.BLACK,
+                          fontFamily: NUNITO,
+                          fontWeight: FontWeight.w600,
+                          fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  // view store
+                  GestureDetector(
+                    onTap:  () {
+                      controller.gotoStore(controller.userModel!.id!);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: IZIDimensions.SPACE_SIZE_1X,
+                        vertical: IZIDimensions.SPACE_SIZE_1X,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+                        border:
+                            Border.all(width: 1, color: ColorResources.colorMain),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Xem cửa hàng',
+                          style: TextStyle(
+                            color: ColorResources.colorMain,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        );
   }
-///
-/// image slider show 
-///
+
+  ///
+  /// floatting button cart
+  ///
+  Widget _floattingButton(DetailFoodController controller) {
+    return controller.listProductsCart.isEmpty
+        ? Container()
+        : FloatingActionButton(
+            backgroundColor: ColorResources.WHITE,
+            onPressed: () {},
+            child: badge.Badge(
+              badgeContent: Text(
+                controller.listProductsCart.length.toString(),
+                style: TextStyle(
+                  color: ColorResources.WHITE,
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w600,
+                  fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+                ),
+              ),
+              child: Icon(
+                Icons.shopping_cart,
+                size: IZIDimensions.ONE_UNIT_SIZE * 40,
+                color: ColorResources.RED,
+              ),
+            ));
+  }
+
+  ///
+  /// image slider show
+  ///
   Widget _imageSlider(DetailFoodController controller) {
     return Stack(
       children: [
@@ -491,9 +591,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                     border:
                         Border.all(width: 1, color: ColorResources.colorMain)),
                 child: Center(
-                  child: Badge(
+                  child: badge.Badge(
                     badgeContent: Text(
-                      '3',
+                      '0',
                       style: TextStyle(
                         fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                         fontWeight: FontWeight.w700,

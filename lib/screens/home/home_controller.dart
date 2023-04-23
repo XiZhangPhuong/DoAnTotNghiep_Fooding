@@ -84,8 +84,8 @@ class HomeController extends GetxController {
   ///
   /// go to SearchPage
   ///
-  void gotoSearchPage() {
-    Get.toNamed(HomeRoutes.SEARCH);
+  void gotoSearchPage(String name) {
+    Get.toNamed(HomeRoutes.SEARCH,arguments: name);
   }
 
   ///

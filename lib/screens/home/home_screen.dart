@@ -235,12 +235,14 @@ class HomeScreenPage extends GetView<HomeController> {
                     scrollbarMargin: const EdgeInsets.only(bottom: 15),
                     padding: EdgeInsets.symmetric(
                         horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
-                    child: (index) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: () {},
-                              child: Container(
+                    child: (index) => GestureDetector(
+                      onTap: () {
+                           controller.gotoSearchPage(controller.listCategory[index].name!);
+                      },
+                      child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
                                 margin: EdgeInsets.only(
                                     bottom: IZIDimensions.SPACE_SIZE_2X),
                                 decoration: BoxDecoration(
@@ -258,20 +260,20 @@ class HomeScreenPage extends GetView<HomeController> {
                                   ),
                                 ),
                               ),
-                            ),
-                            IZIText(
-                              text: controller.listCategory[index].name!,
-                              maxLine: 2,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Nunito',
-                                fontWeight: FontWeight.w600,
-                                fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                                color: const Color(0xff464647),
+                              IZIText(
+                                text: controller.listCategory[index].name!,
+                                maxLine: 2,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                  color: const Color(0xff464647),
+                                ),
                               ),
-                            ),
-                          ],
-                        )),
+                            ],
+                          ),
+                    )),
           ),
         ],
       ),
@@ -305,7 +307,7 @@ class HomeScreenPage extends GetView<HomeController> {
   Widget _searchView(HomeController controller) {
     return GestureDetector(
       onTap: () {
-        controller.gotoSearchPage();
+        controller.gotoSearchPage('');
       },
       child: Container(
         padding: EdgeInsets.symmetric(

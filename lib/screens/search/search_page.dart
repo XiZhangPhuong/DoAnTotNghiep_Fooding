@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/izi_input.dart';
+import 'package:fooding_project/base_widget/izi_loading_card.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
+import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/screens/search/search_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -15,167 +17,202 @@ class SearchPage extends GetView<SearchController> {
     return GetBuilder(
       init: SearchController(),
       builder: (SearchController controller) {
-        return Scaffold(
-          backgroundColor: ColorResources.BACK_GROUND,
-          body: GestureDetector(
-            onTap: () {},
-            child: SafeArea(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: IZIDimensions.SPACE_SIZE_5X,
-                ),
-                child: Column(
-                  children: [
-                    // search
-                    _searchView(controller),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_3X,
-                    ),
-                    // find history
-                    // filter
-                    Padding(
+        return controller.isLoadingProduct == false
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Scaffold(
+                backgroundColor: ColorResources.BACK_GROUND,
+                body: GestureDetector(
+                  onTap: () {},
+                  child: SafeArea(
+                    child: Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: IZIDimensions.SPACE_SIZE_3X,
+                        vertical: IZIDimensions.SPACE_SIZE_5X,
                       ),
-                      child: SizedBox(
-                        height: IZIDimensions.ONE_UNIT_SIZE*60,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              // near you
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: IZIDimensions.SPACE_SIZE_2X,
-                                  vertical: IZIDimensions.SPACE_SIZE_1X*0.7,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      IZIDimensions.BORDER_RADIUS_4X),
-                                  color: ColorResources.WHITE,
-                                  border: Border.all(
-                                      width: 1, color: ColorResources.colorMain),
-                                ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Gần đây nhất',
-                                        style: TextStyle(
-                                          color: ColorResources.colorMain,
-                                          fontFamily: NUNITO,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: IZIDimensions.FONT_SIZE_H6,
-                                        ),
-                                      ),
-                                      SizedBox(width: IZIDimensions.SPACE_SIZE_1X,),
-                                      const RotatedBox(
-                                        quarterTurns: 1,
-                                        child: Icon(
-                                          Icons.keyboard_arrow_right_outlined,
-                                          color: ColorResources.colorMain,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: IZIDimensions.SPACE_SIZE_2X,),
-                              // name category
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: IZIDimensions.SPACE_SIZE_2X,
-                                  vertical: IZIDimensions.SPACE_SIZE_1X*0.7,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      IZIDimensions.BORDER_RADIUS_4X),
-                                  color: ColorResources.WHITE,
-                                  border: Border.all(
-                                      width: 1, color: ColorResources.colorMain),
-                                ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment:  MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        controller.isLoadDingNameCategory==false ? 'Đang tải' :                                  
-                                        controller.listNameCategory.first,
-                                        style: TextStyle(
-                                          color: ColorResources.colorMain,
-                                          fontFamily: NUNITO,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: IZIDimensions.FONT_SIZE_H6,
-                                        ),
-                                      ),
-                                      SizedBox(width: IZIDimensions.SPACE_SIZE_1X,),
-                                      const RotatedBox(
-                                        quarterTurns: 1,
-                                        child: Icon(
-                                          Icons.keyboard_arrow_right_outlined,
-                                          color: ColorResources.colorMain,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                                  SizedBox(width: IZIDimensions.SPACE_SIZE_2X,),
-                              // filter money
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: IZIDimensions.SPACE_SIZE_2X,
-                                  vertical: IZIDimensions.SPACE_SIZE_1X*0.7,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      IZIDimensions.BORDER_RADIUS_4X),
-                                  color: ColorResources.WHITE,
-                                  border: Border.all(
-                                      width: 1, color: ColorResources.colorMain),
-                                ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment:  MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Đang mở cửa',
-                                        style: TextStyle(
-                                          color: ColorResources.colorMain,
-                                          fontFamily: NUNITO,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: IZIDimensions.FONT_SIZE_H6,
-                                        ),
-                                      ),
-                                      SizedBox(width: IZIDimensions.SPACE_SIZE_1X,),
-                                      const RotatedBox(
-                                        quarterTurns: 1,
-                                        child: Icon(
-                                          Icons.keyboard_arrow_right_outlined,
-                                          color: ColorResources.colorMain,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                      child: Column(
+                        children: [
+                          // search
+                          _searchView(controller),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_3X,
                           ),
-                        ),
+                          // find history
+                          // filter
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: IZIDimensions.SPACE_SIZE_3X,
+                            ),
+                            child: SizedBox(
+                              height: IZIDimensions.ONE_UNIT_SIZE * 60,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    // near you
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: IZIDimensions.SPACE_SIZE_2X,
+                                        vertical:
+                                            IZIDimensions.SPACE_SIZE_1X * 0.7,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            IZIDimensions.BORDER_RADIUS_4X),
+                                        color: ColorResources.WHITE,
+                                        border: Border.all(
+                                            width: 1,
+                                            color: ColorResources.colorMain),
+                                      ),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Gần đây nhất',
+                                              style: TextStyle(
+                                                color: ColorResources.colorMain,
+                                                fontFamily: NUNITO,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize:
+                                                    IZIDimensions.FONT_SIZE_H6,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  IZIDimensions.SPACE_SIZE_1X,
+                                            ),
+                                            const RotatedBox(
+                                              quarterTurns: 1,
+                                              child: Icon(
+                                                Icons
+                                                    .keyboard_arrow_right_outlined,
+                                                color: ColorResources.colorMain,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: IZIDimensions.SPACE_SIZE_2X,
+                                    ),
+                                    // name category
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: IZIDimensions.SPACE_SIZE_2X,
+                                        vertical:
+                                            IZIDimensions.SPACE_SIZE_1X * 0.7,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            IZIDimensions.BORDER_RADIUS_4X),
+                                        color: ColorResources.WHITE,
+                                        border: Border.all(
+                                            width: 1,
+                                            color: ColorResources.colorMain),
+                                      ),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              controller.isLoadDingNameCategory ==
+                                                      false
+                                                  ? 'Đang tải'
+                                                  : controller
+                                                      .listNameCategory.first,
+                                              style: TextStyle(
+                                                color: ColorResources.colorMain,
+                                                fontFamily: NUNITO,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize:
+                                                    IZIDimensions.FONT_SIZE_H6,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  IZIDimensions.SPACE_SIZE_1X,
+                                            ),
+                                            const RotatedBox(
+                                              quarterTurns: 1,
+                                              child: Icon(
+                                                Icons
+                                                    .keyboard_arrow_right_outlined,
+                                                color: ColorResources.colorMain,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: IZIDimensions.SPACE_SIZE_2X,
+                                    ),
+                                    // filter money
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: IZIDimensions.SPACE_SIZE_2X,
+                                        vertical:
+                                            IZIDimensions.SPACE_SIZE_1X * 0.7,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            IZIDimensions.BORDER_RADIUS_4X),
+                                        color: ColorResources.WHITE,
+                                        border: Border.all(
+                                            width: 1,
+                                            color: ColorResources.colorMain),
+                                      ),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Đang mở cửa',
+                                              style: TextStyle(
+                                                color: ColorResources.colorMain,
+                                                fontFamily: NUNITO,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize:
+                                                    IZIDimensions.FONT_SIZE_H6,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  IZIDimensions.SPACE_SIZE_1X,
+                                            ),
+                                            const RotatedBox(
+                                              quarterTurns: 1,
+                                              child: Icon(
+                                                Icons
+                                                    .keyboard_arrow_right_outlined,
+                                                color: ColorResources.colorMain,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_3X,
+                          ),
+                          // listview search
+                          _listViewSearch(controller)
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_3X,
-                    ),
-                    // listview search
-                    _listViewSearch()
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-        );
+              );
       },
     );
   }
@@ -183,89 +220,117 @@ class SearchPage extends GetView<SearchController> {
   ///
   /// listview search
   ///
-  Widget _listViewSearch() {
+  Widget _listViewSearch(SearchController controller) {
     return Expanded(
       child: SingleChildScrollView(
         child: Visibility(
           visible: true,
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {},
-                child: Container(
-                  margin: EdgeInsets.only(
-                      top: IZIDimensions.SPACE_SIZE_1X * 0,
-                      bottom: IZIDimensions.SPACE_SIZE_2X,
-                      left: IZIDimensions.SPACE_SIZE_3X,
-                      right: IZIDimensions.SPACE_SIZE_3X),
-                  decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
-                    color: ColorResources.WHITE,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_3X),
+                child: Text(
+                  'Tìm thấy ${controller.listProducts.length} sản phẩm',
+                  style: TextStyle(
+                    color: ColorResources.BLACK,
+                    fontFamily: NUNITO,
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_H6,
                   ),
-                  child: Column(
-                    children: [
-                      Row(
+                ),
+              ),
+              SizedBox(
+                height: IZIDimensions.SPACE_SIZE_2X,
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: controller.listProducts.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      controller.gotoDetailFood(controller.listProducts[index].id!);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+                      margin: EdgeInsets.only(
+                          top: IZIDimensions.SPACE_SIZE_1X * 0,
+                          bottom: IZIDimensions.SPACE_SIZE_2X,
+                          left: IZIDimensions.SPACE_SIZE_3X,
+                          right: IZIDimensions.SPACE_SIZE_3X),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                            IZIDimensions.BORDER_RADIUS_3X),
+                        color: ColorResources.WHITE,
+                      ),
+                      child: Column(
                         children: [
-                          IZIImage(
-                            '',
-                            height: IZIDimensions.ONE_UNIT_SIZE * 180,
-                            width: IZIDimensions.ONE_UNIT_SIZE * 180,
-                            fit: BoxFit.cover,
-                          ),
-                          SizedBox(
-                            width: IZIDimensions.SPACE_SIZE_3X,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Com chien',
-                                  style: TextStyle(
-                                    color: ColorResources.BLACK,
-                                    fontFamily: NUNITO,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: IZIDimensions.FONT_SIZE_H5,
-                                  ),
+                          Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                    IZIDimensions.BORDER_RADIUS_3X),
+                                child: IZIImage(
+                                  controller.listProducts[index].image!.first,
+                                  height: IZIDimensions.ONE_UNIT_SIZE * 180,
+                                  width: IZIDimensions.ONE_UNIT_SIZE * 180,
+                                  fit: BoxFit.cover,
                                 ),
-                                SizedBox(
-                                  height: IZIDimensions.SPACE_SIZE_1X,
+                              ),
+                              SizedBox(
+                                width: IZIDimensions.SPACE_SIZE_3X,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      controller.listProducts[index].name!,
+                                      style: TextStyle(
+                                        color: ColorResources.BLACK,
+                                        fontFamily: NUNITO,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: IZIDimensions.FONT_SIZE_H5,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: IZIDimensions.SPACE_SIZE_1X,
+                                    ),
+                                    Text(
+                                      '${controller.formatSold(controller.listProducts[index].sold!)} | 1.2km',
+                                      style: TextStyle(
+                                        color: ColorResources.GREY,
+                                        fontFamily: NUNITO,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize:
+                                            IZIDimensions.FONT_SIZE_DEFAULT,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: IZIDimensions.SPACE_SIZE_1X,
+                                    ),
+                                    Text(
+                                      '${IZIPrice.currencyConverterVND(controller.listProducts[index].price!.toDouble())}đ',
+                                      style: TextStyle(
+                                        color: ColorResources.colorMain,
+                                        fontFamily: NUNITO,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  'đã bán | 1.2km',
-                                  style: TextStyle(
-                                    color: ColorResources.GREY,
-                                    fontFamily: NUNITO,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: IZIDimensions.SPACE_SIZE_1X,
-                                ),
-                                Text(
-                                  '6655656',
-                                  style: TextStyle(
-                                    color: ColorResources.colorMain,
-                                    fontFamily: NUNITO,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: IZIDimensions.FONT_SIZE_H6,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              );
-            },
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
