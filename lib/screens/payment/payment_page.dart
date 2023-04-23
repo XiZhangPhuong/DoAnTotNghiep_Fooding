@@ -11,6 +11,8 @@ import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 
+import '../../utils/id_get_builder.dart';
+
 class PaymentPage extends GetView<PaymentController> {
   const PaymentPage({super.key});
   @override
@@ -27,7 +29,7 @@ class PaymentPage extends GetView<PaymentController> {
                   child: CircularProgressIndicator(),
                 )
               : IZIValidate.nullOrEmpty(controller.cartResponse)
-                  ? Text("Chưa có món nao trong giỏ hàng!")
+                  ? Text("Chưa có món nào trong giỏ hàng!")
                   : Container(
                       margin: EdgeInsets.only(
                           bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
@@ -335,18 +337,22 @@ class PaymentPage extends GetView<PaymentController> {
                         SizedBox(
                           width: IZIDimensions.SPACE_SIZE_2X,
                         ),
-                        Text(
-                          IZIValidate.nullOrEmpty(controller
-                                  .cartResponse.listProduct![index].quantity)
-                              ? "Không xác định"
-                              : "x${controller.cartResponse.listProduct![index].quantity}",
-                          style: TextStyle(
-                            color: ColorResources.GREY,
-                            fontFamily: NUNITO,
-                            fontWeight: FontWeight.w400,
-                            fontSize: IZIDimensions.FONT_SIZE_H6,
-                          ),
-                        ),
+                        GetBuilder(
+                            id: ID_LOADING_CLICK_PAYMENT,
+                            builder: (PaymentController controller) {
+                              return Text(
+                                IZIValidate.nullOrEmpty(controller.cartResponse
+                                        .listProduct![index].quantity)
+                                    ? "Không xác định"
+                                    : "x${controller.cartResponse.listProduct![index].quantity}",
+                                style: TextStyle(
+                                  color: ColorResources.GREY,
+                                  fontFamily: NUNITO,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                                ),
+                              );
+                            }),
                         SizedBox(
                           width: IZIDimensions.SPACE_SIZE_2X,
                         ),
@@ -630,9 +636,13 @@ class PaymentPage extends GetView<PaymentController> {
 ///
 Widget _address(PaymentController controller) {
   return GestureDetector(
-    onTap: () {},
+    onTap: () {
+      controller.gotoLocation();
+    },
     child: Container(
-      height: IZIDimensions.iziSize.height * 0.14,
+      height: IZIValidate.nullOrEmpty(controller.userResponse.idLocation)
+          ? IZIDimensions.iziSize.height * 0.1
+          : IZIDimensions.iziSize.height * 0.14,
       width: IZIDimensions.iziSize.width,
       color: ColorResources.WHITE,
       padding: EdgeInsets.symmetric(
@@ -658,42 +668,51 @@ Widget _address(PaymentController controller) {
                 SizedBox(
                   height: IZIDimensions.SPACE_SIZE_1X,
                 ),
-                Row(
-                  children: [
-                    Text(
-                      '${IZIValidate.nullOrEmpty(controller.userResponse.fullName) ? "No Name" : controller.userResponse.fullName} ',
-                      style: TextStyle(
-                        color: ColorResources.GREY,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w400,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                IZIValidate.nullOrEmpty(controller.userResponse.idLocation)
+                    ? const Center(
+                        child: Text("Bạn có chọn địa chỉ giao hàng"),
+                      )
+                    : Row(
+                        children: [
+                          Text(
+                            '${IZIValidate.nullOrEmpty(controller.location.name) ? "No Name" : controller.location.name} ',
+                            style: TextStyle(
+                              color: ColorResources.GREY,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w400,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            ),
+                          ),
+                          Text(
+                            '| ${IZIValidate.nullOrEmpty(controller.location.phone) ? "No Name" : controller.location.phone}',
+                            style: TextStyle(
+                              color: ColorResources.GREY,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w400,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      '| ${IZIValidate.nullOrEmpty(controller.userResponse.phone) ? "No Name" : controller.userResponse.phone}',
-                      style: TextStyle(
-                        color: ColorResources.GREY,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w400,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                IZIValidate.nullOrEmpty(controller.userResponse.idLocation)
+                    ? const SizedBox()
+                    : Expanded(
+                        child: Text(
+                          IZIValidate.nullOrEmpty(
+                                  controller.userResponse.idLocation)
+                              ? "Bạn chưa chọn địa chỉ giao hàng"
+                              : controller.location.address!,
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: ColorResources.GREY,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w400,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Text(
-                    '112 Phạm Nhữ Tăng, Phường hòa khê, Quận Thanh khê, Đà Nẵng',
-                    maxLines: 2,
-                    style: TextStyle(
-                      color: ColorResources.GREY,
-                      fontFamily: NUNITO,
-                      fontWeight: FontWeight.w400,
-                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
