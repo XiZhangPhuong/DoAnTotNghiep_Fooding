@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/model/location/location_response.dart';
 import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
@@ -102,5 +103,63 @@ class UserRepository {
     TaskSnapshot snap = await uploadTask;
     String downloadUrl = await snap.ref.getDownloadURL();
     return downloadUrl;
+  }
+
+  ///
+  /// Add Location.
+  ///
+  Future<void> addLocation({
+    required LocationResponse request,
+    required Function onSucces,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      await _fireStore
+          .collection("users")
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .collection("locations")
+          .doc(request.id)
+          .set(request.toMap());
+      onSucces();
+    } catch (e) {
+      onError(e);
+    }
+  }
+  ///
+  /// Get all location.
+  ///
+  Future<void> getAllLocation({
+    required Function(List<LocationResponse> loctions) onSucces,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      final query = await _fireStore
+          .collection("users")
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .collection("locations")
+          .get();
+      onSucces(query.docs.map((e) => LocationResponse.fromMap(e.data())).toList());
+    } catch (e) {
+      onError(e);
+    }
+  }
+  ///
+  /// Find Location.
+  ///
+  Future<void> finLocation({
+    required String idLocation,
+    required Function(LocationResponse loctions) onSucces,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      final query = await _fireStore
+          .collection("users")
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .collection("locations").doc(idLocation)
+          .get();
+      onSucces(LocationResponse.fromMap(query.data()!));
+    } catch (e) {
+      onError(e);
+    }
   }
 }

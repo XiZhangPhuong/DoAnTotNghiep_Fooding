@@ -5,7 +5,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 
 class CartRoutes {
   static const PAYMENT = '/payment';
-
+  static const LOCATION = '/location';
   static List<GetPage> list = [
     GetPage(
       name: PAYMENT,
@@ -13,4 +13,5 @@ class CartRoutes {
       binding: PaymentBinding(),
     ),
   ];
+ 
 }

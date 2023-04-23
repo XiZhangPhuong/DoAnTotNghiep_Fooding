@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:fooding_project/base_widget/izi_drop_down_button.dart';
+
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
-import 'package:fooding_project/helper/izi_size.dart';
+import 'package:fooding_project/helper/izi_price.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
+
 import 'package:fooding_project/screens/payment/payment_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
+
+import '../../utils/id_get_builder.dart';
 
 class PaymentPage extends GetView<PaymentController> {
   const PaymentPage({super.key});
@@ -20,156 +24,51 @@ class PaymentPage extends GetView<PaymentController> {
           backgroundColor: ColorResources.BACK_GROUND,
           appBar: _appBar(),
           bottomSheet: _bottomSheet(controller),
-          body: Container(
-            margin: EdgeInsets.only(bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
-            padding: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
-            child: Column(
-              children: [
-                // filter province
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    // districts
-                    Container(
-                      width: IZIDimensions.ONE_UNIT_SIZE * 270,
-                      height: IZIDimensions.ONE_UNIT_SIZE * 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            IZIDimensions.BORDER_RADIUS_4X),
-                        border: Border.all(
-                            width: 0.4, color: ColorResources.colorMain),
-                        color: ColorResources.WHITE,
-                      ),
-                      child: Center(
-                        child: DropdownButton(
-                          underline: const SizedBox(),
-                          isExpanded: true,
-                          elevation: 0,
-                          value: controller.selectedBenh,
-                          icon: Container(
-                            padding: EdgeInsets.only(
-                                right: IZIDimensions.SPACE_SIZE_4X),
-                            child: RotatedBox(
-                              quarterTurns: 3,
-                              child: (Icon(
-                                Icons.arrow_back_ios_sharp,
-                                size: IZIDimensions.ONE_UNIT_SIZE * 25,
-                                color: ColorResources.BLACK,
-                              )),
+          body: controller.isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : IZIValidate.nullOrEmpty(controller.cartResponse)
+                  ? Text("Chưa có món nào trong giỏ hàng!")
+                  : Container(
+                      margin: EdgeInsets.only(
+                          bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
+                      padding:
+                          EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
+                      child: Column(
+                        children: [
+                          //
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
+                          ),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  // Adress.
+                                  _address(controller),
+
+                                  // listview cart
+                                  _listiCart(controller),
+
+                                  // Phương thức thanh toán
+                                  _phuongThucThanhToan(controller),
+
+                                  // voucher của shop
+                                  _voucherStore(controller),
+
+                                  // tin nhắn cho tài xế
+                                  // _messageForDriver(controller),
+
+                                  // tổng tiền hàng
+                                  _totalPriceOrder(controller),
+                                ],
+                              ),
                             ),
                           ),
-                          items: controller.listBenh.map((e) {
-                            return DropdownMenuItem(
-                              value: e,
-                              child: Container(
-                                // width: IZIDimensions.SPACE_SIZE_5X * 14,
-                                padding: EdgeInsets.only(
-                                    left: IZIDimensions.SPACE_SIZE_4X),
-                                child: Text(
-                                  e,
-                                  style: TextStyle(
-                                    color: ColorResources.BLACK,
-                                    fontFamily: NUNITO,
-                                    fontWeight: FontWeight.w600,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            controller.setSelectedBenh(value.toString());
-                          },
-                        ),
+                        ],
                       ),
                     ),
-                    // wards
-                    Container(
-                      width: IZIDimensions.ONE_UNIT_SIZE * 270,
-                      height: IZIDimensions.ONE_UNIT_SIZE * 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            IZIDimensions.BORDER_RADIUS_4X),
-                        border: Border.all(
-                            width: 0.4, color: ColorResources.colorMain),
-                        color: ColorResources.WHITE,
-                      ),
-                      child: Center(
-                        child: DropdownButton(
-                          underline: const SizedBox(),
-                          isExpanded: true,
-                          elevation: 0,
-                          value: controller.selectedBenh,
-                          icon: Container(
-                            padding: EdgeInsets.only(
-                                right: IZIDimensions.SPACE_SIZE_4X),
-                            child: RotatedBox(
-                              quarterTurns: 3,
-                              child: (Icon(
-                                Icons.arrow_back_ios_sharp,
-                                size: IZIDimensions.ONE_UNIT_SIZE * 25,
-                                color: ColorResources.BLACK,
-                              )),
-                            ),
-                          ),
-                          items: controller.listBenh.map((e) {
-                            return DropdownMenuItem(
-                              value: e,
-                              child: Container(
-                                // width: IZIDimensions.SPACE_SIZE_5X * 14,
-                                padding: EdgeInsets.only(
-                                    left: IZIDimensions.SPACE_SIZE_4X),
-                                child: Text(
-                                  e,
-                                  style: TextStyle(
-                                    color: ColorResources.BLACK,
-                                    fontFamily: NUNITO,
-                                    fontWeight: FontWeight.w600,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            controller.setSelectedBenh(value.toString());
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                //
-                SizedBox(
-                  height: IZIDimensions.SPACE_SIZE_2X,
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        // listview cart
-                        _listiCart(controller),
-
-                        // Phương thức thanh toán
-                        _phuongThucThanhToan(controller),
-
-                        // voucher của shop
-                        _voucherStore(controller),
-
-                        // tin nhắn cho tài xế
-                        // _messageForDriver(controller),
-
-                        // tổng tiền hàng
-                        _totalPriceOrder(controller),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         );
       },
     );
@@ -318,7 +217,7 @@ class PaymentPage extends GetView<PaymentController> {
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      itemCount: 3,
+      itemCount: controller.cartResponse.listProduct!.length,
       itemBuilder: (context, index) {
         return Container(
           padding: EdgeInsets.symmetric(
@@ -338,7 +237,11 @@ class PaymentPage extends GetView<PaymentController> {
                 borderRadius:
                     BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
                 child: IZIImage(
-                  controller.listImageSlider.first,
+                  IZIValidate.nullOrEmpty(
+                          controller.cartResponse.listProduct![index].image)
+                      ? ImagesPath.placeHolder
+                      : controller.cartResponse.listProduct![index].image![0]
+                          .toString(),
                   height: IZIDimensions.ONE_UNIT_SIZE * 150,
                   width: IZIDimensions.ONE_UNIT_SIZE * 150,
                 ),
@@ -350,20 +253,43 @@ class PaymentPage extends GetView<PaymentController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Mì sảo hải sản',
-                      style: TextStyle(
-                        color: ColorResources.titleLogin,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w600,
-                        fontSize: IZIDimensions.FONT_SIZE_H6,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            IZIValidate.nullOrEmpty(controller
+                                    .cartResponse.listProduct![index].name)
+                                ? "Không xác định"
+                                : controller
+                                    .cartResponse.listProduct![index].name!,
+                            style: TextStyle(
+                              color: ColorResources.titleLogin,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w600,
+                              fontSize: IZIDimensions.FONT_SIZE_H6,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            controller.clickDelete(index);
+                          },
+                          child: IZIImage(
+                            ImagesPath.icon_delete,
+                            width: IZIDimensions.ONE_UNIT_SIZE * 35,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: IZIDimensions.SPACE_SIZE_2X,
                     ),
                     Text(
-                      'Bún|Mì',
+                      IZIValidate.nullOrEmpty(controller
+                              .cartResponse.listProduct![index].nameCategory)
+                          ? "Không xác định"
+                          : controller
+                              .cartResponse.listProduct![index].nameCategory!,
                       style: TextStyle(
                         color: ColorResources.GREY,
                         fontFamily: NUNITO,
@@ -375,10 +301,12 @@ class PaymentPage extends GetView<PaymentController> {
                       height: IZIDimensions.SPACE_SIZE_2X,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '125.000 vnđ',
+                          IZIValidate.nullOrEmpty(controller
+                                  .cartResponse.listProduct![index].price)
+                              ? "Không xác định"
+                              : "${IZIPrice.currencyConverterVND(controller.cartResponse.listProduct![index].price!.toDouble())}vnđ",
                           style: TextStyle(
                             color: ColorResources.colorMain,
                             fontFamily: NUNITO,
@@ -386,13 +314,67 @@ class PaymentPage extends GetView<PaymentController> {
                             fontSize: IZIDimensions.FONT_SIZE_H6,
                           ),
                         ),
-                        Text(
-                          'x3',
-                          style: TextStyle(
-                            color: ColorResources.GREY,
-                            fontFamily: NUNITO,
-                            fontWeight: FontWeight.w400,
-                            fontSize: IZIDimensions.FONT_SIZE_H6,
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            controller.onClickMinus(index);
+                          },
+                          child: Container(
+                            height: IZIDimensions.ONE_UNIT_SIZE * 35,
+                            width: IZIDimensions.ONE_UNIT_SIZE * 35,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    IZIDimensions.BORDER_RADIUS_2X),
+                                border: Border.all(
+                                    width: 0.5, color: ColorResources.GREY)),
+                            child: Center(
+                                child: IZIImage(
+                              ImagesPath.icon_minus,
+                              width: IZIDimensions.ONE_UNIT_SIZE * 20,
+                            )),
+                          ),
+                        ),
+                        SizedBox(
+                          width: IZIDimensions.SPACE_SIZE_2X,
+                        ),
+                        GetBuilder(
+                            id: ID_LOADING_CLICK_PAYMENT,
+                            builder: (PaymentController controller) {
+                              return Text(
+                                IZIValidate.nullOrEmpty(controller.cartResponse
+                                        .listProduct![index].quantity)
+                                    ? "Không xác định"
+                                    : "x${controller.cartResponse.listProduct![index].quantity}",
+                                style: TextStyle(
+                                  color: ColorResources.GREY,
+                                  fontFamily: NUNITO,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                                ),
+                              );
+                            }),
+                        SizedBox(
+                          width: IZIDimensions.SPACE_SIZE_2X,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            controller.onClickPlus(index);
+                          },
+                          child: Container(
+                            height: IZIDimensions.ONE_UNIT_SIZE * 35,
+                            width: IZIDimensions.ONE_UNIT_SIZE * 35,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    IZIDimensions.BORDER_RADIUS_2X),
+                                border: Border.all(
+                                    width: 0.5, color: ColorResources.GREY)),
+                            child: Center(
+                              child: Icon(
+                                Icons.add,
+                                color: ColorResources.colorMain,
+                                size: IZIDimensions.ONE_UNIT_SIZE * 30,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -573,7 +555,7 @@ class PaymentPage extends GetView<PaymentController> {
                 ),
               ),
               Text(
-                '25.000 vnđ',
+                '${IZIPrice.currencyConverterVND(controller.tamtinh)}vnđ',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -591,7 +573,7 @@ class PaymentPage extends GetView<PaymentController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Phí vận chuyển',
+                'Phí vận chuyển(3 km)',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -629,7 +611,7 @@ class PaymentPage extends GetView<PaymentController> {
                 ),
               ),
               Text(
-                '- 12.000 vnđ',
+                '12.000 vnđ',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -643,35 +625,6 @@ class PaymentPage extends GetView<PaymentController> {
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_1X,
           ),
-          const Divider(
-            height: 1,
-            color: ColorResources.GREY,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Tổng thanh toán',
-                style: TextStyle(
-                  color: ColorResources.BLACK,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w400,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: IZIDimensions.FONT_SIZE_H6,
-                ),
-              ),
-              Text(
-                '550.000 vnđ',
-                style: TextStyle(
-                  color: ColorResources.colorMain,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: IZIDimensions.FONT_SIZE_H4,
-                ),
-              ),
-            ],
-          )
         ],
       ),
     );
@@ -679,53 +632,98 @@ class PaymentPage extends GetView<PaymentController> {
 }
 
 ///
-/// tin nhắn cho tài xế
+/// address.
 ///
-Widget _messageForDriver(PaymentController controller) {
-  return Column(
-    children: [
-      const Divider(
-        height: 1,
+Widget _address(PaymentController controller) {
+  return GestureDetector(
+    onTap: () {
+      controller.gotoLocation();
+    },
+    child: Container(
+      height: IZIValidate.nullOrEmpty(controller.userResponse.idLocation)
+          ? IZIDimensions.iziSize.height * 0.1
+          : IZIDimensions.iziSize.height * 0.14,
+      width: IZIDimensions.iziSize.width,
+      color: ColorResources.WHITE,
+      padding: EdgeInsets.symmetric(
+        vertical: IZIDimensions.SPACE_SIZE_2X,
+        horizontal: IZIDimensions.SPACE_SIZE_3X,
       ),
-      GestureDetector(
-        onTap: () {},
-        child: Container(
-          color: ColorResources.WHITE,
-          // margin: EdgeInsets.only(
-          //   top: IZIDimensions.SPACE_SIZE_1X,
-          // ),
-          padding: EdgeInsets.symmetric(
-            vertical: IZIDimensions.SPACE_SIZE_2X,
-            horizontal: IZIDimensions.SPACE_SIZE_3X,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Tin nhắn cho tài xế',
-                style: TextStyle(
-                  color: ColorResources.BLACK,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: IZIDimensions.FONT_SIZE_H6,
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Địa chỉ nhận hàng',
+                  style: TextStyle(
+                    color: ColorResources.BLACK,
+                    fontFamily: NUNITO,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                  ),
                 ),
-              ),
-              Text(
-                'Chọn hoặc nhập mã',
-                style: TextStyle(
-                  color: ColorResources.GREY,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w500,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                SizedBox(
+                  height: IZIDimensions.SPACE_SIZE_1X,
                 ),
-              ),
-            ],
+                IZIValidate.nullOrEmpty(controller.userResponse.idLocation)
+                    ? const Center(
+                        child: Text("Bạn có chọn địa chỉ giao hàng"),
+                      )
+                    : Row(
+                        children: [
+                          Text(
+                            '${IZIValidate.nullOrEmpty(controller.location.name) ? "No Name" : controller.location.name} ',
+                            style: TextStyle(
+                              color: ColorResources.GREY,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w400,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            ),
+                          ),
+                          Text(
+                            '| ${IZIValidate.nullOrEmpty(controller.location.phone) ? "No Name" : controller.location.phone}',
+                            style: TextStyle(
+                              color: ColorResources.GREY,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w400,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            ),
+                          ),
+                        ],
+                      ),
+                IZIValidate.nullOrEmpty(controller.userResponse.idLocation)
+                    ? const SizedBox()
+                    : Expanded(
+                        child: Text(
+                          IZIValidate.nullOrEmpty(
+                                  controller.userResponse.idLocation)
+                              ? "Bạn chưa chọn địa chỉ giao hàng"
+                              : controller.location.address!,
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: ColorResources.GREY,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w400,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                          ),
+                        ),
+                      ),
+              ],
+            ),
           ),
-        ),
+          Icon(
+            Icons.keyboard_arrow_right,
+            color: ColorResources.GREY,
+            size: IZIDimensions.ONE_UNIT_SIZE * 40,
+          )
+        ],
       ),
-    ],
+    ),
   );
 }
 
@@ -735,7 +733,7 @@ Widget _messageForDriver(PaymentController controller) {
 AppBar _appBar() {
   return AppBar(
     backgroundColor: ColorResources.colorMain,
-    title: const Text('Trang thanh toán'),
+    title: const Text('Trang đặt hàng'),
     titleTextStyle: TextStyle(
       color: ColorResources.WHITE,
       fontFamily: NUNITO,

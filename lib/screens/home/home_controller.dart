@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/banner/banner.dart';
 import 'package:fooding_project/model/category/category.dart';
-import 'package:fooding_project/model/food/food.dart';
+
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/repository/category_repository.dart';
@@ -24,7 +24,7 @@ class HomeController extends GetxController {
   RefreshController refreshController = RefreshController();
   PageController pageController = PageController(initialPage: 0);
   List<Category> listCategory = [];
-  List<Food> listFood = [];
+
   List<Store> listStore = [];
   List<Products> listProducts = [];
   bool isLoadingCategory = true;
@@ -134,6 +134,7 @@ class HomeController extends GetxController {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      street = "Vui lòng bật vị trí";
       return Future.error('Location services are disabled.');
     }
 
@@ -184,5 +185,4 @@ class HomeController extends GetxController {
   ///
   /// push data product
   ///
-
 }
