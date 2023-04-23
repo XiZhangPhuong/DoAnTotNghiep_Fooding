@@ -95,10 +95,9 @@ class PaymentController extends GetxController {
     isLoading = true;
     _orderResponsitory.getCart(
       (onSucces) async {
-        if (!IZIValidate.nullOrEmpty(onSucces.listProduct)) {
-          cartResponse = onSucces;
-          isLoading = false;
-        }
+        cartResponse = onSucces;
+        isLoading = false;
+
         tamTinh();
         await findUser();
         await findLocation();
@@ -138,14 +137,13 @@ class PaymentController extends GetxController {
   /// Click minus.
   ///
   Future<void> onClickMinus(int index) async {
+    if (cartResponse.listProduct![index].quantity == 1) {
+      clickDelete(index);
+      return;
+    }
     EasyLoading.show(
       status: "Đang cập nhật dữ liệu",
     );
-    if (cartResponse.listProduct![index].quantity == 1) {
-      clickDelete(index);
-      EasyLoading.dismiss();
-      return;
-    }
     cartResponse.listProduct![index].quantity =
         cartResponse.listProduct![index].quantity! - 1;
     await _orderResponsitory.updateCart(
@@ -160,9 +158,6 @@ class PaymentController extends GetxController {
   /// Click delete.
   ///
   void clickDelete(int index) {
-    EasyLoading.show(
-      status: "Đang cập nhật dữ liệu",
-    );
     Get.dialog(DialogCustom(
       description: 'Bạn có muốn xóa món này không?',
       agree: 'Có',
@@ -170,7 +165,6 @@ class PaymentController extends GetxController {
       onTapConfirm: () async {
         cartResponse.listProduct!.removeAt(index);
         await _orderResponsitory.updateCart(cartRquest: cartResponse);
-        EasyLoading.dismiss();
         Get.back();
         tamTinh();
         update();
