@@ -28,8 +28,10 @@ class PaymentPage extends GetView<PaymentController> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : IZIValidate.nullOrEmpty(controller.cartResponse)
-                  ? Text("Chưa có món nào trong giỏ hàng!")
+              : IZIValidate.nullOrEmpty(controller.cartResponse) ||
+                      IZIValidate.nullOrEmpty(
+                          controller.cartResponse.listProduct)
+                  ? const Center(child: Text("Chưa có món nào trong giỏ hàng!"))
                   : Container(
                       margin: EdgeInsets.only(
                           bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
@@ -392,69 +394,72 @@ class PaymentPage extends GetView<PaymentController> {
   }
 
   Widget _bottomSheet(PaymentController controller) {
-    return SizedBox(
-      height: IZIDimensions.ONE_UNIT_SIZE * 80,
-      child: Row(
-        children: [
-          Flexible(
-            flex: 3,
-            child: Container(
-              color: ColorResources.WHITE,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Tổng thanh toán : ',
-                      style: TextStyle(
-                        color: ColorResources.BLACK,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w400,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                      ),
-                    ),
-                    Text(
-                      '125.000 vnđ',
-                      style: TextStyle(
-                        color: ColorResources.colorMain,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_H4,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              //controller.payWithZaloPay();
-            },
-            child: Container(
-              color: ColorResources.colorMain,
-              padding: EdgeInsets.symmetric(
-                horizontal: IZIDimensions.SPACE_SIZE_5X * 1.2,
-              ),
-              child: Center(
-                child: Text(
-                  'Đặt hàng',
-                  style: TextStyle(
+    return IZIValidate.nullOrEmpty(controller.cartResponse) ||
+            IZIValidate.nullOrEmpty(controller.cartResponse.listProduct)
+        ? const SizedBox()
+        : SizedBox(
+            height: IZIDimensions.ONE_UNIT_SIZE * 80,
+            child: Row(
+              children: [
+                Flexible(
+                  flex: 3,
+                  child: Container(
                     color: ColorResources.WHITE,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w600,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Tổng thanh toán : ',
+                            style: TextStyle(
+                              color: ColorResources.BLACK,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w400,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            ),
+                          ),
+                          Text(
+                            '125.000 vnđ',
+                            style: TextStyle(
+                              color: ColorResources.colorMain,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w600,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: IZIDimensions.FONT_SIZE_H4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                GestureDetector(
+                  onTap: () {
+                    //controller.payWithZaloPay();
+                  },
+                  child: Container(
+                    color: ColorResources.colorMain,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: IZIDimensions.SPACE_SIZE_5X * 1.2,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Đặt hàng',
+                        style: TextStyle(
+                          color: ColorResources.WHITE,
+                          fontFamily: NUNITO,
+                          fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: IZIDimensions.FONT_SIZE_H6,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   ///

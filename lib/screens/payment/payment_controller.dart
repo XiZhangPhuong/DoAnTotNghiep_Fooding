@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zalopay_sdk/flutter_zalopay_sdk.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
@@ -10,9 +8,6 @@ import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
-
 import '../../base_widget/my_dialog_alert_done.dart';
 import '../../repo/payment.dart';
 import '../../repository/order_repository.dart';
@@ -105,7 +100,6 @@ class PaymentController extends GetxController {
       },
       (e) {
         print(e.toString());
-        print("hihi");
       },
     );
   }
