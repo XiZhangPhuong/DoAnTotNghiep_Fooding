@@ -4,12 +4,13 @@ import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
-import 'package:fooding_project/routes/routes_path/dashboard_routes.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/screens/profile/profile_page.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
+
+import '../../routes/routes_path/cart_routes.dart';
 
 
 class BottomBarController extends GetxController {
@@ -80,7 +81,7 @@ class BottomBarController extends GetxController {
  /// gotoCart
  ///
  void gotoCart(){
-    Get.toNamed(DashBoardRoutes.CART);
+    Get.toNamed(CartRoutes.PAYMENT);
  }
   /// double back press
   Future<bool> onDoubleBack() {
@@ -88,7 +89,7 @@ class BottomBarController extends GetxController {
     if (currentBackPressTime == null ||
         now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      IZIAlert().info(message: "Do you want exit the application.");
+      IZIAlert().info(message: "Nhấn lần nữa để thoát ứng dụng.");
       return Future.value(false);
     }
     return Future.value(true);

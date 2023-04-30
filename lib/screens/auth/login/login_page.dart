@@ -85,7 +85,7 @@ class LoginPage extends GetView {
           height: IZIDimensions.SPACE_SIZE_1X,
         ),
         Text(
-          'Chào mừng bạn đến với Booking',
+          'Chào mừng bạn đến với Fooding',
           style: TextStyle(
             color: ColorResources.titleLogin,
             fontSize: IZIDimensions.FONT_SIZE_SPAN,

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:fooding_project/model/product/products.dart';
 
 class ProductsRepository {
@@ -7,7 +8,7 @@ class ProductsRepository {
       FirebaseFirestore.instance.collection("products");
   CollectionReference collectionStore =
       FirebaseFirestore.instance.collection("users");
-   
+
   ///
   /// delete product
   ///
@@ -21,7 +22,7 @@ class ProductsRepository {
     });
     await cartRef.delete();
   }
-  
+
   ///
   /// add list cart
   ///
@@ -32,19 +33,19 @@ class ProductsRepository {
   }
 
   // Xóa document trong collection "Cart" theo "idUser"
-Future<void> deleteCartByUserId(String idUser) async {
-  final cartRef = FirebaseFirestore.instance.collection('carts').doc(idUser);
-  await cartRef.delete();
-}
+  Future<void> deleteCartByUserId(String idUser) async {
+    final cartRef = FirebaseFirestore.instance.collection('carts').doc(idUser);
+    await cartRef.delete();
+  }
 
-///
+  ///
   /// get data products filter name category
   ///
   Future<List<Products>> getProductList(String nameCategpry) async {
-    List<Products> listProducts  =  [];
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('products')
-        .where('nameCategory',isEqualTo: nameCategpry)
+    List<Products> listProducts = [];
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('products')
+        .where('nameCategory', isEqualTo: nameCategpry)
         .get();
     for (var element in querySnapshot.docs) {
       Products products =
@@ -53,4 +54,44 @@ Future<void> deleteCartByUserId(String idUser) async {
     }
     return listProducts;
   }
+
+  ///
+  /// get all list product
+  ///
+  Future<void> getAllListProduct({
+    required Function(List<Products> listProduct) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try{
+      QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('products').get();
+       onSucess(querySnapshot.docs.map((e) => Products.fromMap(e.data() as Map<String,dynamic>)).toList());
+    }catch(e){
+       onError(e);
+    }
+  }
+
+  ///
+  /// get list product paginate page = 1 , limit = 10
+  ///
+  Future<void> paginateProducts({
+    required Function(List<Products> listProduct) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try{
+      QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('products').limit(10).get();
+       onSucess(querySnapshot.docs.map((e) => Products.fromMap(e.data() as Map<String,dynamic>)).toList());
+    }catch(e){
+       onError(e);
+    }
+  }
+
+  
+
 }
+
+
+
+
+

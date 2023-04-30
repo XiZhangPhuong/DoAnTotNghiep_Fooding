@@ -1,5 +1,6 @@
 import 'package:fooding_project/repository/auth_repository.dart';
 import 'package:fooding_project/repository/category_repository.dart';
+import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
@@ -22,8 +23,11 @@ Future<void> init() async {
   sl.registerLazySingleton<UserRepository>(() => UserRepository());
 
   // Category Repository
-   sl.registerLazySingleton<CategoryRepository>(() => CategoryRepository());
+  sl.registerLazySingleton<CategoryRepository>(() => CategoryRepository());
 
-   // Product Repository
-   sl.registerLazySingleton<ProductsRepository>(() => ProductsRepository());
+  // Product Repository
+  sl.registerLazySingleton<ProductsRepository>(() => ProductsRepository());
+
+  // order repostory.
+  sl.registerLazySingleton<OrderResponsitory>(() => OrderResponsitory());
 }

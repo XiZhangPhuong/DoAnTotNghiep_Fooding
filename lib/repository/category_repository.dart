@@ -164,30 +164,46 @@ class CategoryRepository {
     List<Category> categorys = [];
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('categorys').get();
-    for(var doc in querySnapshot.docs){
-      Category category = Category.fromMap(doc.data() as Map<String,dynamic>);
+    for (var doc in querySnapshot.docs) {
+      Category category = Category.fromMap(doc.data() as Map<String, dynamic>);
       categorys.add(category);
     }
     return categorys;
   }
 
+  ///
+  /// get all categorys
+  ///
+  Future<void> all({
+    required Function(List<Category> data) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('categorys').get();
+      onSucess(querySnapshot.docs
+          .map((e) => Category.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+    } catch (e) {
+      onError(e);
+    }
+  }
 
-   ///
+  ///
   /// get list String name category
   ///
   Future<List<String>> getNameCategory() async {
     List<String> names = [];
-     List<Category> categorys = [];
+    List<Category> categorys = [];
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('categorys').get();
-    for(var doc in querySnapshot.docs){
-      Category category = Category.fromMap(doc.data() as Map<String,dynamic>);
+    for (var doc in querySnapshot.docs) {
+      Category category = Category.fromMap(doc.data() as Map<String, dynamic>);
       categorys.add(category);
     }
-    for( var i in categorys){
+    for (var i in categorys) {
       names.add(i.name!);
     }
     return names;
   }
-
 }

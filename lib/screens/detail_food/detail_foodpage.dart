@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
+import 'package:fooding_project/base_widget/p45_button.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
@@ -27,7 +28,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
             : Scaffold(
                 //  bottomSheet: _bottomSheet(),
                 // floating button
-                floatingActionButton: _floattingButton(controller),
+                floatingActionButton:  P45Button(title: '', onPressed: () {
+                  
+                },),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.startFloat,
                 backgroundColor: ColorResources.BACK_GROUND,
@@ -182,13 +185,8 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                           ),
                                         ],
                                       ),
-                                      SizedBox(
-                                        height:
-                                            IZIDimensions.ONE_UNIT_SIZE * 50,
-                                        width: IZIDimensions.iziSize.width,
-                                        child: const Divider(),
-                                      ),
-
+                                    
+                                      const Divider(),
                                       // infor store
                                       _inforStore(controller),
                                       const Divider(),
@@ -203,162 +201,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                         ),
                                       ),
 
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemCount:
-                                            controller.listProducts.length,
-                                        itemBuilder: (context, index) {
-                                          return Container(
-                                            margin: EdgeInsets.only(
-                                                top: IZIDimensions
-                                                    .SPACE_SIZE_1X),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    IZIImage(
-                                                      controller
-                                                          .listProducts[index]
-                                                          .image!
-                                                          .first,
-                                                      height: IZIDimensions
-                                                              .ONE_UNIT_SIZE *
-                                                          150,
-                                                      width: IZIDimensions
-                                                              .ONE_UNIT_SIZE *
-                                                          150,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                    SizedBox(
-                                                      width: IZIDimensions
-                                                          .SPACE_SIZE_3X,
-                                                    ),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            controller
-                                                                .listProducts[
-                                                                    index]
-                                                                .name!,
-                                                            style: TextStyle(
-                                                              color:
-                                                                  ColorResources
-                                                                      .BLACK,
-                                                              fontFamily:
-                                                                  NUNITO,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize:
-                                                                  IZIDimensions
-                                                                      .FONT_SIZE_H5,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: IZIDimensions
-                                                                .SPACE_SIZE_1X,
-                                                          ),
-                                                          Text(
-                                                            controller.formatSold(
-                                                                controller
-                                                                    .listProducts[
-                                                                        index]
-                                                                    .sold!),
-                                                            style: TextStyle(
-                                                              color:
-                                                                  ColorResources
-                                                                      .GREY,
-                                                              fontFamily:
-                                                                  NUNITO,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize:
-                                                                  IZIDimensions
-                                                                      .FONT_SIZE_DEFAULT,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: IZIDimensions
-                                                                .SPACE_SIZE_1X,
-                                                          ),
-                                                          Row(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .end,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '${IZIPrice.currencyConverterVND(controller.listProducts[index].price!.toDouble())}đ',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: ColorResources
-                                                                      .colorMain,
-                                                                  fontFamily:
-                                                                      NUNITO,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize:
-                                                                      IZIDimensions
-                                                                          .FONT_SIZE_H6,
-                                                                ),
-                                                              ),
-                                                              // click add to cart
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  controller.addCart(
-                                                                      controller
-                                                                              .listProducts[
-                                                                          index]);
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  padding: EdgeInsets.all(
-                                                                      IZIDimensions
-                                                                              .SPACE_SIZE_1X *
-                                                                          0.5),
-                                                                  decoration: BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(IZIDimensions
-                                                                              .BORDER_RADIUS_2X),
-                                                                      color: ColorResources
-                                                                          .colorMain),
-                                                                  child: Icon(
-                                                                    Icons.add,
-                                                                    color: ColorResources
-                                                                        .WHITE,
-                                                                    size: IZIDimensions
-                                                                            .ONE_UNIT_SIZE *
-                                                                        30,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: IZIDimensions
-                                                      .SPACE_SIZE_1X,
-                                                ),
-                                                const Divider(),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      )
+                                      // listview product in store
+
+                                      _listviewProducts(controller)
                                     ],
                                   ),
                                 ),
@@ -374,6 +219,113 @@ class DetailFoodPage extends GetView<DetailFoodController> {
   }
 
   ///
+  /// listview product in store
+  ///
+  Widget _listviewProducts(DetailFoodController controller) {
+    return Visibility(
+      visible: false,
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: controller.listProducts.length,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_1X),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    IZIImage(
+                      controller.listProducts[index].image!.first,
+                      height: IZIDimensions.ONE_UNIT_SIZE * 150,
+                      width: IZIDimensions.ONE_UNIT_SIZE * 150,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(
+                      width: IZIDimensions.SPACE_SIZE_3X,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            controller.listProducts[index].name!,
+                            style: TextStyle(
+                              color: ColorResources.BLACK,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w600,
+                              fontSize: IZIDimensions.FONT_SIZE_H5,
+                            ),
+                          ),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_1X,
+                          ),
+                          Text(
+                            controller.formatSold(
+                                controller.listProducts[index].sold!),
+                            style: TextStyle(
+                              color: ColorResources.GREY,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w600,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            ),
+                          ),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_1X,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${IZIPrice.currencyConverterVND(controller.listProducts[index].price!.toDouble())}đ',
+                                style: TextStyle(
+                                  color: ColorResources.colorMain,
+                                  fontFamily: NUNITO,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                                ),
+                              ),
+                              // click add to cart
+                              GestureDetector(
+                                onTap: () {
+                                  controller
+                                      .addCart(controller.listProducts[index]);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(
+                                      IZIDimensions.SPACE_SIZE_1X * 0.5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          IZIDimensions.BORDER_RADIUS_2X),
+                                      color: ColorResources.colorMain),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: ColorResources.WHITE,
+                                    size: IZIDimensions.ONE_UNIT_SIZE * 30,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: IZIDimensions.SPACE_SIZE_1X,
+                ),
+                const Divider(),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  ///
   /// infor store
   ///
   Widget _inforStore(DetailFoodController controller) {
@@ -382,13 +334,11 @@ class DetailFoodPage extends GetView<DetailFoodController> {
             child: CircularProgressIndicator(),
           )
         : GestureDetector(
-          onTap: () {
-            
-          },
-          child: Container(
+            onTap: () {},
+            child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: IZIDimensions.SPACE_SIZE_1X,
-              //  vertical: IZIDimensions.SPACE_SIZE_1X,
+                //  vertical: IZIDimensions.SPACE_SIZE_1X,
               ),
               child: Row(
                 children: [
@@ -412,12 +362,11 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                             ? 'Nhà hàng Bắc Phi'
                             : controller.userModel!.fullName!,
                         style: TextStyle(
-                          color: ColorResources.titleLogin,
-                          fontFamily: NUNITO,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                          overflow: TextOverflow.ellipsis
-                        ),
+                            color: ColorResources.titleLogin,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            overflow: TextOverflow.ellipsis),
                       ),
                       Text(
                         '${controller.listProducts.length} sản phẩm',
@@ -433,7 +382,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                   const Spacer(),
                   // view store
                   GestureDetector(
-                    onTap:  () {
+                    onTap: () {
                       controller.gotoStore(controller.userModel!.id!);
                     },
                     child: Container(
@@ -442,10 +391,10 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                         vertical: IZIDimensions.SPACE_SIZE_1X,
                       ),
                       decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
-                        border:
-                            Border.all(width: 1, color: ColorResources.colorMain),
+                        borderRadius: BorderRadius.circular(
+                            IZIDimensions.BORDER_RADIUS_3X),
+                        border: Border.all(
+                            width: 1, color: ColorResources.colorMain),
                       ),
                       child: Center(
                         child: Text(
@@ -463,8 +412,12 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                 ],
               ),
             ),
-        );
+          );
   }
+
+  ///
+  /// floatting add cart
+  ///
 
   ///
   /// floatting button cart
@@ -472,25 +425,28 @@ class DetailFoodPage extends GetView<DetailFoodController> {
   Widget _floattingButton(DetailFoodController controller) {
     return controller.listProductsCart.isEmpty
         ? Container()
-        : FloatingActionButton(
-            backgroundColor: ColorResources.WHITE,
-            onPressed: () {},
-            child: badge.Badge(
-              badgeContent: Text(
-                controller.listProductsCart.length.toString(),
-                style: TextStyle(
-                  color: ColorResources.WHITE,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w600,
-                  fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+        : Visibility(
+          visible: false,
+          child: FloatingActionButton(
+              backgroundColor: ColorResources.WHITE,
+              onPressed: () {},
+              child: badge.Badge(
+                badgeContent: Text(
+                  controller.listProductsCart.length.toString(),
+                  style: TextStyle(
+                    color: ColorResources.WHITE,
+                    fontFamily: NUNITO,
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+                  ),
                 ),
-              ),
-              child: Icon(
-                Icons.shopping_cart,
-                size: IZIDimensions.ONE_UNIT_SIZE * 40,
-                color: ColorResources.RED,
-              ),
-            ));
+                child: Icon(
+                  Icons.shopping_cart,
+                  size: IZIDimensions.ONE_UNIT_SIZE * 40,
+                  color: ColorResources.RED,
+                ),
+              )),
+        );
   }
 
   ///
