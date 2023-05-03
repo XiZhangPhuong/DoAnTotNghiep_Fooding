@@ -100,7 +100,8 @@ class LocationPage extends GetView {
                                     SizedBox(
                                       height: IZIDimensions.SPACE_SIZE_1X,
                                     ),
-                                    if (index != 5)
+                                    if (index !=
+                                        controller.locations.length - 1)
                                       Divider(
                                         height: 1,
                                         color: ColorResources.GREY
@@ -202,10 +203,15 @@ class LocationPage extends GetView {
         SizedBox(
           width: IZIDimensions.SPACE_SIZE_2X,
         ),
-        Text(
-          "Sửa",
-          style: TextStyle(
-            color: Colors.blue[400],
+        GestureDetector(
+          onTap: () {
+            controller.changeEditLocationPage(index);
+          },
+          child: Text(
+            "Sửa",
+            style: TextStyle(
+              color: Colors.blue[400],
+            ),
           ),
         )
       ],
@@ -264,15 +270,6 @@ class LocationPage extends GetView {
             ],
           ),
         ),
-        SizedBox(
-          width: IZIDimensions.SPACE_SIZE_2X,
-        ),
-        Text(
-          "Sửa",
-          style: TextStyle(
-            color: Colors.blue[400],
-          ),
-        )
       ],
     );
   }

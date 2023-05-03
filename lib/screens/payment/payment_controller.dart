@@ -2,16 +2,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zalopay_sdk/flutter_zalopay_sdk.dart';
+import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/location/location_response.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/utils/app_constants.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
+import 'package:google_maps_webservice/distance.dart';
 
 import '../../base_widget/my_dialog_alert_done.dart';
 import '../../repo/payment.dart';
@@ -33,7 +36,9 @@ class PaymentController extends GetxController {
   CartRquest cartResponse = CartRquest();
   User userResponse = User();
   LocationResponse location = LocationResponse();
-
+  double? distance;
+  double? priceShip;
+  //DistanceResponse? distance;
   @override
   void onInit() {
     super.onInit();
@@ -192,31 +197,11 @@ class PaymentController extends GetxController {
   /// To location.
   ///
   void gotoLocation() {
-    Get.toNamed(LocationRoutes.LOCATION);
-    // Navigator.push(
-    //   Get.context!,
-    //   MaterialPageRoute(
-    //     builder: (context) => PlacePicker(
-    //       apiKey: 'AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4',
-    //       region: 'VN',
-    //       onPlacePicked: (result) async {
-    //         print(
-    //             "quyen test ${result.formattedAddress} lat ${result.geometry?.location.lat} lon ${result.geometry?.location.lng}");
-    //         street = result.formattedAddress!;
-    //         print("quyen test 1 ${street.contains("550000")}");
-    //         Navigator.of(context).pop();
-    //         // var response = await Dio().get(
-    //         //     'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=40.659569,-73.933783&origins=40.6655101,-73.89188969999998&key=AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4');
-    //         // print(response);
-    //         update();
-    //       },
-    //       initialPosition: const LatLng(16.0746543, 108.2202951),
-    //       useCurrentLocation: true,
-    //       resizeToAvoidBottomInset:
-    //           false, // only works in page mode, less flickery, remove if wrong offsets
-    //     ),
-    //   ),
-    // );
+    Get.toNamed(LocationRoutes.LOCATION)?.then((value) async {
+      await findUser();
+      await findLocation();
+      update();
+    });
   }
 
   ///
@@ -226,13 +211,56 @@ class PaymentController extends GetxController {
     if (!IZIValidate.nullOrEmpty(userResponse.idLocation)) {
       await _userRepository.finLocation(
         idLocation: userResponse.idLocation!,
-        onSucces: (data) {
-          location = data;
+        onSucces: (data) async {
+          if (!IZIValidate.nullOrEmpty(data)) {
+            location = data;
+            List<String> listLatLong = location.latlong!.split(";");
+            var response = await Dio().get(
+                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=16.0718593,108.2206474&origins=${listLatLong[0]},${listLatLong[1]}&key=AIzaSyDyrOV7FyJZqv4i9sUOrmircCLfnDI5RaI');
+            // distanceLocation = DistanceResponse.fromJson(
+            //     response.data as Map<String, dynamic>);
+            print(response);
+            print(
+                "${listLatLong[0].toString()} ho ho${listLatLong[1].toString()}");
+            distance = (Geolocator.distanceBetween(
+                      16.0718593,
+                      108.2206474,
+                      double.parse(listLatLong[0].toString()),
+                      double.parse(listLatLong[1].toString()),
+                    ) /
+                    1000)
+                .toPrecision(2);
+            priceShip = distance! * 10000;
+          }
         },
         onError: (error) {
           print(error.toString());
         },
       );
     }
+  }
+
+  ///
+  /// On click pay.
+  ///
+  void onClickPay() async {
+    if (handleValidate()) {
+      print("123");
+    }
+  }
+
+  ///
+  /// Handle validate.
+  ///
+  bool handleValidate() {
+    if (IZIValidate.nullOrEmpty(distance)) {
+      IZIAlert().error(message: "Vui lòng chọn địa chỉ");
+      return false;
+    }
+    if (IZIValidate.nullOrEmpty(location)) {
+      IZIAlert().error(message: "Vui lòng chọn địa chỉ");
+      return false;
+    }
+    return true;
   }
 }

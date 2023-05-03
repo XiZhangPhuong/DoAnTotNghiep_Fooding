@@ -29,7 +29,7 @@ class PaymentPage extends GetView<PaymentController> {
                   child: CircularProgressIndicator(),
                 )
               : IZIValidate.nullOrEmpty(controller.cartResponse)
-                  ? Text("Chưa có món nào trong giỏ hàng!")
+                  ? const Text("Chưa có món nào trong giỏ hàng!")
                   : Container(
                       margin: EdgeInsets.only(
                           bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
@@ -431,7 +431,7 @@ class PaymentPage extends GetView<PaymentController> {
           ),
           GestureDetector(
             onTap: () {
-              //controller.payWithZaloPay();
+              controller.onClickPay();
             },
             child: Container(
               color: ColorResources.colorMain,
@@ -575,7 +575,8 @@ class PaymentPage extends GetView<PaymentController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Phí vận chuyển(3 km)',
+                //'Phí vận chuyển(${IZIValidate.nullOrEmpty(controller.distance) ? "unknown" : IZIValidate.nullOrEmpty(controller.distance!.rows) ? "Unknown" : controller.distance!.rows[0].elements[0].distance.text})',
+                'Phí vận chuyển(${IZIValidate.nullOrEmpty(controller.distance) ? "unknown" : controller.distance.toString()} km)',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -585,7 +586,9 @@ class PaymentPage extends GetView<PaymentController> {
                 ),
               ),
               Text(
-                '25.000 vnđ',
+                IZIValidate.nullOrEmpty(controller.priceShip)
+                    ? "Unknow"
+                    : '${IZIPrice.currencyConverterVND(controller.priceShip!)}vnđ',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,

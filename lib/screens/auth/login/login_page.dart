@@ -238,7 +238,7 @@ class LoginPage extends GetView {
               width: IZIDimensions.iziSize.width * 0.9,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: ColorResources.COLOR_BUTTON,
+                color: ColorResources.colorMain,
                 borderRadius: BorderRadius.circular(
                   IZIDimensions.SPACE_SIZE_4X,
                 ),

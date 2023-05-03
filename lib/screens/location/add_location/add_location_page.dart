@@ -143,7 +143,7 @@ class AddLocationPage extends StatelessWidget {
             ),
             Expanded(
               child: PlacePicker(
-                apiKey: 'AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4',
+                apiKey: 'AIzaSyCk48oso3yL0Lo3MJL40XE1vCZ--qHsT9E',
                 region: 'VN',
                 onPlacePicked: (result) async {
                   if (!IZIValidate.nullOrEmpty(result.formattedAddress) &&

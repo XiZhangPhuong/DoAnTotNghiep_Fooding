@@ -34,6 +34,16 @@ class LocationController extends GetxController {
   }
 
   ///
+  /// Change addd Location page.
+  ///
+  void changeEditLocationPage(int index) {
+    Get.toNamed(
+      LocationRoutes.EDITLOCATION,
+      arguments: locations[index].id,
+    )?.then((value) => getAllLocation());
+  }
+
+  ///
   /// Get user.
   ///
   Future<void> getUser() async {
