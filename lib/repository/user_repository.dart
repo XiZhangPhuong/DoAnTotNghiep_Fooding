@@ -209,4 +209,20 @@ class UserRepository {
       onError(e);
     }
   }
+  ///
+  /// Delete Location.
+  ///
+  Future<void> deleteLocation({required String id, required Function onSucces,required Function onError,}) async{
+        try {
+      final query = await _fireStore
+          .collection("users")
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .collection("locations")
+          .doc(id)
+          .delete();
+      onSucces();
+    } catch (e) {
+      onError(e);
+    }
+  }
 }

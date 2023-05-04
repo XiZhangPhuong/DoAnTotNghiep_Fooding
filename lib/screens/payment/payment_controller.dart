@@ -1,22 +1,23 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zalopay_sdk/flutter_zalopay_sdk.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/location/location_response.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/user_repository.dart';
+import 'package:fooding_project/routes/routes_path/cart_routes.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
-import 'package:google_maps_webservice/distance.dart';
-
+import 'package:uuid/uuid.dart';
 import '../../base_widget/my_dialog_alert_done.dart';
+import '../../model/order/order.dart';
 import '../../repo/payment.dart';
 import '../../repository/order_repository.dart';
 import '../../routes/routes_path/location_routes.dart';
@@ -37,8 +38,11 @@ class PaymentController extends GetxController {
   User userResponse = User();
   LocationResponse location = LocationResponse();
   double? distance;
-  double? priceShip;
-  //DistanceResponse? distance;
+  double priceShip = 0;
+  bool flagSpam = true;
+  double? myVourcher;
+
+  TextEditingController noteEditingController = TextEditingController();
   @override
   void onInit() {
     super.onInit();
@@ -64,8 +68,8 @@ class PaymentController extends GetxController {
   ///
   /// Zalo pay.
   ///
-  void payWithZaloPay() async {
-    int amount = int.parse('123453');
+  void payWithZaloPay(String price, OrderResponse order) async {
+    int amount = int.parse(price);
     if (amount < 1000 || amount > 1000000) {
       zpTransToken = "Invalid Amount";
     } else {
@@ -74,20 +78,38 @@ class PaymentController extends GetxController {
         zpTransToken = result.zptranstoken!;
       }
     }
-    FlutterZaloPaySdk.payOrder(zpToken: zpTransToken).listen((event) {
+    FlutterZaloPaySdk.payOrder(zpToken: zpTransToken).listen((event) async {
       switch (event) {
         case FlutterZaloPayStatus.cancelled:
           payResult = "User Huỷ Thanh Toán";
+          EasyLoading.dismiss();
+          IZIAlert().error(message: "Bạn đã hủy thanh toán");
           break;
         case FlutterZaloPayStatus.success:
           payResult = "Thanh toán thành công";
+          await _orderResponsitory.addOrder(
+            orderRequest: order,
+            onSucces: () async {
+              await _orderResponsitory.deleteCart();
+              flagSpam = true;
+            },
+            onError: (e) {
+              IZIAlert().error(message: e.toString());
+            },
+          );
           Get.back();
+          EasyLoading.dismiss();
+          IZIAlert().success(message: "Đặt hàng thành công");
           break;
         case FlutterZaloPayStatus.failed:
           payResult = "Thanh toán thất bại";
+          EasyLoading.dismiss();
+          IZIAlert().error(message: "Vui lòng thử lại sau");
           break;
         default:
           payResult = "Thanh toán thất bại";
+          EasyLoading.dismiss();
+          IZIAlert().error(message: "Vui lòng thử lại sau");
           break;
       }
     });
@@ -102,7 +124,6 @@ class PaymentController extends GetxController {
       (onSucces) async {
         cartResponse = onSucces;
         isLoading = false;
-
         tamTinh();
         await findUser();
         await findLocation();
@@ -110,7 +131,6 @@ class PaymentController extends GetxController {
       },
       (e) {
         print(e.toString());
-        print("hihi");
       },
     );
   }
@@ -170,10 +190,18 @@ class PaymentController extends GetxController {
       cancel1: 'Không',
       onTapConfirm: () async {
         cartResponse.listProduct!.removeAt(index);
-        await _orderResponsitory.updateCart(cartRquest: cartResponse);
-        Get.back();
-        tamTinh();
-        update();
+        if (cartResponse.listProduct!.isEmpty) {
+          await _orderResponsitory.deleteCart();
+          Get.back();
+          distance = null;
+          tamTinh();
+          update();
+        } else {
+          await _orderResponsitory.updateCart(cartRquest: cartResponse);
+          Get.back();
+          tamTinh();
+          update();
+        }
       },
       onTapCancle: () {
         Get.back();
@@ -215,13 +243,6 @@ class PaymentController extends GetxController {
           if (!IZIValidate.nullOrEmpty(data)) {
             location = data;
             List<String> listLatLong = location.latlong!.split(";");
-            var response = await Dio().get(
-                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=16.0718593,108.2206474&origins=${listLatLong[0]},${listLatLong[1]}&key=AIzaSyDyrOV7FyJZqv4i9sUOrmircCLfnDI5RaI');
-            // distanceLocation = DistanceResponse.fromJson(
-            //     response.data as Map<String, dynamic>);
-            print(response);
-            print(
-                "${listLatLong[0].toString()} ho ho${listLatLong[1].toString()}");
             distance = (Geolocator.distanceBetween(
                       16.0718593,
                       108.2206474,
@@ -245,7 +266,44 @@ class PaymentController extends GetxController {
   ///
   void onClickPay() async {
     if (handleValidate()) {
-      print("123");
+      if (flagSpam) {
+        flagSpam = false;
+        EasyLoading.show(status: "Đang cập nhật dữ liệu");
+        OrderResponse order = OrderResponse();
+        order.id = const Uuid().v1();
+        order.address = location.address;
+        order.phone = location.phone;
+        if (IZIValidate.nullOrEmpty(myVourcher)) {
+          order.discount = myVourcher.toString();
+        }
+        order.listProduct = cartResponse.listProduct;
+        order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
+        order.latLong = location.latlong;
+        order.note = noteEditingController.text;
+        order.shipPrice = priceShip.toString();
+        order.typePayment = typePayment;
+        order.timeOrder =
+            IZIDate.formatDate(DateTime.now(), format: "HH:mm dd/MM/yyyy");
+        order.statusOrder = "PENDING";
+        order.totalPrice = totalPay().toInt().toString();
+        if (typePayment == CASH) {
+          await _orderResponsitory.addOrder(
+            orderRequest: order,
+            onSucces: () async {
+              await _orderResponsitory.deleteCart();
+              flagSpam = true;
+            },
+            onError: (e) {
+              IZIAlert().error(message: e.toString());
+            },
+          );
+          IZIAlert().success(message: "Đặt hàng thành công");
+          EasyLoading.dismiss();
+          Get.back();
+        } else {
+          payWithZaloPay(totalPay().toInt().toString(), order);
+        }
+      }
     }
   }
 
@@ -262,5 +320,19 @@ class PaymentController extends GetxController {
       return false;
     }
     return true;
+  }
+
+  ///
+  /// Go to Voucher.
+  ///
+  void goToVoucher() {
+    Get.toNamed(CartRoutes.VOUCHER);
+  }
+
+  ///
+  /// Total Pay.
+  ///
+  double totalPay() {
+    return priceShip + tamtinh;
   }
 }

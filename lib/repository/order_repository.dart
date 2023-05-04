@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+
+import '../model/order/order.dart';
 
 class OrderResponsitory {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
@@ -30,7 +33,7 @@ class OrderResponsitory {
   ///
   Future<void> updateCart({required CartRquest cartRquest}) async {
     try {
-    await _fireStore
+      await _fireStore
           .collection("carts")
           .doc(sl<SharedPreferenceHelper>().getIdUser)
           .set(cartRquest.toMap());
@@ -39,4 +42,36 @@ class OrderResponsitory {
     }
   }
 
+  ///
+  ///Delete Cart.
+  ///
+  Future<void> deleteCart() async {
+    try {
+      await _fireStore
+          .collection("carts")
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .delete();
+    } catch (e) {
+      IZIAlert().error(message: e.toString());
+    }
+  }
+
+  ///
+  /// Put Order.
+  ///
+  Future<void> addOrder({
+    required OrderResponse orderRequest,
+    required Function() onSucces,
+    required Function(dynamic e) onError,
+  }) async {
+    try {
+      await _fireStore
+          .collection("orders")
+          .doc(orderRequest.id)
+          .set(orderRequest.toMap());
+      onSucces();
+    } catch (e) {
+      onError(e);
+    }
+  }
 }

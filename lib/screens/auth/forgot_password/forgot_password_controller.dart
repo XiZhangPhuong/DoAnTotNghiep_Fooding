@@ -35,7 +35,7 @@ class ForgotPasswordController extends GetxController {
           AuthRoutes.OTP,
           arguments: [
             "forgot",
-            phoneEditingController.text,
+            phoneEditingController.text.substring(1),
           ],
         );
       } else {

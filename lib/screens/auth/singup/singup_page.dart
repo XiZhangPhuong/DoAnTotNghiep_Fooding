@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fooding_project/screens/auth/singup/singup_controller.dart';
 import 'package:get/get.dart';
 
-
 import '../../../../helper/izi_validate.dart';
 import '../../../base_widget/izi_image.dart';
 import '../../../base_widget/izi_input.dart';
@@ -91,8 +90,7 @@ class SingupPage extends GetView {
         disbleError: true,
         controller: controller.passwordEditingController,
         textInputAction: TextInputAction.next,
-        onChanged: (val) {
-        },
+        onChanged: (val) {},
         prefixIcon: (val) {
           return Icon(
             Icons.lock,
@@ -123,7 +121,7 @@ class SingupPage extends GetView {
       child: IZIInput(
         type: IZIInputType.PASSWORD,
         placeHolder: 'Nhập lại mật khẩu',
-          controller: controller.confirmPasswordController,
+        controller: controller.confirmPasswordController,
         disbleError: true,
         prefixIcon: (val) {
           return Icon(
@@ -138,8 +136,7 @@ class SingupPage extends GetView {
         cursorColor: ColorResources.NEUTRALS_5,
         fillColor: ColorResources.NEUTRALS_5.withOpacity(0.25),
         borderRadius: 5,
-        onChanged: (val) {
-        },
+        onChanged: (val) {},
         style: const TextStyle(
           fontWeight: FontWeight.w700,
           color: ColorResources.PRIMARY_3,
@@ -172,7 +169,7 @@ class SingupPage extends GetView {
           ),
           GestureDetector(
             onTap: () async {
-               await controller.gotoOTP();
+              await controller.gotoOTP();
             },
             child: Container(
               height: IZIDimensions.ONE_UNIT_SIZE * 90,
@@ -198,108 +195,7 @@ class SingupPage extends GetView {
           SizedBox(
             height: IZIDimensions.iziSize.height * 0.04,
           ),
-          SizedBox(
-            width: IZIDimensions.iziSize.width,
-            child: Row(
-              children: const [
-                Expanded(
-                  child: Divider(
-                    height: 2,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    'Hoặc đăng ký với',
-                  ),
-                ),
-                Expanded(
-                  child: Divider(
-                    height: 2,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: IZIDimensions.SPACE_SIZE_2X,
-          ),
-          Padding(
-            padding: EdgeInsets.all(
-              IZIDimensions.SPACE_SIZE_4X,
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: IZIDimensions.iziSize.width * 0.4,
-                  decoration: BoxDecoration(
-                    color: ColorResources.WHITE,
-                    borderRadius: BorderRadius.circular(
-                      IZIDimensions.BORDER_RADIUS_4X,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: IZIDimensions.SPACE_SIZE_2X,
-                        ),
-                        child: IZIImage(
-                          "",
-                          height: IZIDimensions.ONE_UNIT_SIZE * 70,
-                        ),
-                      ),
-                      Text(
-                        'Google',
-                        style: TextStyle(
-                          fontFamily: 'Manrope',
-                          fontWeight: FontWeight.w700,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: IZIDimensions.SPACE_SIZE_2X,
-                ),
-                Container(
-                  width: IZIDimensions.iziSize.width * 0.4,
-                  decoration: BoxDecoration(
-                    color: ColorResources.WHITE,
-                    borderRadius: BorderRadius.circular(
-                      IZIDimensions.BORDER_RADIUS_4X,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: IZIDimensions.SPACE_SIZE_2X,
-                        ),
-                        child: Center(
-                          child: IZIImage(
-                            "",
-                            height: IZIDimensions.ONE_UNIT_SIZE * 70,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        'Facebook',
-                        style: TextStyle(
-                          fontFamily: 'Manrope',
-                          fontWeight: FontWeight.w700,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_2X,
           ),
@@ -333,7 +229,7 @@ class SingupPage extends GetView {
           child: Align(
             alignment: Alignment.bottomCenter,
             child: IZIImage(
-              "",
+              ImagesPath.imageSingup,
               height: IZIDimensions.iziSize.height * 0.25,
             ),
           ),

@@ -90,4 +90,21 @@ class LocationController extends GetxController {
       IZIAlert().error(message: "Cập nhật thất bại");
     }
   }
+
+  ///
+  /// Delete location.
+  ///
+  Future<void> deleteLocation(int index) async {
+    await _userRepository.deleteLocation(
+      id: locations[index].id!,
+      onSucces: () {
+        locations.removeAt(index);
+        IZIAlert().success(message: "Đã xóa địa chỉ thành công");
+        update();
+      },
+      onError: () {
+        IZIAlert().error(message: "Đã xóa địa chỉ thất bại");
+      },
+    );
+  }
 }

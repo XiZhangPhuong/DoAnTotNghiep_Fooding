@@ -8,6 +8,9 @@ import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
 
+import '../../base_widget/izi_image.dart';
+import '../../utils/images_path.dart';
+
 class LocationPage extends GetView {
   const LocationPage({super.key});
 
@@ -149,71 +152,88 @@ class LocationPage extends GetView {
   }
 
   Widget _itemLocation(LocationController controller, int index) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        const Icon(
-          Icons.location_on,
-          color: ColorResources.colorMain,
-        ),
-        SizedBox(
-          width: IZIDimensions.SPACE_SIZE_2X,
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                controller.locations[index].address ?? "Không xác định",
-                maxLines: 2,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.location_on,
+              color: ColorResources.colorMain,
+            ),
+            SizedBox(
+              width: IZIDimensions.SPACE_SIZE_2X,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.locations[index].address ?? "Không xác định",
+                    maxLines: 2,
+                    style: TextStyle(
+                      height: 1.5,
+                      fontFamily: NUNITO,
+                      color: ColorResources.BLACK,
+                      fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    controller.locations[index].name ?? "Không xác định",
+                    maxLines: 1,
+                    style: TextStyle(
+                        height: 1.5,
+                        fontFamily: NUNITO,
+                        color: ColorResources.LIGHT_GREY,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                        fontWeight: FontWeight.w500,
+                        overflow: TextOverflow.ellipsis),
+                  ),
+                  Text(
+                    controller.locations[index].phone ?? "Không xác định",
+                    maxLines: 1,
+                    style: TextStyle(
+                        height: 1.5,
+                        fontFamily: NUNITO,
+                        color: ColorResources.LIGHT_GREY,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                        fontWeight: FontWeight.w500,
+                        overflow: TextOverflow.ellipsis),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: IZIDimensions.SPACE_SIZE_2X,
+            ),
+            GestureDetector(
+              onTap: () {
+                controller.changeEditLocationPage(index);
+              },
+              child: Text(
+                "Sửa",
                 style: TextStyle(
-                  height: 1.5,
-                  fontFamily: NUNITO,
-                  color: ColorResources.BLACK,
-                  fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                  overflow: TextOverflow.ellipsis,
-                  fontWeight: FontWeight.w500,
+                  color: Colors.blue[400],
                 ),
               ),
-              Text(
-                controller.locations[index].name ?? "Không xác định",
-                maxLines: 1,
-                style: TextStyle(
-                    height: 1.5,
-                    fontFamily: NUNITO,
-                    color: ColorResources.LIGHT_GREY,
-                    fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.ellipsis),
-              ),
-              Text(
-                controller.locations[index].phone ?? "Không xác định",
-                maxLines: 1,
-                style: TextStyle(
-                    height: 1.5,
-                    fontFamily: NUNITO,
-                    color: ColorResources.LIGHT_GREY,
-                    fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.ellipsis),
-              ),
-            ],
-          ),
+            )
+          ],
         ),
-        SizedBox(
-          width: IZIDimensions.SPACE_SIZE_2X,
-        ),
-        GestureDetector(
-          onTap: () {
-            controller.changeEditLocationPage(index);
-          },
-          child: Text(
-            "Sửa",
-            style: TextStyle(
-              color: Colors.blue[400],
+        Positioned(
+          bottom: 0,
+          right: IZIDimensions.ONE_UNIT_SIZE * 10,
+          child: GestureDetector(
+            onTap: () {
+              controller.deleteLocation(index);
+            },
+            child: IZIImage(
+              ImagesPath.icon_delete,
+              width: IZIDimensions.ONE_UNIT_SIZE * 35,
             ),
           ),
-        )
+        ),
       ],
     );
   }
