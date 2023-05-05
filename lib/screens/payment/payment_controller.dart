@@ -280,8 +280,8 @@ class PaymentController extends GetxController {
         order.id = const Uuid().v1();
         order.address = location.address;
         order.phone = location.phone;
-        if (IZIValidate.nullOrEmpty(myVourcher)) {
-          order.discount = myVourcher.toString();
+        if (!IZIValidate.nullOrEmpty(myVourcher)) {
+          order.discount = myVourcher!.discountMoney.toString();
         }
         order.listProduct = cartResponse.listProduct;
         order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
