@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
+import 'package:fooding_project/helper/izi_date.dart';
+import 'package:fooding_project/helper/izi_price.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/screens/voucher/voucher_controller.dart';
 import 'package:fooding_project/screens/widgets/app_bar.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -19,123 +22,182 @@ class VoucherPage extends GetView {
       body: GetBuilder(
         init: VoucherController(),
         builder: (VoucherController controller) {
-          return GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: SizedBox(
-              height: IZIDimensions.iziSize.height,
-              width: IZIDimensions.iziSize.width,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: IZIDimensions.SPACE_SIZE_2X,
-                  ),
-                  _inputVoucher(controller),
-                  SizedBox(
-                    height: IZIDimensions.SPACE_SIZE_1X,
-                  ),
-                  const Divider(
-                    height: 2,
-                    color: ColorResources.colorMain,
-                  ),
-                  SizedBox(
-                    height: IZIDimensions.SPACE_SIZE_2X,
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          height: IZIDimensions.ONE_UNIT_SIZE * 200,
-                          margin: EdgeInsets.all(
-                            IZIDimensions.SPACE_SIZE_1X,
-                          ),
-                          padding: EdgeInsets.all(
-                            IZIDimensions.SPACE_SIZE_1X * 0.5,
-                          ),
-                          color: Colors.white,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: IZIDimensions.ONE_UNIT_SIZE * 200,
-                                width: IZIDimensions.ONE_UNIT_SIZE * 180,
-                                child: IZIImage(
-                                  ImagesPath.placeHolder,
-                                ),
-                              ),
-                              SizedBox(
-                                width: IZIDimensions.SPACE_SIZE_2X,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+          return controller.isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                  },
+                  child: SizedBox(
+                    height: IZIDimensions.iziSize.height,
+                    width: IZIDimensions.iziSize.width,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: IZIDimensions.SPACE_SIZE_2X,
+                        ),
+                        _inputVoucher(controller),
+                        SizedBox(
+                          height: IZIDimensions.SPACE_SIZE_1X,
+                        ),
+                        const Divider(
+                          height: 2,
+                          color: ColorResources.colorMain,
+                        ),
+                        SizedBox(
+                          height: IZIDimensions.SPACE_SIZE_2X,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: controller.listVouchers.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  controller.onClickListView(index);
+                                },
+                                child: Stack(
                                   children: [
-                                    Text(
-                                      "Miễn phí vận chuyển",
-                                      style: TextStyle(
-                                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                                        fontWeight: FontWeight.w500,
-                                        color: ColorResources.BLACK,
+                                    Container(
+                                      height: IZIDimensions.ONE_UNIT_SIZE * 200,
+                                      margin: EdgeInsets.all(
+                                        IZIDimensions.SPACE_SIZE_1X,
+                                      ),
+                                      padding: EdgeInsets.all(
+                                        IZIDimensions.SPACE_SIZE_1X * 0.5,
+                                      ),
+                                      color: Colors.white,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            height:
+                                                IZIDimensions.ONE_UNIT_SIZE *
+                                                    200,
+                                            width: IZIDimensions.ONE_UNIT_SIZE *
+                                                180,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                IZIDimensions.BORDER_RADIUS_4X,
+                                              ),
+                                              child: IZIImage(
+                                                ImagesPath.placeHolder,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: IZIDimensions.SPACE_SIZE_2X,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                SizedBox(
+                                                  height: IZIDimensions
+                                                      .SPACE_SIZE_1X,
+                                                ),
+                                                Text(
+                                                  IZIValidate.nullOrEmpty(
+                                                          controller
+                                                              .listVouchers[
+                                                                  index]
+                                                              .name)
+                                                      ? "Không xác định"
+                                                      : controller
+                                                          .listVouchers[index]
+                                                          .name!,
+                                                  style: TextStyle(
+                                                    fontSize: IZIDimensions
+                                                        .FONT_SIZE_SPAN,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: ColorResources
+                                                        .colorMain,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "Đơn tối thiểu: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].minOrderPrice) ? "Không xác định" : IZIPrice.currencyConverterVND(double.parse(controller.listVouchers[index].minOrderPrice.toString()))}vnđ",
+                                                  style: TextStyle(
+                                                    fontSize: IZIDimensions
+                                                            .FONT_SIZE_SPAN *
+                                                        0.8,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: ColorResources.BLACK,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "Giảm giá: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].discountMoney) ? "Không xác định" : IZIPrice.currencyConverterVND(double.parse(controller.listVouchers[index].discountMoney.toString()))}vnđ",
+                                                  style: TextStyle(
+                                                    fontSize: IZIDimensions
+                                                            .FONT_SIZE_SPAN *
+                                                        0.8,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: ColorResources.BLACK,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "Ngày hết hạn: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].endDate) ? "Không xác định" : IZIDate.formatDate(controller.listVouchers[index].endDate!, format: "HH:mm dd/MM/yyy")}",
+                                                  style: TextStyle(
+                                                    fontSize: IZIDimensions
+                                                            .FONT_SIZE_SPAN *
+                                                        0.8,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: ColorResources.BLACK,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      "Đơn tối thiểu: 0 vnđ",
-                                      style: TextStyle(
-                                        fontSize:
-                                            IZIDimensions.FONT_SIZE_SPAN * 0.8,
-                                        fontWeight: FontWeight.w500,
-                                        color: ColorResources.BLACK,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Ngày hết hạn: 23/10/2023",
-                                      style: TextStyle(
-                                        fontSize:
-                                            IZIDimensions.FONT_SIZE_SPAN * 0.8,
-                                        fontWeight: FontWeight.w500,
-                                        color: ColorResources.BLACK,
+                                    Positioned(
+                                      right: IZIDimensions.ONE_UNIT_SIZE * 20,
+                                      top: IZIDimensions.ONE_UNIT_SIZE * 30,
+                                      child: const Text(
+                                        "Xem thêm",
+                                        style: TextStyle(
+                                          color: Colors.blueAccent,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          );
+                );
         },
       ),
-      bottomSheet: GetBuilder(
-        builder: (VoucherController controller) =>
-            MediaQuery.of(context).viewInsets.bottom > 0
-                ? const SizedBox()
-                : controller.isLoading
-                    ? const SizedBox()
-                    : Container(
-                        color: Colors.white,
-                        margin: EdgeInsets.only(
-                          bottom: IZIDimensions.SPACE_SIZE_2X,
-                        ),
-                        width: IZIDimensions.iziSize.width,
-                        height: IZIDimensions.ONE_UNIT_SIZE * 90,
-                        child: Center(
-                          child: ButtonFooding(
-                            text: "Đồng ý",
-                            ontap: () {},
-                            border: IZIDimensions.BORDER_RADIUS_4X,
-                          ),
-                        ),
-                      ),
-      ),
+      // bottomSheet: GetBuilder(
+      //   builder: (VoucherController controller) =>
+      //       MediaQuery.of(context).viewInsets.bottom > 0
+      //           ? const SizedBox()
+      //           : controller.isLoading
+      //               ? const SizedBox()
+      //               : Container(
+      //                   color: Colors.white,
+      //                   margin: EdgeInsets.only(
+      //                     bottom: IZIDimensions.SPACE_SIZE_2X,
+      //                   ),
+      //                   width: IZIDimensions.iziSize.width,
+      //                   height: IZIDimensions.ONE_UNIT_SIZE * 90,
+      //                   child: Center(
+      //                     child: ButtonFooding(
+      //                       text: "Đồng ý",
+      //                       ontap: () {},
+      //                       border: IZIDimensions.BORDER_RADIUS_4X,
+      //                     ),
+      //                   ),
+      //                 ),
+      // ),
     );
   }
 
@@ -150,6 +212,7 @@ class VoucherPage extends GetView {
           ),
           Expanded(
             child: TextFormField(
+              controller: controller.textvoucher,
               decoration: InputDecoration(
                 hintText: "Nhập mã giảm giá",
                 hintStyle: TextStyle(
@@ -175,7 +238,9 @@ class VoucherPage extends GetView {
             width: IZIDimensions.SPACE_SIZE_2X,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              controller.findcodeVoucher();
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: ColorResources.colorMain,
               padding: EdgeInsets.all(

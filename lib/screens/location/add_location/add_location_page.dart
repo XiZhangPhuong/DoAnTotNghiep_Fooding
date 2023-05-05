@@ -99,7 +99,7 @@ class AddLocationPage extends StatelessWidget {
                     type: IZIInputType.TEXT,
                     borderRadius: IZIDimensions.SPACE_SIZE_2X,
                     textInputAction: TextInputAction.next,
-                    placeHolder: 'Trương Đình Quyền',
+                    placeHolder: 'Nhập tên của bạn',
                     controller: controller.nameEditingController,
                     hintStyle: TextStyle(
                       fontFamily: 'Nunito',
@@ -115,7 +115,7 @@ class AddLocationPage extends StatelessWidget {
                     type: IZIInputType.PHONE,
                     borderRadius: IZIDimensions.SPACE_SIZE_2X,
                     controller: controller.phoneEditingController,
-                    placeHolder: '02457512012',
+                    placeHolder: 'Nhập số điện thoại',
                     hintStyle: TextStyle(
                       fontFamily: 'Nunito',
                       fontWeight: FontWeight.w400,
@@ -131,7 +131,7 @@ class AddLocationPage extends StatelessWidget {
                     borderRadius: IZIDimensions.SPACE_SIZE_2X,
                     textInputAction: TextInputAction.next,
                     controller: controller.addressEditingController,
-                    placeHolder: 'Địa chỉ của bạn',
+                    placeHolder: 'Chọn địa chỉ',
                     hintStyle: TextStyle(
                       fontFamily: 'Nunito',
                       fontWeight: FontWeight.w400,
@@ -143,7 +143,7 @@ class AddLocationPage extends StatelessWidget {
             ),
             Expanded(
               child: PlacePicker(
-                apiKey: 'AIzaSyCk48oso3yL0Lo3MJL40XE1vCZ--qHsT9E',
+                apiKey: 'AIzaSyB1KM0R3xVa8P0_VvMQah-F16OFrIYORs8',
                 region: 'VN',
                 onPlacePicked: (result) async {
                   if (!IZIValidate.nullOrEmpty(result.formattedAddress) &&

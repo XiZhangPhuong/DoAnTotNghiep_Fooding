@@ -630,7 +630,7 @@ class PaymentPage extends GetView<PaymentController> {
                       ),
                     ),
                     Text(
-                      '12.000 vnđ',
+                      '-${IZIPrice.currencyConverterVND(controller.myVourcher!.discountMoney!.toDouble())}vnđ',
                       style: TextStyle(
                         color: ColorResources.GREY,
                         fontFamily: NUNITO,

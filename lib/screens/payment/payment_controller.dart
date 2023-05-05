@@ -8,6 +8,7 @@ import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/location/location_response.dart';
 import 'package:fooding_project/model/user.dart';
+import 'package:fooding_project/model/voucher/voucher.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/cart_routes.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
@@ -40,7 +41,7 @@ class PaymentController extends GetxController {
   double? distance;
   double priceShip = 0;
   bool flagSpam = true;
-  double? myVourcher;
+  Voucher? myVourcher;
 
   TextEditingController noteEditingController = TextEditingController();
   @override
@@ -183,30 +184,36 @@ class PaymentController extends GetxController {
   ///
   /// Click delete.
   ///
-  void clickDelete(int index) {
-    Get.dialog(DialogCustom(
+  void clickDelete(int index) async {
+    bool flag = false;
+    await Get.dialog(DialogCustom(
       description: 'Bạn có muốn xóa món này không?',
       agree: 'Có',
       cancel1: 'Không',
-      onTapConfirm: () async {
-        cartResponse.listProduct!.removeAt(index);
-        if (cartResponse.listProduct!.isEmpty) {
-          await _orderResponsitory.deleteCart();
-          Get.back();
-          distance = null;
-          tamTinh();
-          update();
-        } else {
-          await _orderResponsitory.updateCart(cartRquest: cartResponse);
-          Get.back();
-          tamTinh();
-          update();
-        }
+      onTapConfirm: () {
+        flag = true;
+        Get.back();
       },
       onTapCancle: () {
+        flag = false;
         Get.back();
       },
     ));
+    if (flag) {
+      EasyLoading.show(status: "Đang cập nhật dữ liệu");
+      cartResponse.listProduct!.removeAt(index);
+      if (cartResponse.listProduct!.isEmpty) {
+        await _orderResponsitory.deleteCart();
+        distance = null;
+        tamTinh();
+        update();
+      } else {
+        await _orderResponsitory.updateCart(cartRquest: cartResponse);
+        tamTinh();
+        update();
+      }
+      EasyLoading.dismiss();
+    }
   }
 
   ///
@@ -326,13 +333,25 @@ class PaymentController extends GetxController {
   /// Go to Voucher.
   ///
   void goToVoucher() {
-    Get.toNamed(CartRoutes.VOUCHER);
+    Get.toNamed(CartRoutes.VOUCHER, arguments: tamtinh)?.then((value) {
+      if (!IZIValidate.nullOrEmpty(value)) {
+        myVourcher = value as Voucher;
+        totalPay();
+        update();
+      }
+    });
   }
 
   ///
   /// Total Pay.
   ///
   double totalPay() {
-    return priceShip + tamtinh;
+    double discount = 0;
+    if (!IZIValidate.nullOrEmpty(myVourcher)) {
+      discount = myVourcher!.discountMoney!.toDouble();
+    }
+    return priceShip + tamtinh - discount <= 0
+        ? 0
+        : priceShip + tamtinh - discount;
   }
 }
