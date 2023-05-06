@@ -1,10 +1,12 @@
 // ignore_for_file: avoid_print, unused_field
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:fooding_project/model/category/category.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/utils/app_constants.dart';
+import 'package:get/get.dart';
 
 class CategoryRepository {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
@@ -23,139 +25,7 @@ class CategoryRepository {
     'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-4747-1676348590?w=600&amp;type=o&quot'
   ];
 
-  ///
-  /// Push list Category to FireStore
-  ///
-  Future<void> pushListCategory() async {
-    try {
-      List<Category> listCate = [
-        Category(
-            id: generateRandomString(20),
-            thumnail:
-                "https://tea-3.lozi.vn/v1/images/resized/category-web-1565-1590397916?w=240&amp;type=s",
-            name: "Cơm"),
-        Category(
-            id: generateRandomString(20),
-            thumnail:
-                "https://tea-3.lozi.vn/v1/images/resized/category-web-1533-1590653836?w=240&amp;type=s",
-            name: "Bún|Mì"),
-        Category(
-            id: generateRandomString(20),
-            thumnail:
-                "https://tea-3.lozi.vn/v1/images/resized/category-web-21-1590397610?w=240&amp;type=s",
-            name: "Đồ uống"),
-        Category(
-            id: generateRandomString(20),
-            thumnail:
-                "https://tea-3.lozi.vn/v1/images/resized/category-web-1164-1590572746?w=240&amp;type=s",
-            name: "Hải sản"),
-        Category(
-            id: generateRandomString(20),
-            thumnail:
-                "https://tea-3.lozi.vn/v1/images/resized/category-web-1407-1590396880?w=240&amp;type=s",
-            name: "Đồ ăn nhanh"),
-        Category(
-            id: generateRandomString(20),
-            thumnail:
-                "https://st.depositphotos.com/1332722/1245/v/950/depositphotos_12454057-stock-illustration-pizza-vector-illustration.jpg",
-            name: "Ăn vặt"),
-        Category(
-            id: generateRandomString(20),
-            thumnail:
-                "https://img.pikbest.com/png-images/qianku/eating-hot-pot-at-home_2400223.png!bw340",
-            name: "Nướng|Lẩu"),
-        Category(
-            id: generateRandomString(20),
-            thumnail:
-                "https://tea-3.lozi.vn/v1/images/resized/category-web-77-1617002219?w=240&amp;type=s",
-            name: "Món nhậu"),
-      ];
-      //pust Data to FireStore
-      for (var element in listCate) {
-        await collectionCategrys.doc(element.id).set(element.toMap());
-      }
-
-      // push data to realtime
-      // for(var element in listCate){
-      //   await databaseCategory.child(element.id!).set(element.toMap());
-      // }
-    } catch (e) {
-      print("Add List Category Failt  $e");
-    }
-  }
-
-  ///
-  /// getListCategory
-  ///
-
-  List<Store> listStore = [];
-
-  Future<void> pushDataStore() async {
-    Store store = Store();
-    store.id = generateRandomString(20);
-    store.fullName = 'Nhà hàng Hoài Phương';
-    store.phone = '0398797286';
-    store.email = 'roxtigervanphuong@gmail.com';
-    store.passWord = '123456';
-    store.typeUser = 'STORE';
-    store.address = '120 Phan Châu Trinh';
-    store.isOline = true;
-
-    listStore.add(store);
-    await collectionStore.doc(store.id).set(store.toMap());
-  }
-
-  List<Products> listProducts = [];
-  Future<void> pushDataProduct() async {
-    for (int i = 0; i < 3; i++) {
-      String productId = generateRandomString(20);
-      Products products = Products(
-        id: productId,
-        idUser: 'Gtm3gik9uSeexlQ4AUge',
-        name: 'Món ăn ${i + 1}',
-        image: listImageSlider,
-        nameCategory: 'Cơm',
-        description: 'Thơm ngon mời bạn ăn nha',
-        price: 30000,
-        sold: 15,
-      );
-      listProducts.add(products);
-    }
-
-    for (int i = 0; i < 3; i++) {
-      String productId = generateRandomString(20);
-      Products products = Products(
-        id: productId,
-        idUser: 'G5Ch5OysWV3mbCBpWhZs',
-        name: 'Món ăn ${i + 1}',
-        image: listImageSlider,
-        nameCategory: 'Đồ uống',
-        description: 'Thơm ngon mời bạn ăn nha',
-        price: 40000,
-        sold: 15,
-      );
-      listProducts.add(products);
-    }
-
-    for (int i = 0; i < 3; i++) {
-      String productId = generateRandomString(20);
-      Products products = Products(
-        id: productId,
-        idUser: 'A25KnRaprtKUDaCTv7RB',
-        name: 'Món ăn ${i + 1}',
-        image: listImageSlider,
-        nameCategory: 'Ăn vặt',
-        description: 'Thơm ngon mời bạn ăn nha',
-        price: 50000,
-        sold: 15,
-      );
-      listProducts.add(products);
-    }
-
-    for (var i in listProducts) {
-      await collectionProduct.doc(i.id!).set(i.toMap());
-    }
-  }
+  
 
   ///
   /// get list category
@@ -164,30 +34,69 @@ class CategoryRepository {
     List<Category> categorys = [];
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('categorys').get();
-    for(var doc in querySnapshot.docs){
-      Category category = Category.fromMap(doc.data() as Map<String,dynamic>);
+    for (var doc in querySnapshot.docs) {
+      Category category = Category.fromMap(doc.data() as Map<String, dynamic>);
       categorys.add(category);
     }
     return categorys;
   }
 
+  ///
+  /// get all categorys
+  ///
+  Future<void> all({
+    required Function(List<Category> data) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('categorys').where('isDeleted',isEqualTo: false).get();
+      onSucess(querySnapshot.docs
+          .map((e) => Category.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+    } catch (e) {
+      onError(e);
+    }
+  }
 
-   ///
+  ///
   /// get list String name category
   ///
   Future<List<String>> getNameCategory() async {
     List<String> names = [];
-     List<Category> categorys = [];
+    List<Category> categorys = [];
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('categorys').get();
-    for(var doc in querySnapshot.docs){
-      Category category = Category.fromMap(doc.data() as Map<String,dynamic>);
+    for (var doc in querySnapshot.docs) {
+      Category category = Category.fromMap(doc.data() as Map<String, dynamic>);
       categorys.add(category);
     }
-    for( var i in categorys){
+    for (var i in categorys) {
       names.add(i.name!);
     }
     return names;
   }
+  
 
+  ///
+  /// get name category
+  ///
+  Future<void> getName({
+    required Function(List<String> data) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+      try{
+         QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('categorys').where('isDeleted',isEqualTo: false).get();
+         List<Category> listCategory = querySnapshot.docs.map((e) => Category.fromMap(e.data() as Map<String,dynamic>)).toList();
+         final name = <String>[];
+         for(int i = 0;i<listCategory.length;i++){
+          name.add(listCategory[i].name!);
+         }
+         onSucess(name);
+      }catch(e){
+        onError(e);
+      }
+        
+  }
 }

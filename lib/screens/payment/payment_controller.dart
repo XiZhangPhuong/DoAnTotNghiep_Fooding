@@ -7,6 +7,7 @@ import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/location/location_response.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/user_repository.dart';
+import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -114,7 +115,9 @@ class PaymentController extends GetxController {
   /// Find user.
   ///
   Future<void> findUser() async {
+    isLoading = true;
     userResponse = await _userRepository.findUser();
+    isLoading  = false;
   }
 
   ///
@@ -166,6 +169,9 @@ class PaymentController extends GetxController {
       onTapConfirm: () async {
         cartResponse.listProduct!.removeAt(index);
         await _orderResponsitory.updateCart(cartRquest: cartResponse);
+        final bot = Get.find<BottomBarController>();
+        bot.countCartByIDStore();
+        bot.update();
         Get.back();
         tamTinh();
         update();
@@ -235,4 +241,10 @@ class PaymentController extends GetxController {
       );
     }
   }
+
+
+  ///
+  /// show notification 
+  ///
+  
 }

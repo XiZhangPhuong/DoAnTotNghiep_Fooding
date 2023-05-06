@@ -41,12 +41,11 @@ class HomeScreenPage extends GetView<HomeController> {
                   Expanded(
                     child: IZISmartRefresher(
                       enablePullDown: true,
-                      enablePullUp: true,
                       onLoading: () {
                         controller.onLoading();
                       },
                       onRefresh: () {
-                       controller.onRefreshing();
+                        controller.onRefreshing();
                       },
                       refreshController: controller.refreshController,
                       child: SingleChildScrollView(
@@ -97,12 +96,16 @@ class HomeScreenPage extends GetView<HomeController> {
                 width: IZIDimensions.SPACE_SIZE_2X,
               ),
               SlideCountdownSeparated(
-                duration: const Duration(hours: 5),
+                slideDirection: SlideDirection.down,
+                duration: const Duration(hours: 5), 
+                textDirection: TextDirection.ltr,      
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(4)),
                   color: ColorResources.colorMain,
                 ),
+                
                 textStyle: TextStyle(
+                  
                     fontWeight: FontWeight.w600,
                     fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
                     color: ColorResources.WHITE),
@@ -114,84 +117,127 @@ class HomeScreenPage extends GetView<HomeController> {
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_3X,
           ),
-          Container(
-            height: IZIDimensions.ONE_UNIT_SIZE * 400,
-            color: ColorResources.WHITE,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: controller.listProducts.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    controller
-                        .gotoDetailFood(controller.listProducts[index].id!);
-                  },
-                  child: Card(
-                    elevation: 1,
-                    child: Container(
-                      width: IZIDimensions.ONE_UNIT_SIZE * 300,
-                      margin:
-                          EdgeInsets.only(right: IZIDimensions.SPACE_SIZE_3X),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            IZIDimensions.BORDER_RADIUS_5X),
+
+          //
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Container(
+                  height: IZIDimensions.ONE_UNIT_SIZE * 320,
+                  color: ColorResources.WHITE,
+                  child: controller.isLoadingProduct == true
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : 
+                        _listViewProduct(controller),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                                IZIDimensions.BORDER_RADIUS_3X),
-                            child: IZIImage(
-                              controller.listProducts[index].image!.first,
-                              height: IZIDimensions.ONE_UNIT_SIZE * 230,
-                              width: IZIDimensions.ONE_UNIT_SIZE * 300,
-                              fit: BoxFit.cover,
-                            ),
+                      SizedBox(width: 
+                    IZIDimensions.SPACE_SIZE_2X,),
+
+                    // view all list products                 
+                      GestureDetector(
+                        onTap:  () {
+                          
+                        },
+                        child: Container(
+                          height: IZIDimensions.ONE_UNIT_SIZE * 320,
+                          width: IZIDimensions.ONE_UNIT_SIZE * 230,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
+                            border: Border.all(width: 0.3,color: ColorResources.colorMain)
                           ),
-                          SizedBox(
-                            height: IZIDimensions.SPACE_SIZE_2X,
+                          child: Center(
+                            child: Text('Xem tất cả',style: TextStyle(
+                              color: ColorResources.colorMain,
+                              fontSize: IZIDimensions.FONT_SIZE_H6,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w500
+                            ),),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: IZIDimensions.SPACE_SIZE_2X),
-                            child: Text(
-                              controller.listProducts[index].name!,
-                              style: TextStyle(
-                                color: ColorResources.titleLogin,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: IZIDimensions.FONT_SIZE_H6,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: IZIDimensions.SPACE_SIZE_2X),
-                            child: Text(
-                              '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ',
-                              style: TextStyle(
-                                color: ColorResources.colorMain,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                              ),
-                            ),
-                          ),
-                          const Divider(),
-                        ],
+                        ),
+                      ),
+              ],
+            ),
+          ),
+          
+        ],
+      ),
+    );
+  }
+
+  ///
+  ///  list view products
+  ///
+  Widget _listViewProduct(HomeController controller) {
+    return ListView.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      itemCount: controller.listProducts.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            controller.gotoDetailFood(controller.listProducts[index].id!);
+          },
+          child: Card(
+            elevation: 1,
+            child: Container(
+              width: IZIDimensions.ONE_UNIT_SIZE * 230,
+              margin: EdgeInsets.only(right: IZIDimensions.SPACE_SIZE_3X),
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+                    child: IZIImage(
+                      controller.listProducts[index].image!.first,
+                      height: IZIDimensions.ONE_UNIT_SIZE * 200,
+                      width: IZIDimensions.ONE_UNIT_SIZE * 230,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(
+                    height: IZIDimensions.SPACE_SIZE_2X,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
+                    child: Text(
+                      controller.listProducts[index].name!.capitalize!,
+                      style: TextStyle(
+                        color: ColorResources.titleLogin,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: IZIDimensions.FONT_SIZE_H6,
                       ),
                     ),
                   ),
-                );
-              },
+                  Padding(
+                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
+                    child: Text(
+                      '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ',
+                      style: TextStyle(
+                        color: ColorResources.colorMain,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                      ),
+                      maxLines: 2,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -235,12 +281,15 @@ class HomeScreenPage extends GetView<HomeController> {
                     scrollbarMargin: const EdgeInsets.only(bottom: 15),
                     padding: EdgeInsets.symmetric(
                         horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
-                    child: (index) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: () {},
-                              child: Container(
+                    child: (index) => GestureDetector(
+                          onTap: () {
+                            controller.gotoSearchPage(
+                                controller.listCategory[index].name!);
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
                                 margin: EdgeInsets.only(
                                     bottom: IZIDimensions.SPACE_SIZE_2X),
                                 decoration: BoxDecoration(
@@ -258,19 +307,19 @@ class HomeScreenPage extends GetView<HomeController> {
                                   ),
                                 ),
                               ),
-                            ),
-                            IZIText(
-                              text: controller.listCategory[index].name!,
-                              maxLine: 2,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Nunito',
-                                fontWeight: FontWeight.w600,
-                                fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                                color: const Color(0xff464647),
+                              IZIText(
+                                text: controller.listCategory[index].name!,
+                                maxLine: 2,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                  color: const Color(0xff464647),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         )),
           ),
         ],
@@ -286,8 +335,7 @@ class HomeScreenPage extends GetView<HomeController> {
       margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
       child: ImageSlideshow(
         indicatorColor: ColorResources.colorMain,
-        indicatorRadius: 4,
-        isLoop: true,
+        indicatorRadius: 4,       
         children: List.generate(
             controller.listImageSlider.length,
             (index) => ClipRRect(
@@ -305,7 +353,7 @@ class HomeScreenPage extends GetView<HomeController> {
   Widget _searchView(HomeController controller) {
     return GestureDetector(
       onTap: () {
-        controller.gotoSearchPage();
+        controller.gotoSearchPage('');
       },
       child: Container(
         padding: EdgeInsets.symmetric(

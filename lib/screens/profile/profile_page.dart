@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/screens/profile/profile_controller.dart';
@@ -17,7 +18,7 @@ class ProfilePage extends GetView {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appbar(),
+      appBar: const P45AppBarP(title: 'Trang cá nhân',isShowLeadingIcon: false,),
       body: GetBuilder(
           init: ProfileController(),
           builder: (ProfileController controller) {

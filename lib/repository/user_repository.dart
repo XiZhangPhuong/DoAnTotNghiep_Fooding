@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/location/location_response.dart';
+import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
@@ -161,5 +162,27 @@ class UserRepository {
     } catch (e) {
       onError(e);
     }
+  }
+
+
+  ///
+  /// find store by id
+  ///
+  Future<void> findStoreByID(
+    {
+      required String idStore,
+      required Function(Store store) onSucces,
+      required Function(dynamic error) onError,
+    }
+  ) async {
+     try{
+       final query = await _fireStore
+          .collection("users")
+          .doc(idStore)
+          .get();
+        onSucces(Store.fromMap(query.data() as Map<String,dynamic>));
+     }catch(e){
+       onError(e);
+     }
   }
 }
