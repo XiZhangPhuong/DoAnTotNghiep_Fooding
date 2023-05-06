@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:fooding_project/model/product/products.dart';
 
 class ProductsRepository {
@@ -62,12 +61,14 @@ class ProductsRepository {
     required Function(List<Products> listProduct) onSucess,
     required Function(dynamic error) onError,
   }) async {
-    try{
+    try {
       QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('products').get();
-       onSucess(querySnapshot.docs.map((e) => Products.fromMap(e.data() as Map<String,dynamic>)).toList());
-    }catch(e){
-       onError(e);
+          await FirebaseFirestore.instance.collection('products').get();
+      onSucess(querySnapshot.docs
+          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+    } catch (e) {
+      onError(e);
     }
   }
 
@@ -75,23 +76,138 @@ class ProductsRepository {
   /// get list product paginate page = 1 , limit = 10
   ///
   Future<void> paginateProducts({
+    required int limit,
     required Function(List<Products> listProduct) onSucess,
     required Function(dynamic error) onError,
   }) async {
-    try{
-      QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('products').limit(10).get();
-       onSucess(querySnapshot.docs.map((e) => Products.fromMap(e.data() as Map<String,dynamic>)).toList());
-    }catch(e){
-       onError(e);
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .limit(limit)
+          .get();
+      onSucess(querySnapshot.docs
+          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+    } catch (e) {
+      onError(e);
     }
   }
 
-  
+  ///
+  /// get list product paginate page = 1 , limit = 10 by id Category
+  ///
+  Future<void> paginateProductsByIDCateogry({
+    required String idCategory,
+    required int limit,
+    required Function(List<Products> listProduct) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('nameCategory', isEqualTo: idCategory)
+          .limit(limit)
+          .get();
+      onSucess(querySnapshot.docs
+          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+    } catch (e) {
+      onError(e);
+    }
+  }
 
+  ///
+  /// get list product paginate limit = 10  by name product
+  ///
+  Future<void> paginateProductsByNameProduct({
+    required String value,
+    required int limit,
+    required Function(List<Products> listProduct) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('name', isGreaterThanOrEqualTo: value)
+          .get();
+      onSucess(querySnapshot.docs
+          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  ///
+  /// paginate list product limit = 10 , filter by id, sort by price . 
+  ///
+Future<void> paginateAllProductFilter({
+    String? idProduct,
+    required int limit,
+    required Function(List<Products> listProduct) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('idProduct', isEqualTo: idProduct)
+          .orderBy('price',descending: true)
+          .limit(limit)
+          .get();
+      onSucess(querySnapshot.docs
+          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+
+  ///
+  /// count list product filter id Store
+  ///
+
+  Future<void> countProductByIdStore({
+    required String idStore,
+    required Function(int data) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('idUser', isEqualTo: idStore)
+          .get();
+       onSucess(querySnapshot.docs.length);   
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  ///
+  /// find product by id
+  ///
+  Future<void> find({
+    required String idProduct,
+    required Function(Products data) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+     try{
+      final query = await FirebaseFirestore.instance
+      .collection('products').doc(idProduct).get();
+      onSucess(Products.fromMap(query.data() as Map<String,dynamic>));
+     }catch(e){
+      onError(e);
+     }
+  }
+
+  ///
+  /// post data product to firebase store
+  ///
+  Future<void> post(
+      {required Function(Products data) onSucess,
+      required Function(dynamic error) onError}) async {
+    try {} catch (e) {
+      onError(e);
+    }
+  }
 }
-
-
-
-
-

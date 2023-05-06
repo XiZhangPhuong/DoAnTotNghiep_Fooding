@@ -105,6 +105,7 @@ class SearchPage extends GetView<SearchController> {
                                         vertical:
                                             IZIDimensions.SPACE_SIZE_1X * 0.7,
                                       ),
+                                      width: IZIDimensions.ONE_UNIT_SIZE*250,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(
                                             IZIDimensions.BORDER_RADIUS_4X),
@@ -114,39 +115,39 @@ class SearchPage extends GetView<SearchController> {
                                             color: ColorResources.colorMain),
                                       ),
                                       child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              controller.isLoadDingNameCategory ==
-                                                      false
-                                                  ? 'Đang tải'
-                                                  : controller
-                                                      .listNameCategory.first,
-                                              style: TextStyle(
-                                                color: ColorResources.colorMain,
-                                                fontFamily: NUNITO,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize:
-                                                    IZIDimensions.FONT_SIZE_H6,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width:
-                                                  IZIDimensions.SPACE_SIZE_1X,
-                                            ),
-                                            const RotatedBox(
-                                              quarterTurns: 1,
-                                              child: Icon(
-                                                Icons
-                                                    .keyboard_arrow_right_outlined,
-                                                color: ColorResources.colorMain,
-                                              ),
-                                            )
-                                          ],
+                                          child: 
+                                          controller.isLoadDingNameCategory==false ? null : 
+                                          DropdownButton(
+                                        onChanged: (value) {
+                                          controller.changeDropDow(value.toString());
+                                        },
+                                        elevation: 0,
+                                        value: controller.nameCategory,
+                                        isExpanded : true,
+                                        underline:  Container(),
+                                        icon: const RotatedBox(
+                                          quarterTurns: 1,
+                                          child: Icon(
+                                            Icons.keyboard_arrow_right_outlined,
+                                            color: ColorResources.colorMain,
+                                          ),
                                         ),
-                                      ),
+                                        items: controller.listNameCategory
+                                            .map((e) {
+                                          return DropdownMenuItem(
+                                              value: e,
+                                              child: Text(
+                                                e.toString(),
+                                                style: TextStyle(
+                                                    fontFamily: 'Nunito',
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: IZIDimensions
+                                                        .FONT_SIZE_H6,
+                                                    color:
+                                                        ColorResources.colorMain),
+                                              ));
+                                        }).toList(),
+                                      )),
                                     ),
                                     SizedBox(
                                       width: IZIDimensions.SPACE_SIZE_2X,
@@ -221,36 +222,28 @@ class SearchPage extends GetView<SearchController> {
   /// listview search
   ///
   Widget _listViewSearch(SearchController controller) {
-    return Expanded(
+    return
+     Expanded(
       child: SingleChildScrollView(
         child: Visibility(
           visible: true,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_3X),
-                child: Text(
-                  'Tìm thấy ${controller.listProducts.length} sản phẩm',
-                  style: TextStyle(
-                    color: ColorResources.BLACK,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w600,
-                    fontSize: IZIDimensions.FONT_SIZE_H6,
-                  ),
-                ),
-              ),
               SizedBox(
                 height: IZIDimensions.SPACE_SIZE_2X,
               ),
-              ListView.builder(
+               controller.isLoadingProduct==false ? const CardLoadingItem(count: 10,) : 
+               controller.listProducts.isEmpty ? const DataEmpty() : 
+               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: controller.listProducts.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      controller.gotoDetailFood(controller.listProducts[index].id!);
+                      controller
+                          .gotoDetailFood(controller.listProducts[index].id!);
                     },
                     child: Container(
                       padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
@@ -298,7 +291,7 @@ class SearchPage extends GetView<SearchController> {
                                       height: IZIDimensions.SPACE_SIZE_1X,
                                     ),
                                     Text(
-                                      '${controller.formatSold(controller.listProducts[index].sold!)} | 1.2km',
+                                      '${controller.formatSold(controller.listProducts[index].sold!)}',
                                       style: TextStyle(
                                         color: ColorResources.GREY,
                                         fontFamily: NUNITO,
@@ -418,6 +411,7 @@ class SearchPage extends GetView<SearchController> {
           Expanded(
             child: IZIInput(
               type: IZIInputType.TEXT,
+              controller: controller.filter,
               placeHolder: 'Bạn thèm món gì ?',
               hintStyle: TextStyle(
                 color: ColorResources.GREY,
@@ -433,8 +427,12 @@ class SearchPage extends GetView<SearchController> {
               borderRadius: IZIDimensions.BORDER_RADIUS_3X,
               fillColor: ColorResources.WHITE,
               padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_3X),
-              onChanged: (value) {},
-              onSubmitted: (p0) {},
+              // onChanged: (value) {
+              //   controller.search(value);
+              // },
+              onSubmitted: (p0) {
+                controller.search(p0.toString());
+              },
             ),
           ),
         ],

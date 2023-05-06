@@ -25,7 +25,7 @@ class Store extends User {
     // openHour default = 8:00
     this.openHour = '8:00',
     // closeHour default = 22:00
-    this.closeHour = '10:30',
+    this.closeHour = '22:30',
     this.isOline,
   }) : super(
             id: id,
@@ -76,7 +76,7 @@ class Store extends User {
           map['dateOfBirth'] != null ? map['dateOfBirth'] as String : null,
       gender: map['gender'] != null ? map['gender'] as String : null,
       openHour: map['openHour'] != null ? map['openHour'] as String : '8:30',
-      closeHour: map['closeHour'] != null ? map['closeHour'] as String : '10:30',
+      closeHour: map['closeHour'] != null ? map['closeHour'] as String : '22:30',
       isOline: map['isOline'] != null ? map['isOline'] as bool : true,
     );
   }

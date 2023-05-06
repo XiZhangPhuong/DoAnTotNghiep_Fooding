@@ -10,6 +10,7 @@ import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
+import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -30,6 +31,7 @@ class HomeController extends GetxController {
   List<Products> listProducts = [];
   bool isLoadingCategory = true;
   bool isLoadingProduct = true;
+  int limit = 10;
   // list string imageslidershow
   List<String> listImageSlider = [
     'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
@@ -56,6 +58,9 @@ class HomeController extends GetxController {
   void onRefreshing() {
     paginateProducts();
     getCategoryList();
+    final bot = Get.find<BottomBarController>();
+    bot.countCartByIDStore();
+    bot.update();
     refreshController.resetNoData();
     refreshController.refreshCompleted();
   }
@@ -89,6 +94,12 @@ class HomeController extends GetxController {
   }
 
   ///
+  /// go to category
+  ///
+  void gotoCategoryPage(String name){
+    Get.toNamed(HomeRoutes.CATEGORY,arguments: name);
+  }
+  ///
   /// go to SearchPage
   ///
   void gotoSearchPage(String name) {
@@ -116,6 +127,7 @@ class HomeController extends GetxController {
   Future<void> paginateProducts() async { 
     listProducts.clear();
     _productsRepository.paginateProducts(
+      limit: 10,
       onSucess: (listProduct) {
         listProducts = listProduct;
         listProducts.shuffle();
@@ -180,9 +192,6 @@ class HomeController extends GetxController {
       if (IZIValidate.nullOrEmpty(value)) {
         return;
       }
-      // final controller  =   Get.find<DashBoardController>();
-      // controller.curenIndex.value = 2;
-      // controller.update();
     });
   }
 

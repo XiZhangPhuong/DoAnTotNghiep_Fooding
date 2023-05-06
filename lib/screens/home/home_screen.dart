@@ -96,12 +96,16 @@ class HomeScreenPage extends GetView<HomeController> {
                 width: IZIDimensions.SPACE_SIZE_2X,
               ),
               SlideCountdownSeparated(
-                duration: const Duration(hours: 5),
+                slideDirection: SlideDirection.down,
+                duration: const Duration(hours: 5), 
+                textDirection: TextDirection.ltr,      
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(4)),
                   color: ColorResources.colorMain,
                 ),
+                
                 textStyle: TextStyle(
+                  
                     fontWeight: FontWeight.w600,
                     fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
                     color: ColorResources.WHITE),
@@ -204,7 +208,7 @@ class HomeScreenPage extends GetView<HomeController> {
                   Padding(
                     padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
                     child: Text(
-                      controller.listProducts[index].name!,
+                      controller.listProducts[index].name!.capitalize!,
                       style: TextStyle(
                         color: ColorResources.titleLogin,
                         fontFamily: NUNITO,
@@ -279,7 +283,7 @@ class HomeScreenPage extends GetView<HomeController> {
                         horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
                     child: (index) => GestureDetector(
                           onTap: () {
-                            controller.gotoSearchPage(
+                            controller.gotoCategoryPage(
                                 controller.listCategory[index].name!);
                           },
                           child: Column(
@@ -331,8 +335,7 @@ class HomeScreenPage extends GetView<HomeController> {
       margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_3X),
       child: ImageSlideshow(
         indicatorColor: ColorResources.colorMain,
-        indicatorRadius: 4,
-        isLoop: true,
+        indicatorRadius: 4,       
         children: List.generate(
             controller.listImageSlider.length,
             (index) => ClipRRect(

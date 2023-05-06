@@ -1,3 +1,7 @@
+// ignore_for_file: avoid_print
+
+import 'package:flutter/widgets.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
@@ -7,6 +11,7 @@ import 'package:get_it/get_it.dart';
 
 class SearchController extends GetxController {
   CategoryRepository categoryRepository = GetIt.I.get<CategoryRepository>();
+  TextEditingController filter = TextEditingController();
   final ProductsRepository productsRepository =
       GetIt.I.get<ProductsRepository>();
   List<String> listHistory = [
@@ -19,30 +24,131 @@ class SearchController extends GetxController {
   List<Products> listProducts = [];
   bool isLoadDingNameCategory = false;
   bool isLoadingProduct = false;
+  int limit = 10;
   String nameCategory = Get.arguments as String;
+  final ProductsRepository _productsRepository =
+      GetIt.I.get<ProductsRepository>();
+  final CategoryRepository _categoryRepository =
+      GetIt.I.get<CategoryRepository>();
+
   @override
   void onInit() {
     super.onInit();
+    
     getNameCategory();
-    getListProductFilter(nameCategory);
+    paginateProduct();
+    
+
   }
+
 
   ///
   ///
   ///
   Future<void> getNameCategory() async {
-    listNameCategory = await categoryRepository.getNameCategory();
-    isLoadDingNameCategory = true;
+    _categoryRepository.getName(
+      onSucess: (data) {
+        data.insert(0, 'Tất cả');
+        listNameCategory = data;    
+        isLoadDingNameCategory = true;
+        if(IZIValidate.nullOrEmpty(nameCategory)){
+          nameCategory = listNameCategory.first;
+        }else{
+          nameCategory = Get.arguments as String;
+        }
+        update();
+      },
+      onError: (error) {
+        print(error.toString());
+      },
+    );
+  }
+
+  
+
+  ///
+  /// on change dropdowbutton
+  ///
+  void changeDropDow(String value) {
+    nameCategory = value;
+    print(nameCategory);
+    if(value=='Tất cả'){
+      paginateProduct();
+    }else{
+      paginateProductsByNameCateogry();
+    }
     update();
+  } 
+
+  ///
+  /// search textfield
+  ///
+   void search(String value){
+     if(IZIValidate.nullOrEmpty(value) && IZIValidate.nullOrEmpty(nameCategory)){
+        paginateProduct();
+     }else{
+       paginateProductByNameProduct();
+     }
+
+     update();   
+   }
+
+  ///
+  /// 
+  ///
+ Future<void> paginateProductByNameProduct() async {
+    listProducts.clear();
+    _productsRepository.paginateProductsByNameProduct(
+      limit: limit,
+      value: filter.text,
+      onSucess: (listProduct) {
+        listProducts = listProduct;
+        listProducts.shuffle();
+        isLoadingProduct = true;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
 
   ///
-  ///  getListProduct Filter
+  /// get all data products by name category
   ///
-  Future<void> getListProductFilter(String nameCategory) async {
-    listProducts = await productsRepository.getProductList(nameCategory);
-    isLoadingProduct = true;
-    update();
+  Future<void> paginateProductsByNameCateogry() async {
+    listProducts.clear();
+    _productsRepository.paginateProductsByIDCateogry(
+      limit: limit,
+      idCategory: nameCategory,
+      onSucess: (listProduct) {
+        listProducts = listProduct;
+        isLoadingProduct = true;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+  
+   ///
+  /// get all data products by name category
+  ///
+  Future<void> paginateProduct() async {
+    listProducts.clear();
+    _productsRepository.paginateProducts(
+      limit: limit,
+      onSucess: (listProduct) {
+        listProducts = listProduct;
+        isLoadingProduct = true;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
 
   ///
@@ -51,7 +157,7 @@ class SearchController extends GetxController {
   void gotoDetailFood(String id) {
     Get.toNamed(SearchRoutes.DETAIL_FOOD, arguments: id);
   }
-  
+
   ///
   /// format sold
   ///

@@ -101,16 +101,19 @@ class BottomBarPage extends GetView<BottomBarController> {
 /// floatting button cart
 ///
 Widget _floattingButton(BottomBarController controller) {
-  return controller.listProductsCard.isEmpty
+  return controller.countCart==0
       ? Container()
-      : FloatingActionButton(
+      : 
+       FloatingActionButton(
           backgroundColor: ColorResources.WHITE,
           onPressed: () {
             controller.gotoCart();
           },
           child: badge.Badge(
-            badgeContent: Text(
-              controller.listProductsCard.length.toString(),
+            badgeContent:
+            controller.isLoading==false ? const Center(child: CircularProgressIndicator(),) : 
+             Text(
+              controller.countCart.toString(),
               style: TextStyle(
                 color: ColorResources.WHITE,
                 fontFamily: NUNITO,

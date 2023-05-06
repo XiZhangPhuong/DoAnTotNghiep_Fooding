@@ -1,19 +1,24 @@
 
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
+import 'package:fooding_project/repository/cart_repository.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/screens/profile/profile_page.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../routes/routes_path/cart_routes.dart';
 
 
 class BottomBarController extends GetxController {
+  final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   final List<Map<String, dynamic>> pages = [
     {
       'label': "Home",
@@ -36,13 +41,14 @@ class BottomBarController extends GetxController {
   RxInt currentIndex = 0.obs;
   double sizeIcon = 24.0;
   List<Products> listProductsCard = [];
-  String idUser = '';
+  String idUser = sl<SharedPreferenceHelper>().getIdUser;
+  bool isLoading = false;
+  int countCart = 0;
 
   @override
   void onInit() {
     super.onInit();
-    idUser = sl.get<SharedPreferenceHelper>().getIdUser;
-    getCartList();
+    countCartByIDStore();
     if (Get.arguments != null) {
       if (Get.arguments.runtimeType == int) {
         currentIndex.value = Get.arguments as int;
@@ -58,24 +64,8 @@ class BottomBarController extends GetxController {
     update();
   }
 
+ 
   
-  ///
-  /// get data cart
-  ///
-  Future<void> getCartList() async {
-    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('carts')
-            .where('idUser', isEqualTo:  idUser )
-            .get();
-    if (querySnapshot.docs.isNotEmpty) {
-      for (var element in querySnapshot.docs) {
-        CartRquest cartRquest = CartRquest.fromMap(element.data());
-        listProductsCard = cartRquest.listProduct!;
-      }
-      update();
-    }
-  }
  
  ///
  /// gotoCart
@@ -99,5 +89,18 @@ class BottomBarController extends GetxController {
   void onClose() {
     currentIndex.close();
     super.onClose();
+  }
+
+  ///
+  /// count cart by idStore
+  ///
+  void countCartByIDStore(){
+    _cartRepository.counCartByIDUser(idUser: idUser, onSucess: (data) {
+       countCart = data;
+       isLoading = true;
+       update();
+    }, onError: (error) {
+       print(error.toString());
+    },);
   }
 }

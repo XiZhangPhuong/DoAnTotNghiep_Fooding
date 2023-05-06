@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,33 +9,38 @@ import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
+import 'package:fooding_project/repository/cart_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
+import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart';
 
 class DetailFoodController extends GetxController {
   bool isCheckFavorite = false;
   bool isLoading = false;
   bool isLoadingStore = false;
+  bool isLoadingProduct = false;
   int currentIndex = 0;
   String idProduct = "";
   String idStore = "";
   String timeStore = "";
   Products? productsModel;
   Store? userModel;
+  int limit = 10;
+  int countProduct = 0;
   List<Products> listProducts = [];
-
   List<Products> listProductsCart =
       Get.find<BottomBarController>().listProductsCard;
   int quantity = 0;
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
-  final ProductsRepository _productsRepository =  GetIt.I.get<ProductsRepository>();
-  
+  final ProductsRepository _productsRepository =
+      GetIt.I.get<ProductsRepository>();
+  final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
+  final UserRepository _userRepository = GetIt.I.get<UserRepository>();
 
   ///
   /// click favorite
@@ -42,17 +49,34 @@ class DetailFoodController extends GetxController {
     isCheckFavorite = !isCheckFavorite;
     update();
   }
+
   ///
   /// format  sold product
   ///
   String formatSold(int sales) {
-  if (sales >= 1000) {
-    double formattedSales = sales / 1000;
-    return '${formattedSales.toStringAsFixed(1)}k đã bán';
-  } else {
-    return '$sales đã bán';
+    if (sales >= 1000) {
+      double formattedSales = sales / 1000;
+      return '${formattedSales.toStringAsFixed(1)}k đã bán';
+    } else {
+      return '$sales đã bán';
+    }
   }
-}
+
+  ///
+  /// count product by idStore
+  ///
+  void countProductByIdStore() {
+    _productsRepository.countProductByIdStore(
+      idStore: idStore,
+      onSucess: (data) {
+        countProduct = data;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
 
   ///
   /// change page slide show
@@ -73,7 +97,42 @@ class DetailFoodController extends GetxController {
     super.onInit();
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
-    // getCartList();
+  }
+
+  ///
+  /// find product by id
+  ///
+  Future<void> findProduct() async {
+    await _productsRepository.find(
+      idProduct: idProduct,
+      onSucess: (data) {
+        productsModel = data;
+        isLoadingProduct = true;
+        findStoreByID();
+        paginateProductsByNameCateogry();
+        countProductByIdStore();
+        isLoading = true;
+        update();
+      },
+      onError: (error) {},
+    );
+  }
+
+  ///
+  /// fint store by id
+  ///
+  Future<void> findStoreByID() async {
+    _userRepository.findStoreByID(
+      idStore: productsModel!.idUser!,
+      onSucces: (store) {
+        userModel = store;
+        isLoadingStore = true;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
 
   ///
@@ -85,22 +144,41 @@ class DetailFoodController extends GetxController {
       return;
     }
     if (checkIdStore(products.idUser!)) {
-      Get.dialog(showDialog(idUser,products));
+      Get.dialog(showDialog(idUser, products));
       return;
     }
-    EasyLoading.show(status: "Đang cập nhật");
-    IZIAlert().success(message: 'Thêm món ăn thành công');
-    listProductsCart.add(products);
-    pushProductToFireStore(idUser, listProducts);
-    Get.find<BottomBarController>().update();
-    EasyLoading.dismiss();
-    update();
+    addCartToFireStore();
+  }
+
+  ///
+  /// add cart
+  ///
+  void addCartToFireStore() {
+    final CartRquest cartRquest = CartRquest();
+    cartRquest.idUser = idUser;
+    listProductsCart.add(productsModel!);
+    cartRquest.listProduct = listProductsCart;
+    _cartRepository.addCart(
+      idUser: idUser,
+      data: cartRquest,
+      onSucces: () {
+        EasyLoading.show(status: "Đang cập nhật");
+        IZIAlert().success(message: 'Thêm món ăn thành công');
+        Get.find<BottomBarController>().countCartByIDStore();
+        //Get.find<BottomBarController>().update();
+        EasyLoading.dismiss();
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
 
   ///
   /// showDialog if !idStore
   ///
-  Widget showDialog(String id,Products products){
+  Widget showDialog(String id, Products products) {
     return DialogCustom(
       description: 'Món ăn không cùng cửa hàng.Bạn có muốn thay thế không ?',
       agree: 'Có',
@@ -111,7 +189,7 @@ class DetailFoodController extends GetxController {
         Get.back();
         listProductsCart.clear();
         listProductsCart.add(products);
-        pushProductToFireStore(idUser,listProductsCart);
+        pushProductToFireStore(idUser, listProductsCart);
         Get.find<BottomBarController>().update();
         update();
       },
@@ -128,14 +206,27 @@ class DetailFoodController extends GetxController {
     Get.back(result: SUCCESS);
   }
 
+  ////
+  /// go to store
+  ///on
+  void gotoStore({required String idStore}) {
+    Get.toNamed(DetailtFoodRoutes.STORE, arguments: idStore);
+  }
+
   ///
-  /// go to cart
+  /// go to detail food
   ///
-  void gotoCard() {
-    Get.back();
-    final data = Get.find<BottomBarController>();
-    data.currentIndex.value = 2;
-    data.update();
+  void gotoDetailFood(String id) {
+    Get.toNamed(DetailtFoodRoutes.DETAILT_FOOD, arguments: id);
+  }
+
+  ///
+  /// click item product
+  ///
+  void clickItemProduct(String idProducts) {
+    idProduct = idProducts;
+    findProductByID(idProduct);
+    update();
   }
 
   ///
@@ -154,8 +245,28 @@ class DetailFoodController extends GetxController {
   }
 
   ///
+  /// get all data products by name category
+  ///
+  Future<void> paginateProductsByNameCateogry() async {
+    listProducts.clear();
+    _productsRepository.paginateProductsByIDCateogry(
+      limit: limit,
+      idCategory: productsModel!.idCategory!,
+      onSucess: (listProduct) {
+        listProducts = listProduct;
+        listProducts.shuffle();
+        isLoadingProduct = false;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+  ///
   /// find product by id
-  /// 
+  ///
   Future<void> findProductByID(String idProduct) async {
     final QuerySnapshot<Map<String, dynamic>> querySnapshot =
         await FirebaseFirestore.instance
@@ -169,22 +280,16 @@ class DetailFoodController extends GetxController {
       productsModel = products;
       idStore = productsModel!.idUser!;
       findAddress();
-      getProductList();(idStore);
+      paginateProductsByNameCateogry();
+      countProductByIdStore();
       isLoading = true;
-      // ignore: avoid_print
       print(productsModel!.toMap());
       update();
     }
   }
 
   ///
-  ///  go to store
-  ///
-   void gotoStore(String idStore){
-    Get.toNamed(DetailtFoodRoutes.STORE,arguments:  idStore);
-   }
-  ///
-  /// get data products
+  /// get data products : các món của cửa hàng
   ///
   Future<void> getProductList() async {
     final QuerySnapshot<Map<String, dynamic>> querySnapshot =
@@ -219,7 +324,6 @@ class DetailFoodController extends GetxController {
       final Store user = Store.fromMap(querySnapshot.docs.first.data());
       userModel = user;
       // ignore: avoid_print1
-      gettimeStore(user.openHour!, user.closeHour!);
       isLoadingStore = true;
       print(userModel!.toMap());
       update();
@@ -251,22 +355,29 @@ class DetailFoodController extends GetxController {
   }
 
   ///
-  /// on off store
+  /// check opening hours
   ///
-  void gettimeStore(String start, String end) {
-    DateFormat format = DateFormat('HH:mm');
-    DateTime time = format.parse(end);
-    TimeOfDay timeOfDay = TimeOfDay.fromDateTime(time);
+  String checkOpeningHours(String opentime, String closetime) {
+    final now = DateTime.now();
+    final openingTime = TimeOfDay(
+        hour: int.parse(opentime.split(':')[0]),
+        minute: int.parse(opentime.split(':')[1]));
+    final closingTime = TimeOfDay(
+        hour: int.parse(closetime.split(':')[0]),
+        minute: int.parse(closetime.split(':')[1]));
+    final currentTime = TimeOfDay.fromDateTime(now);
 
-    // Lấy thời gian hiện tại
-    TimeOfDay now = TimeOfDay.now();
-
-    // So sánh đối tượng TimeOfDay với thời gian hiện tại
-    if (timeOfDay.hour < now.hour ||
-        (timeOfDay.hour == now.hour && timeOfDay.minute < now.minute)) {
-      timeStore = "Đang mở cửa : $start - $end";
+    if (currentTime.hour > openingTime.hour &&
+        currentTime.hour < closingTime.hour) {
+      return 'Đang mở cửa $opentime - $closetime';
+    } else if (currentTime.hour == openingTime.hour &&
+        currentTime.minute >= openingTime.minute) {
+      return 'Đang mở cửa $opentime - $closetime';
+    } else if (currentTime.hour == closingTime.hour &&
+        currentTime.minute < closingTime.minute) {
+      return 'Đang mở cửa $opentime - $closetime';
     } else {
-      timeStore = "Đã đóng cửa : $start - $end";
+      return 'Đã đóng cửa $opentime - $closetime';
     }
   }
 }

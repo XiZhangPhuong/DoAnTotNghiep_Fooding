@@ -20,23 +20,25 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     return GetBuilder(
       init: DetailFoodController(),
       builder: (DetailFoodController controller) {
-        return controller.isLoading == false &&
-                controller.isLoadingStore == false
+        return controller.isLoading == false  
             ? const Center(
                 child: CircularProgressIndicator(),
               )
             : Scaffold(
                 //  bottomSheet: _bottomSheet(),
                 // floating button
-                floatingActionButton:  P45Button(title: '', onPressed: () {
-                  
-                },),
+                floatingActionButton: P45Button(
+                  title: 'Thêm giỏ hàng',
+                  onPressed: () {
+                    controller.addCart(controller.productsModel!);
+                  },
+                ),
                 floatingActionButtonLocation:
-                    FloatingActionButtonLocation.startFloat,
+                    FloatingActionButtonLocation.centerFloat,
                 backgroundColor: ColorResources.BACK_GROUND,
                 body: Container(
                     margin: EdgeInsets.only(
-                        bottom: IZIDimensions.ONE_UNIT_SIZE * 0),
+                        bottom: IZIDimensions.ONE_UNIT_SIZE * 150),
                     child: Column(
                       children: [
                         _imageSlider(controller),
@@ -152,28 +154,36 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                             width: IZIDimensions.SPACE_SIZE_1X,
                                           ),
                                           Text(
-                                            controller.timeStore,
-                                            style: controller.timeStore
-                                                    .contains('Đã đóng cửa')
-                                                ? TextStyle(
-                                                    color: ColorResources.BLACK,
-                                                    fontFamily: NUNITO,
-                                                    fontWeight: FontWeight.w400,
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                    fontSize: IZIDimensions
-                                                        .FONT_SIZE_SPAN_SMALL,
-                                                  )
-                                                : TextStyle(
-                                                    color: ColorResources.BLACK,
-                                                    fontFamily: NUNITO,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: IZIDimensions
-                                                        .FONT_SIZE_SPAN_SMALL,
-                                                  ),
-                                          ),
+                                            controller.isLoadingStore==false ? 'Loading' : 
+                                              controller.checkOpeningHours(
+                                                  controller
+                                                      .userModel!.openHour!,
+                                                  controller
+                                                      .userModel!.closeHour!),
+                                              style: TextStyle(
+                                                color: ColorResources.BLACK,
+                                                fontFamily: NUNITO,
+                                                fontWeight: FontWeight.w400,
+                                                decoration:  
+                                                controller.isLoadingStore==false ? null 
+                                                :                                           
+                                                controller
+                                                        .checkOpeningHours(
+                                                            controller
+                                                                .userModel!
+                                                                .openHour!,
+                                                            controller
+                                                                .userModel!
+                                                                .closeHour!)
+                                                        .contains('Đã đóng cửa')
+                                                    ? TextDecoration.lineThrough
+                                                    : TextDecoration.none,
+                                                fontSize: IZIDimensions
+                                                    .FONT_SIZE_SPAN_SMALL,
+                                              )),
                                           const Spacer(),
                                           Text(
+                                            IZIValidate.nullOrEmpty(controller.productsModel) ? 'Loading' : 
                                             '${IZIPrice.currencyConverterVND(controller.productsModel!.price!.toDouble())}đ',
                                             style: TextStyle(
                                               color: ColorResources.colorMain,
@@ -185,14 +195,14 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                           ),
                                         ],
                                       ),
-                                    
+
                                       const Divider(),
                                       // infor store
                                       _inforStore(controller),
                                       const Divider(),
                                       // các món của cửa hàng
                                       Text(
-                                        'Các món của cửa hàng',
+                                        'Mô tả sản phẩm',
                                         style: TextStyle(
                                           color: ColorResources.BLACK,
                                           fontFamily: NUNITO,
@@ -200,10 +210,258 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                           fontSize: IZIDimensions.FONT_SIZE_H6,
                                         ),
                                       ),
+                                      SizedBox(
+                                        height:
+                                            IZIDimensions.SPACE_SIZE_2X * 0.7,
+                                      ),
+                                      Text(
+                                        IZIValidate.nullOrEmpty(controller
+                                                .productsModel!.description)
+                                            ? ''
+                                            : controller
+                                                .productsModel!.description!,
+                                        style: TextStyle(
+                                          color: ColorResources.GREY,
+                                          fontFamily: NUNITO,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: IZIDimensions
+                                              .FONT_SIZE_SPAN_SMALL,
+                                        ),
+                                      ),
+                                      const Divider(),
+                                      SizedBox(
+                                        height:
+                                            IZIDimensions.SPACE_SIZE_2X * 0.7,
+                                      ),
 
-                                      // listview product in store
+                                      // similar product
+                                      _sililarProduct(controller),
 
-                                      _listviewProducts(controller)
+                                      SizedBox(
+                                        height:
+                                            IZIDimensions.SPACE_SIZE_2X * 0.7,
+                                      ),
+                                      const Divider(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Bình luận',
+                                            style: TextStyle(
+                                              color: ColorResources.BLACK,
+                                              fontFamily: NUNITO,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize:
+                                                  IZIDimensions.FONT_SIZE_H6,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Xem tất cả',
+                                            style: TextStyle(
+                                              color: ColorResources.colorMain,
+                                              fontFamily: NUNITO,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize:
+                                                  IZIDimensions.FONT_SIZE_H6,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      // list commet
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: 5,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap : () {
+                                                           
+                                            },
+                                            child: Card(
+                                              elevation: 0.3,
+                                              child: Container(
+                                                padding: EdgeInsets.all(
+                                                    IZIDimensions.SPACE_SIZE_2X),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    ClipOval(
+                                                      child: IZIImage(
+                                                        '',
+                                                        height: IZIDimensions
+                                                                .ONE_UNIT_SIZE *
+                                                            50,
+                                                        width: IZIDimensions
+                                                                .ONE_UNIT_SIZE *
+                                                            50,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: IZIDimensions
+                                                          .SPACE_SIZE_3X,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          'Văn Văn Phương',
+                                                          style: TextStyle(
+                                                            color: ColorResources
+                                                                .BLACK,
+                                                            fontFamily: NUNITO,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: IZIDimensions
+                                                                .FONT_SIZE_DEFAULT,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: IZIDimensions
+                                                              .SPACE_SIZE_1X,
+                                                        ),
+                                                        RatingStars(
+                                                          value: 4.5,
+                                                          starCount: 5,
+                                                          starSize: IZIDimensions
+                                                                  .ONE_UNIT_SIZE *
+                                                              25,
+                                                          starColor:
+                                                              Colors.yellow,
+                                                          maxValueVisibility:
+                                                              false,
+                                                          valueLabelVisibility:
+                                                              false,
+                                                          onValueChanged:
+                                                              (value) {},
+                                                        ),
+                                                        SizedBox(
+                                                          height: IZIDimensions
+                                                              .SPACE_SIZE_1X,
+                                                        ),
+                                                        Text(
+                                                          'Món này rất ngon nha',
+                                                          style: TextStyle(
+                                                            color: ColorResources
+                                                                .BLACK,
+                                                            fontFamily: NUNITO,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: IZIDimensions
+                                                                .FONT_SIZE_SPAN_SMALL,
+                                                          ),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                      IZIDimensions
+                                                                          .BLUR_RADIUS_2X),
+                                                              child: IZIImage(
+                                                                '',
+                                                                height: IZIDimensions
+                                                                        .ONE_UNIT_SIZE *
+                                                                    80,
+                                                                width: IZIDimensions
+                                                                        .ONE_UNIT_SIZE *
+                                                                    80,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: IZIDimensions
+                                                                  .SPACE_SIZE_1X,
+                                                            ),
+                                                            ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                      IZIDimensions
+                                                                          .BLUR_RADIUS_2X),
+                                                              child: IZIImage(
+                                                                '',
+                                                                height: IZIDimensions
+                                                                        .ONE_UNIT_SIZE *
+                                                                    80,
+                                                                width: IZIDimensions
+                                                                        .ONE_UNIT_SIZE *
+                                                                    80,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: () {},
+                                                              child: Text(
+                                                                'Thích',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      ColorResources
+                                                                          .BLACK,
+                                                                  fontFamily:
+                                                                      NUNITO,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize:
+                                                                      IZIDimensions
+                                                                          .FONT_SIZE_SPAN_SMALL,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: IZIDimensions
+                                                                  .SPACE_SIZE_2X,
+                                                            ),
+                                                            GestureDetector(
+                                                              onTap: () {},
+                                                              child: Text(
+                                                                'Bình luận',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      ColorResources
+                                                                          .BLACK,
+                                                                  fontFamily:
+                                                                      NUNITO,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize:
+                                                                      IZIDimensions
+                                                                          .FONT_SIZE_SPAN_SMALL,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                    const Spacer(),
+                                                    Text(
+                                                      '12-12-2023 | 12:20',
+                                                      style: TextStyle(
+                                                        color:
+                                                            ColorResources.GREY,
+                                                        fontFamily: NUNITO,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize: IZIDimensions
+                                                            .FONT_SIZE_SPAN_SMALL,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      )
                                     ],
                                   ),
                                 ),
@@ -214,6 +472,150 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                       ],
                     )),
               );
+      },
+    );
+  }
+
+///
+/// slililarProduct
+///
+  Widget _sililarProduct(DetailFoodController controller) {
+    return Visibility(
+      visible: controller.listProducts.isEmpty ?  false : true ,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Sản phẩm tương tự',
+            style: TextStyle(
+              color: ColorResources.BLACK,
+              fontFamily: NUNITO,
+              fontWeight: FontWeight.w600,
+              fontSize: IZIDimensions.FONT_SIZE_H6,
+            ),
+          ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_2X * 0.7,
+          ),
+          // similar products
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Container(
+                  height: IZIDimensions.ONE_UNIT_SIZE * 320,
+                  color: ColorResources.WHITE,
+                  child: controller.isLoadingProduct == true
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : _listViewProduct(controller),
+                ),
+                SizedBox(
+                  width: IZIDimensions.SPACE_SIZE_2X,
+                ),
+    
+                // view all list products
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: IZIDimensions.ONE_UNIT_SIZE * 320,
+                    width: IZIDimensions.ONE_UNIT_SIZE * 230,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
+                        border: Border.all(
+                            width: 0.3, color: ColorResources.colorMain)),
+                    child: Center(
+                      child: Text(
+                        'Xem tất cả',
+                        style: TextStyle(
+                            color: ColorResources.colorMain,
+                            fontSize: IZIDimensions.FONT_SIZE_H6,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ///
+  ///  list view products
+  ///
+  Widget _listViewProduct(DetailFoodController controller) {
+    return ListView.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      itemCount: controller.listProducts.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            controller.gotoDetailFood(controller.listProducts[index].id!);
+          },
+          child: Card(
+            elevation: 1,
+            child: Container(
+              width: IZIDimensions.ONE_UNIT_SIZE * 230,
+              margin: EdgeInsets.only(right: IZIDimensions.SPACE_SIZE_3X),
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+                    child: IZIImage(
+                      controller.listProducts[index].image!.first,
+                      height: IZIDimensions.ONE_UNIT_SIZE * 200,
+                      width: IZIDimensions.ONE_UNIT_SIZE * 230,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(
+                    height: IZIDimensions.SPACE_SIZE_2X,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
+                    child: Text(
+                      controller.listProducts[index].name!,
+                      style: TextStyle(
+                        color: ColorResources.titleLogin,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
+                    child: Text(
+                      '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ',
+                      style: TextStyle(
+                        color: ColorResources.colorMain,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                      ),
+                      maxLines: 2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     );
   }
@@ -369,7 +771,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                             overflow: TextOverflow.ellipsis),
                       ),
                       Text(
-                        '${controller.listProducts.length} sản phẩm',
+                        '${controller.countProduct} sản phẩm',
                         style: TextStyle(
                           color: ColorResources.BLACK,
                           fontFamily: NUNITO,
@@ -383,7 +785,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                   // view store
                   GestureDetector(
                     onTap: () {
-                      controller.gotoStore(controller.userModel!.id!);
+                      controller.gotoStore(idStore: controller.userModel!.id!);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -426,27 +828,27 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     return controller.listProductsCart.isEmpty
         ? Container()
         : Visibility(
-          visible: false,
-          child: FloatingActionButton(
-              backgroundColor: ColorResources.WHITE,
-              onPressed: () {},
-              child: badge.Badge(
-                badgeContent: Text(
-                  controller.listProductsCart.length.toString(),
-                  style: TextStyle(
-                    color: ColorResources.WHITE,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w600,
-                    fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+            visible: false,
+            child: FloatingActionButton(
+                backgroundColor: ColorResources.WHITE,
+                onPressed: () {},
+                child: badge.Badge(
+                  badgeContent: Text(
+                    controller.listProductsCart.length.toString(),
+                    style: TextStyle(
+                      color: ColorResources.WHITE,
+                      fontFamily: NUNITO,
+                      fontWeight: FontWeight.w600,
+                      fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+                    ),
                   ),
-                ),
-                child: Icon(
-                  Icons.shopping_cart,
-                  size: IZIDimensions.ONE_UNIT_SIZE * 40,
-                  color: ColorResources.RED,
-                ),
-              )),
-        );
+                  child: Icon(
+                    Icons.shopping_cart,
+                    size: IZIDimensions.ONE_UNIT_SIZE * 40,
+                    color: ColorResources.RED,
+                  ),
+                )),
+          );
   }
 
   ///
