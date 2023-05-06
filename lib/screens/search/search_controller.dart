@@ -20,6 +20,7 @@ class SearchController extends GetxController {
     'Cơm chiên dương châu',
     'Trà sửa'
   ];
+
   List<String> listNameCategory = [];
   List<Products> listProducts = [];
   bool isLoadDingNameCategory = false;
@@ -36,7 +37,12 @@ class SearchController extends GetxController {
     super.onInit();
     
     getNameCategory();
-    paginateProduct();
+    if(IZIValidate.nullOrEmpty(nameCategory)){
+          paginateProduct();
+    }else{
+       paginateProductsByNameCateogry();
+    }
+
     
 
   }

@@ -283,7 +283,7 @@ class HomeScreenPage extends GetView<HomeController> {
                         horizontal: IZIDimensions.SPACE_SIZE_3X * 0),
                     child: (index) => GestureDetector(
                           onTap: () {
-                            controller.gotoCategoryPage(
+                            controller.gotoSearchPage(
                                 controller.listCategory[index].name!);
                           },
                           child: Column(
