@@ -25,7 +25,7 @@ class UserRepository {
         BCrypt.gensalt(),
       );
       userRequest.avatar = "";
-      userRequest.fullName = "";
+      userRequest.fullName = "No Name";
       userRequest.email = "";
       userRequest.isDeleted = false;
       userRequest.typeUser = "CUSTOMER";
@@ -209,11 +209,16 @@ class UserRepository {
       onError(e);
     }
   }
+
   ///
   /// Delete Location.
   ///
-  Future<void> deleteLocation({required String id, required Function onSucces,required Function onError,}) async{
-        try {
+  Future<void> deleteLocation({
+    required String id,
+    required Function onSucces,
+    required Function onError,
+  }) async {
+    try {
       final query = await _fireStore
           .collection("users")
           .doc(sl<SharedPreferenceHelper>().getIdUser)

@@ -12,6 +12,7 @@ class VoucherController extends GetxController {
   List<Voucher> listVouchers = [];
   TextEditingController textvoucher = TextEditingController();
   double? price;
+  int index = -1;
   @override
   void dispose() {
     super.dispose();
@@ -63,11 +64,16 @@ class VoucherController extends GetxController {
   /// On Click ListView
   ///
   void onClickListView(int index) {
+    if (index == -1) {
+      IZIAlert().error(message: "Bạn chưa chọn mã giảm giá");
+      return;
+    }
     if (listVouchers[index].minOrderPrice! > price!) {
       IZIAlert()
           .error(message: "Bạn không đủ điều kiện để sử dụng voucher này");
     } else {
       Get.back(result: listVouchers[index]);
+      IZIAlert().success(message: "Bạn sử dụng mã giảm giá thành công");
     }
   }
 }

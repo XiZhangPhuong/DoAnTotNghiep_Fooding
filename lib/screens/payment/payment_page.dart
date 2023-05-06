@@ -24,12 +24,12 @@ class PaymentPage extends GetView<PaymentController> {
           backgroundColor: ColorResources.BACK_GROUND,
           appBar: _appBar(),
           bottomSheet: _bottomSheet(controller),
-          body: IZIValidate.nullOrEmpty(controller.cartResponse.idUser)
-              ? const Text("Chưa có món nào trong giỏ hàng!")
-              : controller.isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
+          body: controller.isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : IZIValidate.nullOrEmpty(controller.cartResponse.idUser)
+                  ? const Text("Chưa có món nào trong giỏ hàng!")
                   : Container(
                       margin: EdgeInsets.only(
                           bottom: IZIDimensions.ONE_UNIT_SIZE * 80),

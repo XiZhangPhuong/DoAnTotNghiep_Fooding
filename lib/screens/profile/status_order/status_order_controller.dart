@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/model/order/order.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
@@ -33,16 +34,16 @@ class StatusOrderController extends GetxController {
   ///
   void listenData() {
     final reference = FirebaseFirestore.instance
-        .collection('users')
-        .where("id", isEqualTo: sl<SharedPreferenceHelper>().getIdUser);
+        .collection('orders')
+        .where("idCustomer", isEqualTo: sl<SharedPreferenceHelper>().getIdUser);
     reference.snapshots().listen(
       (querySnapshot) {
         querySnapshot.docChanges.forEach((change) {
           // Do something with change
           final data = change.doc.data();
           if (!IZIValidate.nullOrEmpty(data)) {
-            User user = User.fromMap(data!);
-            print(user.gender);
+            OrderResponse user = OrderResponse.fromMap(data!);
+            print(user.id);
           }
         });
       },

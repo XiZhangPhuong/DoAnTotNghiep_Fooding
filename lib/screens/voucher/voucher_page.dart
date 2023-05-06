@@ -55,7 +55,13 @@ class VoucherPage extends GetView {
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: () {
-                                  controller.onClickListView(index);
+                                  if (controller.index == index) {
+                                    controller.index = -1;
+                                    controller.update();
+                                  } else {
+                                    controller.index = index;
+                                    controller.update();
+                                  }
                                 },
                                 child: Stack(
                                   children: [
@@ -67,7 +73,9 @@ class VoucherPage extends GetView {
                                       padding: EdgeInsets.all(
                                         IZIDimensions.SPACE_SIZE_1X * 0.5,
                                       ),
-                                      color: Colors.white,
+                                      color: controller.index == index
+                                          ? const Color(0xfff99b7d)
+                                          : Colors.white,
                                       child: Row(
                                         children: [
                                           SizedBox(
@@ -82,7 +90,14 @@ class VoucherPage extends GetView {
                                                 IZIDimensions.BORDER_RADIUS_4X,
                                               ),
                                               child: IZIImage(
-                                                ImagesPath.placeHolder,
+                                                IZIValidate.nullOrEmpty(
+                                                        controller
+                                                            .listVouchers[index]
+                                                            .image)
+                                                    ? ImagesPath.placeHolder
+                                                    : controller
+                                                        .listVouchers[index]
+                                                        .image!,
                                               ),
                                             ),
                                           ),
@@ -176,28 +191,30 @@ class VoucherPage extends GetView {
                 );
         },
       ),
-      // bottomSheet: GetBuilder(
-      //   builder: (VoucherController controller) =>
-      //       MediaQuery.of(context).viewInsets.bottom > 0
-      //           ? const SizedBox()
-      //           : controller.isLoading
-      //               ? const SizedBox()
-      //               : Container(
-      //                   color: Colors.white,
-      //                   margin: EdgeInsets.only(
-      //                     bottom: IZIDimensions.SPACE_SIZE_2X,
-      //                   ),
-      //                   width: IZIDimensions.iziSize.width,
-      //                   height: IZIDimensions.ONE_UNIT_SIZE * 90,
-      //                   child: Center(
-      //                     child: ButtonFooding(
-      //                       text: "Đồng ý",
-      //                       ontap: () {},
-      //                       border: IZIDimensions.BORDER_RADIUS_4X,
-      //                     ),
-      //                   ),
-      //                 ),
-      // ),
+      bottomSheet: GetBuilder(
+        builder: (VoucherController controller) =>
+            MediaQuery.of(context).viewInsets.bottom > 0
+                ? const SizedBox()
+                : controller.isLoading
+                    ? const SizedBox()
+                    : Container(
+                        color: Colors.white,
+                        margin: EdgeInsets.only(
+                          bottom: IZIDimensions.SPACE_SIZE_2X,
+                        ),
+                        width: IZIDimensions.iziSize.width,
+                        height: IZIDimensions.ONE_UNIT_SIZE * 90,
+                        child: Center(
+                          child: ButtonFooding(
+                            text: "Đồng ý",
+                            ontap: () {
+                              controller.onClickListView(controller.index);
+                            },
+                            border: IZIDimensions.BORDER_RADIUS_4X,
+                          ),
+                        ),
+                      ),
+      ),
     );
   }
 

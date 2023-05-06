@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zalopay_sdk/flutter_zalopay_sdk.dart';
@@ -16,6 +17,7 @@ import 'package:fooding_project/utils/app_constants.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_maps_webservice/distance.dart';
 import 'package:uuid/uuid.dart';
 import '../../base_widget/my_dialog_alert_done.dart';
 import '../../model/order/order.dart';
@@ -123,15 +125,20 @@ class PaymentController extends GetxController {
     isLoading = true;
     _orderResponsitory.getCart(
       (onSucces) async {
-        cartResponse = onSucces;
+        if (!IZIValidate.nullOrEmpty(onSucces.idUser)) {
+          cartResponse = onSucces;
+          tamTinh();
+          await findUser();
+          await findLocation();
+        }
+
         isLoading = false;
-        tamTinh();
-        await findUser();
-        await findLocation();
         update();
       },
       (e) {
         print(e.toString());
+        isLoading = false;
+        update();
       },
     );
   }
@@ -250,15 +257,23 @@ class PaymentController extends GetxController {
           if (!IZIValidate.nullOrEmpty(data)) {
             location = data;
             List<String> listLatLong = location.latlong!.split(";");
-            distance = (Geolocator.distanceBetween(
-                      16.0718593,
-                      108.2206474,
-                      double.parse(listLatLong[0].toString()),
-                      double.parse(listLatLong[1].toString()),
-                    ) /
-                    1000)
-                .toPrecision(2);
+            // distance = (Geolocator.distanceBetween(
+            //           16.0718593,
+            //           108.2206474,
+            //           double.parse(listLatLong[0].toString()),
+            //           double.parse(listLatLong[1].toString()),
+            //         ) /
+            //         1000)
+            //     .toPrecision(2);
+            var response = await Dio().get(
+                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=16.0718593,108.2206474&key=AIzaSyB1KM0R3xVa8P0_VvMQah-F16OFrIYORs8');
+            DistanceResponse distanceResponse = DistanceResponse.fromJson(
+                response.data as Map<String, dynamic>);
+            distance = double.parse(distanceResponse
+                .rows[0].elements[0].distance.text
+                .split(' ')[0]);
             priceShip = distance! * 10000;
+            update();
           }
         },
         onError: (error) {
@@ -324,6 +339,10 @@ class PaymentController extends GetxController {
     }
     if (IZIValidate.nullOrEmpty(location)) {
       IZIAlert().error(message: "Vui lòng chọn địa chỉ");
+      return false;
+    }
+    if (IZIValidate.nullOrEmpty(cartResponse.listProduct)) {
+      IZIAlert().error(message: "Hiện tại chưa có món nào trong giỏ hàng");
       return false;
     }
     return true;
