@@ -13,6 +13,7 @@ import 'package:fooding_project/model/voucher/voucher.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/cart_routes.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -46,6 +47,16 @@ class PaymentController extends GetxController {
   Voucher? myVourcher;
 
   TextEditingController noteEditingController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    noteEditingController.dispose();
+    descriptionController.dispose();
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -147,7 +158,9 @@ class PaymentController extends GetxController {
   /// Find user.
   ///
   Future<void> findUser() async {
+    isLoading = true;
     userResponse = await _userRepository.findUser();
+    isLoading = false;
   }
 
   ///
@@ -219,6 +232,10 @@ class PaymentController extends GetxController {
         tamTinh();
         update();
       }
+      final bot = Get.find<BottomBarController>();
+      bot.countCartByIDStore();
+      bot.update();
+
       EasyLoading.dismiss();
     }
   }
@@ -308,6 +325,7 @@ class PaymentController extends GetxController {
             IZIDate.formatDate(DateTime.now(), format: "HH:mm dd/MM/yyyy");
         order.statusOrder = "PENDING";
         order.totalPrice = totalPay().toInt().toString();
+        order.note = descriptionController.text.trim();
         if (typePayment == CASH) {
           await _orderResponsitory.addOrder(
             orderRequest: order,
@@ -373,4 +391,8 @@ class PaymentController extends GetxController {
         ? 0
         : priceShip + tamtinh - discount;
   }
+
+  ///
+  /// show notification
+  ///
 }

@@ -30,7 +30,22 @@ class StatusOrderPage extends GetView {
                 colorText: const Color(0xffF8775C),
                 disbleColorText: ColorResources.BLACK,
               ),
-              Text("Test 1"),
+              Expanded(child: ListView.builder(
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text("Hoàn Mỹ Sport"),
+                          Spacer(),
+                          Text("Đang giao"),
+                        ],
+                      )
+                    ],
+                  );
+                },
+              ))
             ],
           ),
         ),

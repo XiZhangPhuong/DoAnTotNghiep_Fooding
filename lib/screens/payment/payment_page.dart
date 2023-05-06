@@ -11,6 +11,7 @@ import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 
+import '../../base_widget/izi_input.dart';
 import '../../utils/id_get_builder.dart';
 
 class PaymentPage extends GetView<PaymentController> {
@@ -28,8 +29,13 @@ class PaymentPage extends GetView<PaymentController> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : IZIValidate.nullOrEmpty(controller.cartResponse.idUser)
-                  ? const Text("Chưa có món nào trong giỏ hàng!")
+              : IZIValidate.nullOrEmpty(controller.cartResponse.listProduct)
+                  ? Center(child: Text('Giỏ hàng của bạn trống',style: TextStyle(
+                    color: ColorResources.BLACK,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_H6
+                  ),),)
                   : Container(
                       margin: EdgeInsets.only(
                           bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
@@ -64,6 +70,8 @@ class PaymentPage extends GetView<PaymentController> {
 
                                   // tổng tiền hàng
                                   _totalPriceOrder(controller),
+
+                                  _introduce(controller),
                                 ],
                               ),
                             ),
@@ -288,10 +296,10 @@ class PaymentPage extends GetView<PaymentController> {
                     ),
                     Text(
                       IZIValidate.nullOrEmpty(controller
-                              .cartResponse.listProduct![index].nameCategory)
+                              .cartResponse.listProduct![index].name)
                           ? "Không xác định"
                           : controller
-                              .cartResponse.listProduct![index].nameCategory!,
+                              .cartResponse.listProduct![index].name!,
                       style: TextStyle(
                         color: ColorResources.GREY,
                         fontFamily: NUNITO,
@@ -649,7 +657,20 @@ class PaymentPage extends GetView<PaymentController> {
     );
   }
 }
-
+  ///
+  /// Introduce.
+  ///
+  Widget _introduce(PaymentController controller) {
+    return IZIInput(
+      controller: controller.descriptionController,
+      maxLine: 5,
+      label: "Nhập ghi chú",
+      borderRadius: IZIDimensions.BORDER_RADIUS_3X,
+      placeHolder: "Nhập text vào đây...",
+      type: IZIInputType.MILTIPLINE,
+      disbleError: true,
+    );
+  }
 ///
 /// address.
 ///

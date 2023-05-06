@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/model/product/product_new.dart';
 import 'package:fooding_project/model/product/products.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
@@ -77,11 +78,7 @@ class OrderResponse {
       note: map['note'] != null ? map['note'] as String : null,
       phone: map['phone'] != null ? map['phone'] as String : null,
       listProduct: map['listProduct'] != null
-          ? List<Products>.from(
-              (map['listProduct'] as List<int>).map<Products?>(
-                (x) => Products.fromMap(x as Map<String, dynamic>),
-              ),
-            )
+          ? (map['listProduct'] as List<dynamic>).map((e) => Products.fromMap(e as Map<String, dynamic>)).toList()
           : null,
     );
   }

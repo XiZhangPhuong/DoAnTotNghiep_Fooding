@@ -25,7 +25,7 @@ class Store extends User {
     // openHour default = 8:00
     this.openHour = '8:00',
     // closeHour default = 22:00
-    this.closeHour = '10:30',
+    this.closeHour = '22:30',
     this.isOline,
   }) : super(
             id: id,
@@ -67,7 +67,7 @@ class Store extends User {
       phone: map['phone'] != null ? map['phone'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
       passWord: map['passWord'] != null ? map['passWord'] as String : null,
-      avatar: map['avatar'] != null ? map['avatar'] as String : 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/342070550_923272142250296_1881831047475036228_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=t2GycJz-I4cAX8Cxmx3&_nc_ht=scontent.fhan2-5.fna&oh=03_AdRG_tSsBdfsfSl1BEGps-rG7XVTwRXEaMzvB6tNb5Y8PA&oe=646789F0',
+      avatar: map['avatar'] != null ? map['avatar'] as String : 'https://aeros.vn/upload/images/thiet-ke-thi-cong-quan-tra-sua-25.jpg',
       typeUser: map['typeUser'] != null ? map['typeUser'] as String : null,
       isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
       address: map['address'] != null ? map['address'] as String : '120 Lý Thái Tông',
@@ -76,7 +76,7 @@ class Store extends User {
           map['dateOfBirth'] != null ? map['dateOfBirth'] as String : null,
       gender: map['gender'] != null ? map['gender'] as String : null,
       openHour: map['openHour'] != null ? map['openHour'] as String : '8:30',
-      closeHour: map['closeHour'] != null ? map['closeHour'] as String : '10:30',
+      closeHour: map['closeHour'] != null ? map['closeHour'] as String : '22:30',
       isOline: map['isOline'] != null ? map['isOline'] as bool : true,
     );
   }

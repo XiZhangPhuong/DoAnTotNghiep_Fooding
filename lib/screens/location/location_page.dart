@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/screens/components/button_app.dart';
 import 'package:fooding_project/screens/location/location_controller.dart';
-import 'package:fooding_project/screens/widgets/app_bar.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
@@ -18,9 +18,7 @@ class LocationPage extends GetView {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorResources.BACK_GROUND,
-      appBar: AppBarFooding(
-        title: "Địa chỉ nhận hàng",
-      ),
+      appBar: const P45AppBarP(title: 'Địa chỉ nhận hàng'),
       body: GetBuilder(
         init: LocationController(),
         builder: (LocationController controller) {
