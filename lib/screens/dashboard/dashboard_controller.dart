@@ -22,7 +22,7 @@ class BottomBarController extends GetxController {
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   final _orderRepository = GetIt.I.get<OrderResponsitory>();
 
-  String statusOrder = 'PENDING';
+  String statusOrder = '';
   String idOrder = '';
 
   final List<Map<String, dynamic>> pages = [
@@ -141,7 +141,7 @@ class BottomBarController extends GetxController {
               : orderResponse.statusOrder == DELIVERING
                   ? "Tài xế đang giao"
                   : '';
-          idOrder = orderResponse.id!.substring(10);
+          idOrder = orderResponse.id!.split('-')[0];
           update();
         } else {
           statusOrder = '';

@@ -157,7 +157,7 @@ class DetailOrderPage extends GetView {
                                         controller.orderResponse.timeCancel!,
                                   ),
                                 SizedBox(
-                                  height: IZIDimensions.SPACE_SIZE_2X,
+                                  height: IZIDimensions.iziSize.height * 0.1,
                                 ),
                               ],
                             ),

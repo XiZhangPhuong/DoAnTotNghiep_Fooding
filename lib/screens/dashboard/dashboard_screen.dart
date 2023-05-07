@@ -153,7 +153,7 @@ Widget statusOrder(BottomBarController controller) {
       child: Row(
         children: [
           Text(
-            'Đơn hàng #${controller.idOrder.substring(20)}   ${controller.statusOrder}...',
+            'Đơn hàng #${controller.idOrder}   ${controller.statusOrder}...',
             style: TextStyle(
               color: ColorResources.WHITE,
               fontFamily: NUNITO,
