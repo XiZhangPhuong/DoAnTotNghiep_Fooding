@@ -97,6 +97,7 @@ class OrderResponsitory {
         } else {
           final snap =
               await ref.where("statusOrder", isEqualTo: statusOrder).get();
+          print(snap.docs.toString());
           onSuccess(
               snap.docs.map((e) => OrderResponse.fromMap(e.data())).toList());
         }
@@ -132,25 +133,24 @@ class OrderResponsitory {
     }
   }
 
-
   ///
   /// get order check status
   ///
-   Future<void> getOrderByidUser({
+  Future<void> getOrderByidUser({
     required String idCustommer,
     required Function(OrderResponse onSuccess) onSuccess,
     required Function(dynamic erorr) onError,
     required String statusOrder,
   }) async {
     try {
-      final ref = _fireStore.collection("orders")
-      .where('idCustommer',isEqualTo: idCustommer).get();
-      OrderResponse? orderResponse ;
+      final ref = _fireStore
+          .collection("orders")
+          .where('idCustommer', isEqualTo: idCustommer)
+          .get();
+      OrderResponse? orderResponse;
       onSuccess(orderResponse!);
     } catch (e) {
       onError(e);
     }
   }
-
-
 }

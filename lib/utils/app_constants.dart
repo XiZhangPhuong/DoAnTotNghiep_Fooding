@@ -103,7 +103,6 @@ Future<void> LOGOUT() async {
 }
 
 const String PENDING = "PENDING",
-    CONFIRM = "CONFIRM",
     DELIVERING = "DELIVERING",
     DONE = "DONE",
     CANCEL = "CANCEL";

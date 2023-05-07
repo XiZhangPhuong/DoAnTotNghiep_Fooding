@@ -39,233 +39,308 @@ class StatusOrderPage extends GetView {
                     colorText: const Color(0xffF8775C),
                     disbleColorText: ColorResources.BLACK,
                   ),
-                  Expanded(
-                      child: IZISmartRefresher(
-                    refreshController: controller.refreshController,
-                    onRefresh: () {
-                      controller.getAllOrder();
-                    },
-                    onLoading: () {},
-                    enablePullUp: true,
-                    enablePullDown: true,
-                    child: ListView.builder(
-                      itemCount: controller.listOrder.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: EdgeInsets.all(IZIDimensions.SPACE_SIZE_1X),
-                          padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_1X),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(
-                              IZIDimensions.BORDER_RADIUS_4X,
-                            ),
+                  controller.isLoadingChangeTab
+                      ? SizedBox(
+                          height: IZIDimensions.iziSize.height * 0.8,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
                           ),
-                          child: GestureDetector(
-                            onTap: () {
-                              controller.gotoDetailOrder();
-                            },
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      controller.listOrder[index].listProduct!
-                                              .isEmpty
-                                          ? "Không xác định"
-                                          : controller.userResponse.fullName!,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontFamily: NUNITO,
-                                        fontSize:
-                                            IZIDimensions.FONT_SIZE_H6 * 0.95,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      IZIValidate.nullOrEmpty(controller
-                                              .listOrder[index].statusOrder)
-                                          ? "Không xác định"
-                                          : controller.formatStatuString(
-                                              controller.listOrder[index]
-                                                  .statusOrder!),
-                                      style: const TextStyle(
-                                        color: ColorResources.RED,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: IZIDimensions.SPACE_SIZE_2X,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: IZIDimensions.SPACE_SIZE_2X,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: IZIDimensions.SPACE_SIZE_5X,
-                                  ),
-                                  child: const Divider(
-                                    height: 2,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: IZIDimensions.iziSize.height * 0.13,
-                                  width: IZIDimensions.iziSize.width,
+                        )
+                      : Expanded(
+                          child: controller.listOrder.isEmpty
+                              ? IZIImage(
+                                  ImagesPath.emptyCart,
+                                  fit: BoxFit.contain,
+                                )
+                              : IZISmartRefresher(
+                                  refreshController:
+                                      controller.refreshController,
+                                  onRefresh: () {
+                                    controller.getAllOrder();
+                                  },
+                                  onLoading: () {},
+                                  enablePullUp: true,
+                                  enablePullDown: true,
                                   child: ListView.builder(
-                                    itemCount: controller
-                                        .listOrder[index].listProduct!.length,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, indexFood) {
-                                      final item = controller.listOrder[index]
-                                          .listProduct![indexFood];
+                                    itemCount: controller.listOrder.length,
+                                    itemBuilder: (context, index) {
                                       return Container(
-                                        height:
-                                            IZIDimensions.iziSize.height * 0.13,
-                                        width:
-                                            IZIDimensions.iziSize.width * 0.8,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              IZIDimensions.SPACE_SIZE_2X,
-                                        ),
-                                        margin: EdgeInsets.only(
-                                          top: IZIDimensions.SPACE_SIZE_1X,
-                                        ),
+                                        margin: EdgeInsets.all(
+                                            IZIDimensions.SPACE_SIZE_1X),
+                                        padding: EdgeInsets.all(
+                                            IZIDimensions.SPACE_SIZE_1X),
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                                IZIDimensions.BORDER_RADIUS_3X),
-                                            color: ColorResources.WHITE),
-                                        child: Row(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      IZIDimensions
-                                                          .BORDER_RADIUS_3X),
-                                              child: IZIImage(
-                                                IZIValidate.nullOrEmpty(
-                                                        item.image)
-                                                    ? ImagesPath.placeHolder
-                                                    : item.image!.first,
-                                                height: IZIDimensions
-                                                        .ONE_UNIT_SIZE *
-                                                    120,
-                                                width: IZIDimensions
-                                                        .ONE_UNIT_SIZE *
-                                                    120,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width:
-                                                  IZIDimensions.SPACE_SIZE_1X,
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            IZIDimensions.BORDER_RADIUS_4X,
+                                          ),
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            controller.gotoDetailOrder(index);
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Row(
                                                 children: [
                                                   Text(
-                                                    IZIValidate.nullOrEmpty(
-                                                            item.name)
-                                                        ? "không xác định"
-                                                        : item.name!,
+                                                    controller
+                                                            .listOrder[index]
+                                                            .listProduct!
+                                                            .isEmpty
+                                                        ? "Không xác định"
+                                                        : controller
+                                                            .userResponse
+                                                            .fullName!,
                                                     style: TextStyle(
-                                                      color: ColorResources
-                                                          .colorMain,
+                                                      fontWeight:
+                                                          FontWeight.w700,
                                                       fontFamily: NUNITO,
+                                                      fontSize: IZIDimensions
+                                                              .FONT_SIZE_H6 *
+                                                          0.95,
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                  Text(
+                                                    IZIValidate.nullOrEmpty(
+                                                            controller
+                                                                .listOrder[
+                                                                    index]
+                                                                .statusOrder)
+                                                        ? "Không xác định"
+                                                        : controller
+                                                            .formatStatuString(
+                                                                controller
+                                                                    .listOrder[
+                                                                        index]
+                                                                    .statusOrder!),
+                                                    style: const TextStyle(
+                                                      color: ColorResources.RED,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: IZIDimensions
+                                                        .SPACE_SIZE_2X,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height:
+                                                    IZIDimensions.SPACE_SIZE_2X,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: IZIDimensions
+                                                      .SPACE_SIZE_5X,
+                                                ),
+                                                child: const Divider(
+                                                  height: 2,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: IZIDimensions
+                                                        .iziSize.height *
+                                                    0.13,
+                                                width:
+                                                    IZIDimensions.iziSize.width,
+                                                child: ListView.builder(
+                                                  itemCount: controller
+                                                      .listOrder[index]
+                                                      .listProduct!
+                                                      .length,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemBuilder:
+                                                      (context, indexFood) {
+                                                    final item = controller
+                                                            .listOrder[index]
+                                                            .listProduct![
+                                                        indexFood];
+                                                    return Container(
+                                                      height: IZIDimensions
+                                                              .iziSize.height *
+                                                          0.13,
+                                                      width: IZIDimensions
+                                                              .iziSize.width *
+                                                          0.8,
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                        horizontal:
+                                                            IZIDimensions
+                                                                .SPACE_SIZE_2X,
+                                                      ),
+                                                      margin: EdgeInsets.only(
+                                                        top: IZIDimensions
+                                                            .SPACE_SIZE_1X,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  IZIDimensions
+                                                                      .BORDER_RADIUS_3X),
+                                                          color: ColorResources
+                                                              .WHITE),
+                                                      child: Row(
+                                                        children: [
+                                                          ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    IZIDimensions
+                                                                        .BORDER_RADIUS_3X),
+                                                            child: IZIImage(
+                                                              IZIValidate.nullOrEmpty(
+                                                                      item
+                                                                          .image)
+                                                                  ? ImagesPath
+                                                                      .placeHolder
+                                                                  : item.image!
+                                                                      .first,
+                                                              height: IZIDimensions
+                                                                      .ONE_UNIT_SIZE *
+                                                                  120,
+                                                              width: IZIDimensions
+                                                                      .ONE_UNIT_SIZE *
+                                                                  120,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: IZIDimensions
+                                                                .SPACE_SIZE_1X,
+                                                          ),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceAround,
+                                                              children: [
+                                                                Text(
+                                                                  IZIValidate.nullOrEmpty(item
+                                                                          .name)
+                                                                      ? "không xác định"
+                                                                      : item
+                                                                          .name!,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: ColorResources
+                                                                        .colorMain,
+                                                                    fontFamily:
+                                                                        NUNITO,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
+                                                                        IZIDimensions
+                                                                            .FONT_SIZE_H6,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  "Số lượng : ${IZIValidate.nullOrEmpty(item.quantity) ? "không xác định" : item.quantity!}",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        ColorResources
+                                                                            .GREY,
+                                                                    fontFamily:
+                                                                        NUNITO,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    fontSize:
+                                                                        IZIDimensions
+                                                                            .FONT_SIZE_DEFAULT,
+                                                                  ),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      "Giá tiền : ${IZIValidate.nullOrEmpty(item.price) ? "không xác định" : IZIPrice.currencyConverterVND(item.price!.toDouble())}vnđ",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: ColorResources
+                                                                            .GREY,
+                                                                        fontFamily:
+                                                                            NUNITO,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                        fontSize:
+                                                                            IZIDimensions.FONT_SIZE_DEFAULT,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: IZIDimensions
+                                                      .SPACE_SIZE_5X,
+                                                ),
+                                                child: const Divider(
+                                                  height: 2,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height:
+                                                    IZIDimensions.SPACE_SIZE_1X,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    "Tổng đơn",
+                                                    style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.w600,
                                                       fontSize: IZIDimensions
                                                           .FONT_SIZE_H6,
+                                                      color: ColorResources.RED,
                                                     ),
                                                   ),
+                                                  const Spacer(),
                                                   Text(
-                                                    "Số lượng : ${IZIValidate.nullOrEmpty(item.quantity) ? "không xác định" : item.quantity!}",
+                                                    IZIValidate.nullOrEmpty(
+                                                            controller
+                                                                .listOrder[
+                                                                    index]
+                                                                .totalPrice)
+                                                        ? "không xác định"
+                                                        : IZIPrice
+                                                            .currencyConverterVND(
+                                                                controller
+                                                                    .listOrder[
+                                                                        index]
+                                                                    .totalPrice!),
                                                     style: TextStyle(
-                                                      color:
-                                                          ColorResources.GREY,
-                                                      fontFamily: NUNITO,
                                                       fontWeight:
-                                                          FontWeight.w400,
+                                                          FontWeight.w600,
                                                       fontSize: IZIDimensions
-                                                          .FONT_SIZE_DEFAULT,
+                                                          .FONT_SIZE_H6,
+                                                      color: ColorResources.RED,
                                                     ),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        "Giá tiền : ${IZIValidate.nullOrEmpty(item.price) ? "không xác định" : IZIPrice.currencyConverterVND(item.price!.toDouble())}vnđ",
-                                                        style: TextStyle(
-                                                          color: ColorResources
-                                                              .GREY,
-                                                          fontFamily: NUNITO,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: IZIDimensions
-                                                              .FONT_SIZE_DEFAULT,
-                                                        ),
-                                                      ),
-                                                    ],
                                                   ),
                                                 ],
                                               ),
-                                            )
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       );
                                     },
                                   ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: IZIDimensions.SPACE_SIZE_5X,
-                                  ),
-                                  child: const Divider(
-                                    height: 2,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: IZIDimensions.SPACE_SIZE_1X,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "Tổng đơn",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: IZIDimensions.FONT_SIZE_H6,
-                                        color: ColorResources.RED,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      IZIValidate.nullOrEmpty(controller
-                                              .listOrder[index].totalPrice)
-                                          ? "không xác định"
-                                          : IZIPrice.currencyConverterVND(
-                                              double.parse(controller
-                                                  .listOrder[index]
-                                                  .totalPrice!)),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: IZIDimensions.FONT_SIZE_H6,
-                                        color: ColorResources.RED,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ))
+                                ))
                 ],
               ),
       ),

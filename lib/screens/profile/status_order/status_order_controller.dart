@@ -1,19 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/order/order.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/profile_routes.dart';
-import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class StatusOrderController extends GetxController {
-  int choiceItem = Get.arguments ?? 0;
+  int choiceItem = 0;
   List<dynamic> timeList1 = [
     "Chờ duyệt",
     "Đang giao",
@@ -30,6 +27,9 @@ class StatusOrderController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    if (!IZIValidate.nullOrEmpty(Get.arguments)) {
+      choiceItem = Get.arguments as int;
+    }
     getAllOrder();
   }
 
@@ -42,30 +42,37 @@ class StatusOrderController extends GetxController {
   ///
   /// Choose Item.
   ///
-  void onChoiceItem(int index) {
+  void onChoiceItem(int index) async {
+    isLoadingChangeTab = true;
+    update();
     choiceItem = index;
+
+    await getAllOrder();
+    isLoadingChangeTab = false;
     update();
   }
 
   ///
   /// Get all Order.
   ///
-  void getAllOrder() {
+  Future<void> getAllOrder() async {
     listOrder.clear();
     refreshController.resetNoData();
-    _orderResponsitory.getOrder(
+    await _orderResponsitory.getOrder(
       statusOrder: formatStatusOrderFilter(),
       idOrder: '',
       onSuccess: (onSuccess) async {
         if (onSuccess.isNotEmpty) {
           listOrder = onSuccess;
           await findStore(listOrder.first.listProduct!.first.idUser!);
-          refreshController.refreshCompleted();
-          isLoading = false;
-          update();
         }
+        isLoading = false;
+        update();
+        refreshController.refreshCompleted();
       },
       onError: (erorr) {
+        isLoading = false;
+        update();
         print(erorr.toString());
       },
     );
@@ -74,8 +81,11 @@ class StatusOrderController extends GetxController {
   ///
   /// Go to detail order.
   ///
-  void gotoDetailOrder() {
-    Get.toNamed(ProfileRoutes.DETAIL_ORDER);
+  void gotoDetailOrder(int index) {
+    Get.toNamed(
+      ProfileRoutes.DETAIL_ORDER,
+      arguments: listOrder[index].id,
+    );
   }
 
   ///
@@ -86,7 +96,7 @@ class StatusOrderController extends GetxController {
       case 0:
         return PENDING;
       case 1:
-        return CONFIRM;
+        return DELIVERING;
       case 2:
         return CANCEL;
       case 3:
@@ -100,7 +110,6 @@ class StatusOrderController extends GetxController {
     switch (item) {
       case PENDING:
         return "Chờ nhận đơn";
-      case CONFIRM:
       case DELIVERING:
         return "Đang giao";
       case CANCEL:
