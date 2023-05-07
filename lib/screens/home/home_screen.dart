@@ -25,8 +25,8 @@ class HomeScreenPage extends GetView<HomeController> {
           backgroundColor: ColorResources.WHITE,
           body: SafeArea(
             child: Container(
+              
               color: ColorResources.WHITE,
-              // margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_2X),
               padding: EdgeInsets.symmetric(
                   horizontal: IZIDimensions.SPACE_SIZE_3X,
                   vertical: IZIDimensions.SPACE_SIZE_3X),
@@ -65,6 +65,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             ),
                             const Divider(),
                             _flashSale(controller),
+                            SizedBox(height: IZIDimensions.ONE_UNIT_SIZE*80,)
                           ],
                         ),
                       ),

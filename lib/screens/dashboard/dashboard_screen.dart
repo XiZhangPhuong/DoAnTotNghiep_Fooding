@@ -15,8 +15,10 @@ class BottomBarPage extends GetView<BottomBarController> {
         builder: (BottomBarController controller) => WillPopScope(
               child: Scaffold(
                 floatingActionButton: _floattingButton(controller),
+                bottomSheet: statusOrder(controller),
                 backgroundColor: Colors.white,
-                body: Obx(() => controller.pages[controller.currentIndex.value]
+                body: Obx(() => 
+                controller.pages[controller.currentIndex.value]
                     ['page'] as Widget),
                 bottomNavigationBar: bottomNavigator(context),
               ),
@@ -101,26 +103,27 @@ class BottomBarPage extends GetView<BottomBarController> {
 /// floatting button cart
 ///
 Widget _floattingButton(BottomBarController controller) {
-  return controller.countCart==0
+  return controller.countCart == 0
       ? Container()
-      : 
-       FloatingActionButton(
+      : FloatingActionButton(
           backgroundColor: ColorResources.WHITE,
           onPressed: () {
             controller.gotoCart();
           },
           child: badge.Badge(
-            badgeContent:
-            controller.isLoading==false ? const Center(child: CircularProgressIndicator(),) : 
-             Text(
-              controller.countCart.toString(),
-              style: TextStyle(
-                color: ColorResources.WHITE,
-                fontFamily: NUNITO,
-                fontWeight: FontWeight.w600,
-                fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
-              ),
-            ),
+            badgeContent: controller.isLoading == false
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Text(
+                    controller.countCart.toString(),
+                    style: TextStyle(
+                      color: ColorResources.WHITE,
+                      fontFamily: NUNITO,
+                      fontWeight: FontWeight.w600,
+                      fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+                    ),
+                  ),
             child: Icon(
               Icons.shopping_cart,
               size: IZIDimensions.ONE_UNIT_SIZE * 40,
@@ -130,15 +133,35 @@ Widget _floattingButton(BottomBarController controller) {
         );
 }
 
-
 ///
-///  bottom sheet status order 
+///  bottom sheet status order
 ///
-Widget statusOrder(){
-  return Container(
-    height: IZIDimensions.ONE_UNIT_SIZE*80,
-    width:IZIDimensions.iziSize.width,
-    padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_1X),
-    
+Widget statusOrder(BottomBarController controller) {
+  return GestureDetector(
+    onTap: () {
+      
+    },
+    child: Container(
+      height: IZIDimensions.ONE_UNIT_SIZE * 80,
+      width: IZIDimensions.iziSize.width,
+      padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+      color: ColorResources.colorMain,
+      child: Row(
+        children: [
+          Text(
+            'Đơn hàng #g655fdfdf112e đang đợi tài xế...',
+            style: TextStyle(
+              color: ColorResources.WHITE,
+              fontFamily: NUNITO,
+              overflow: TextOverflow.ellipsis,
+              fontWeight: FontWeight.w600,
+              fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+            ),
+          ),
+          const Spacer(),
+          Icon(Icons.keyboard_arrow_right,color: ColorResources.WHITE,size: IZIDimensions.ONE_UNIT_SIZE*40,)
+        ],
+      ),
+    ),
   );
 }
