@@ -35,7 +35,7 @@ class OTPPage extends GetView {
                       height: IZIDimensions.iziSize.height * 0.08,
                     ),
                     IZIImage(
-                      "",
+                      ImagesPath.imageOTPResetPassword,
                       height: IZIDimensions.iziSize.height * 0.45,
                     ),
                     Text(

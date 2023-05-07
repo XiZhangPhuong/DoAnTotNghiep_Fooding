@@ -43,5 +43,4 @@ class AuthRepository {
 
     return credentials;
   }
-
 }

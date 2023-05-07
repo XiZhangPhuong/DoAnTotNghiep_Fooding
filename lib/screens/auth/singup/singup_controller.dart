@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -12,6 +13,7 @@ class SingupController extends GetxController {
   TextEditingController passwordEditingController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   final AuthRepository _authRepository = GetIt.I.get<AuthRepository>();
+  final _userRepository = GetIt.I.get<UserRepository>();
   @override
   void dispose() {
     super.dispose();
@@ -24,7 +26,7 @@ class SingupController extends GetxController {
   /// go to OTP.
   ///
   Future<void> gotoOTP() async {
-    if (validateSingup()) {
+    if (await validateSingup()) {
       await _authRepository.phoneAuthentication(phoneEditingController.text);
       await Get.toNamed(
         AuthRoutes.OTP,
@@ -40,7 +42,7 @@ class SingupController extends GetxController {
   ///
   /// Validate singup.
   ///
-  bool validateSingup() {
+  Future<bool> validateSingup() async {
     if (IZIValidate.nullOrEmpty(phoneEditingController.text)) {
       IZIAlert().error(message: "Số điện thoại không được để trống");
       return false;
@@ -64,6 +66,9 @@ class SingupController extends GetxController {
             .compareTo(confirmPasswordController.text) !=
         0) {
       IZIAlert().error(message: "Mật khẩu không trùng");
+      return false;
+    } else if (await _userRepository.checPhone(phoneEditingController.text)) {
+      IZIAlert().error(message: "Số điện thoại đã tồn tại");
       return false;
     }
     return true;

@@ -29,7 +29,7 @@ class ForgotPasswordPage extends GetView {
                     height: IZIDimensions.iziSize.height * 0.08,
                   ),
                   IZIImage(
-                    "",
+                    ImagesPath.imageResetPassword,
                     height: IZIDimensions.iziSize.height * 0.45,
                   ),
                   Text(

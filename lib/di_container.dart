@@ -4,6 +4,7 @@ import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
+import 'package:fooding_project/repository/voucher_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,9 @@ Future<void> init() async {
 
   // order repostory.
   sl.registerLazySingleton<OrderResponsitory>(() => OrderResponsitory());
+
+  // Voucher.
+  sl.registerLazySingleton<VoucherRepository>(() => VoucherRepository());
 
   // cart repository
   sl.registerLazySingleton<CartRepository>(() => CartRepository());

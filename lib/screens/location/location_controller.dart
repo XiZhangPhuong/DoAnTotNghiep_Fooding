@@ -34,6 +34,16 @@ class LocationController extends GetxController {
   }
 
   ///
+  /// Change addd Location page.
+  ///
+  void changeEditLocationPage(int index) {
+    Get.toNamed(
+      LocationRoutes.EDITLOCATION,
+      arguments: locations[index].id,
+    )?.then((value) => getAllLocation());
+  }
+
+  ///
   /// Get user.
   ///
   Future<void> getUser() async {
@@ -79,5 +89,22 @@ class LocationController extends GetxController {
     } catch (e) {
       IZIAlert().error(message: "Cập nhật thất bại");
     }
+  }
+
+  ///
+  /// Delete location.
+  ///
+  Future<void> deleteLocation(int index) async {
+    await _userRepository.deleteLocation(
+      id: locations[index].id!,
+      onSucces: () {
+        locations.removeAt(index);
+        IZIAlert().success(message: "Đã xóa địa chỉ thành công");
+        update();
+      },
+      onError: () {
+        IZIAlert().error(message: "Đã xóa địa chỉ thất bại");
+      },
+    );
   }
 }

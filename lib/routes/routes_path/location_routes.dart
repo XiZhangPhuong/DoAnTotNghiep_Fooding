@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:fooding_project/screens/location/add_location/add_location_page.dart';
+import 'package:fooding_project/screens/location/edit_location/edit_location_binding.dart';
+import 'package:fooding_project/screens/location/edit_location/edit_location_page.dart';
 import 'package:fooding_project/screens/location/location_page.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +12,7 @@ import '../../screens/location/location_binding.dart';
 class LocationRoutes {
   static const String LOCATION = '/location';
   static const String ADDLOCATION = '/addlocation';
+  static const String EDITLOCATION = '/editlocation';
 
   static List<GetPage> list = [
     GetPage(
@@ -17,10 +20,15 @@ class LocationRoutes {
       page: () => const LocationPage(),
       binding: LocationBinding(),
     ),
-     GetPage(
+    GetPage(
       name: ADDLOCATION,
       page: () => const AddLocationPage(),
       binding: AddLocationBinding(),
+    ),
+    GetPage(
+      name: EDITLOCATION,
+      page: () => const EditLocationPage(),
+      binding: EditLocationBinding(),
     ),
   ];
 }
