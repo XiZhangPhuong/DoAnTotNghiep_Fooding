@@ -54,6 +54,9 @@ class ProductsRepository {
     return listProducts;
   }
 
+
+  
+
   ///
   /// get all list product
   ///
@@ -116,6 +119,28 @@ class ProductsRepository {
     }
   }
 
+  ///
+  /// get by name Product
+  ///
+Future<void> paginateByNameProduct({
+    required String nameProduct,
+    required int limit,
+    required Function(List<Products> listProduct) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('name', isEqualTo: nameProduct)
+          .limit(limit)
+          .get();
+      onSucess(querySnapshot.docs
+          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
+    } catch (e) {
+      onError(e);
+    }
+  }
 
    ///
   /// get list product paginate page = 1 , limit = 10 by id Category and idStore
@@ -342,7 +367,7 @@ class ProductsRepository {
           .where('idUser', isEqualTo: idStore)
           .get();
    
-       int count = 0;
+      int count = 0;
       List<Products> listProduct = querySnapshot.docs.map((e) => Products.fromMap(e.data() as Map<String,dynamic>)).toList();
       for(int i = 0;i<listProduct.length;i++){
          count+=listProduct[i].sold!;
@@ -351,5 +376,28 @@ class ProductsRepository {
     } catch (e) {
       onError(e);
     }
+  }
+
+
+   ///
+  /// get name category
+  ///
+  Future<void> getNameProduct({
+    required Function(List<String> data) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+      try{
+         QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('products').get();
+         List<Products> listProducts = querySnapshot.docs.map((e) => Products.fromMap(e.data() as Map<String,dynamic>)).toList();
+         final name = <String>[];
+         for(int i = 0;i<listProducts.length;i++){
+          name.add(listProducts[i].name!);
+         }
+         name.toSet().toList();
+         onSucess(name);
+      }catch(e){
+        onError(e);
+      }      
   }
 }

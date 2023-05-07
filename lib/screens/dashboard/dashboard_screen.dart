@@ -143,26 +143,29 @@ Widget statusOrder(BottomBarController controller) {
     onTap: () {
       controller.goToStatusOrder();
     },
-    child: Container(
-      height: IZIDimensions.ONE_UNIT_SIZE * 80,
-      width: IZIDimensions.iziSize.width,
-      padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
-      color: ColorResources.colorMain,
-      child: Row(
-        children: [
-          Text(
-            'Đơn hàng #g655fdfdf112e đang đợi tài xế...',
-            style: TextStyle(
-              color: ColorResources.WHITE,
-              fontFamily: NUNITO,
-              overflow: TextOverflow.ellipsis,
-              fontWeight: FontWeight.w600,
-              fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+    child: Visibility(
+      visible: false,
+      child: Container(
+        height: IZIDimensions.ONE_UNIT_SIZE * 80,
+        width: IZIDimensions.iziSize.width,
+        padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+        color: ColorResources.colorMain,
+        child: Row(
+          children: [
+            Text(
+              'Đơn hàng #g655fdfdf112e đang đợi tài xế...',
+              style: TextStyle(
+                color: ColorResources.WHITE,
+                fontFamily: NUNITO,
+                overflow: TextOverflow.ellipsis,
+                fontWeight: FontWeight.w600,
+                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+              ),
             ),
-          ),
-          const Spacer(),
-          Icon(Icons.keyboard_arrow_right,color: ColorResources.WHITE,size: IZIDimensions.ONE_UNIT_SIZE*40,)
-        ],
+            const Spacer(),
+            Icon(Icons.keyboard_arrow_right,color: ColorResources.WHITE,size: IZIDimensions.ONE_UNIT_SIZE*40,)
+          ],
+        ),
       ),
     ),
   );
