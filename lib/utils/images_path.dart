@@ -7,6 +7,7 @@ class ImagesPath {
   // bottombar
   static String icon_trangchu = 'assets/icons/icon_trangchu.png';
   static String icon_taikhoan = 'assets/icons/icon_taikhoan.png';
+  static String icon_yeuthich = 'assets/icons/icon_favorite.png';
   // Alert.
   static String successAlert = 'assets/icons/success.svg';
   static String helpAlert = 'assets/icons/help.svg';
@@ -56,4 +57,6 @@ class ImagesPath {
 
   //Sing up.
   static String imageSingup = 'assets/images/imageSingup.png';
+
+  
 }

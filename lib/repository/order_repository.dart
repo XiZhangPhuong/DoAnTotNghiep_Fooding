@@ -131,4 +131,26 @@ class OrderResponsitory {
       onError(e);
     }
   }
+
+
+  ///
+  /// get order check status
+  ///
+   Future<void> getOrderByidUser({
+    required String idCustommer,
+    required Function(OrderResponse onSuccess) onSuccess,
+    required Function(dynamic erorr) onError,
+    required String statusOrder,
+  }) async {
+    try {
+      final ref = _fireStore.collection("orders")
+      .where('idCustommer',isEqualTo: idCustommer).get();
+      OrderResponse? orderResponse ;
+      onSuccess(orderResponse!);
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+
 }

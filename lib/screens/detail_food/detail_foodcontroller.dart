@@ -251,7 +251,7 @@ class DetailFoodController extends GetxController {
     listProducts.clear();
     _productsRepository.paginateProductsByIDCateogry(
       limit: limit,
-      idCategory: productsModel!.idCategory!,
+      idCategory: productsModel!.nameCategory!,
       onSucess: (listProduct) {
         listProducts = listProduct;
         listProducts.shuffle();

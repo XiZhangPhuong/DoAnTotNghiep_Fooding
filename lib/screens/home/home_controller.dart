@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/banner/banner.dart';
 import 'package:fooding_project/model/category/category.dart';
@@ -29,8 +30,10 @@ class HomeController extends GetxController {
       GetIt.I.get<ProductsRepository>();
   List<Store> listStore = [];
   List<Products> listProducts = [];
+  List<Products> listProductRecommend = [];
   bool isLoadingCategory = true;
   bool isLoadingProduct = true;
+  bool isLoadingProductRecomment = true;
   int limit = 10;
   // list string imageslidershow
   List<String> listImageSlider = [
@@ -56,8 +59,8 @@ class HomeController extends GetxController {
   /// On Refreshing.
   ///
   void onRefreshing() {
-    paginateProducts();
     getCategoryList();
+    paginateProductsRecommnend();
     final bot = Get.find<BottomBarController>();
     bot.countCartByIDStore();
     bot.update();
@@ -69,8 +72,9 @@ class HomeController extends GetxController {
   /// On loading.
   ///
   void onLoading() {
-    paginateProducts();
+    paginateFlashSaleProduct();
     getCategoryList();
+    paginateProductsRecommnend();
     refreshController.refreshCompleted();
     refreshController.loadComplete();
   }
@@ -82,10 +86,10 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // _categoryRepository.pushDataProduct();
+    paginateFlashSaleProduct();
     getCategoryList();
     _getCurrentLocation();
-    paginateProducts();
+    paginateProductsRecommnend();
   }
 
   @override
@@ -93,6 +97,15 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
+  ///
+  ///
+  ///
+  String tietKiemPrice(int price,int priceDiscount){
+    String str = '';
+    double money = (priceDiscount - price).toDouble();
+    str = 'Giảm ${IZIPrice.currencyConverterVND(money)}đ';
+    return str;
+  }
   ///
   /// go to category
   ///
@@ -139,6 +152,43 @@ class HomeController extends GetxController {
       },
     );
   }
+
+  ///
+  /// get data products recommend
+  ///
+  Future<void> paginateProductsRecommnend() async { 
+    listProductRecommend.clear();
+    _productsRepository.paginateRecommendProducts(
+      limit: 10,
+      onSucess: (listProduct) {
+        listProductRecommend = listProduct;
+        isLoadingProductRecomment = false;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+    ///
+  /// get data products flash sale
+  ///
+  Future<void> paginateFlashSaleProduct() async { 
+    listProducts.clear();
+    _productsRepository.paginateFlashsaleProducts(
+      limit: 10,
+      onSucess: (listProduct) {
+        listProducts = listProduct;
+        isLoadingProduct = false;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
 
   ///
   /// Get current
@@ -196,6 +246,17 @@ class HomeController extends GetxController {
   }
 
   ///
-  /// push data product
+  /// format  sold product
   ///
+  String formatSold(int sales) {
+    if (sales >= 1000) {
+      double formattedSales = sales / 1000;
+      return '${formattedSales.toStringAsFixed(1)}k đã bán';
+    } else {
+      return '$sales đã bán';
+    }
+  }
+
+  
+
 }

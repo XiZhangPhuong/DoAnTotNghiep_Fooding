@@ -96,7 +96,6 @@ class CategoryRepository {
          onSucess(name);
       }catch(e){
         onError(e);
-      }
-        
+      }      
   }
 }

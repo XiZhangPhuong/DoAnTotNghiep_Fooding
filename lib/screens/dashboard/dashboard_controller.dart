@@ -7,6 +7,7 @@ import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
+import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/screens/profile/profile_page.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
@@ -27,7 +28,7 @@ class BottomBarController extends GetxController {
     },
     {
       'label': "Yêu thích",
-      'icon': ImagesPath.icon_trangchu,
+      'icon': ImagesPath.icon_yeuthich,
       'page': const HomeScreenPage(),
     }, 
     {
@@ -102,5 +103,13 @@ class BottomBarController extends GetxController {
     }, onError: (error) {
        print(error.toString());
     },);
+  }
+
+
+  ///
+  /// goto status order
+  ///
+  void goToStatusOrder(){
+     Get.toNamed(DashBoardRoutes.STATUS);
   }
 }
