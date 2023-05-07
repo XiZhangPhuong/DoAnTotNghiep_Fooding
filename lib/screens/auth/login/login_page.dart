@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 
 import '../../../../base_widget/izi_input.dart';
@@ -56,15 +57,7 @@ class LoginPage extends GetView {
               SizedBox(
                 height: IZIDimensions.iziSize.height * 0.17,
                 child: IZIImage(
-                  "",
-                ),
-              ),
-              Positioned(
-                top: IZIDimensions.SPACE_SIZE_5X * 2,
-                right: 0,
-                child: IZIImage(
-                  "",
-                  height: IZIDimensions.ONE_UNIT_SIZE * 90,
+                  ImagesPath.imageLogin,
                 ),
               ),
             ],
@@ -238,7 +231,7 @@ class LoginPage extends GetView {
               width: IZIDimensions.iziSize.width * 0.9,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: ColorResources.COLOR_BUTTON,
+                color: ColorResources.colorMain,
                 borderRadius: BorderRadius.circular(
                   IZIDimensions.SPACE_SIZE_4X,
                 ),

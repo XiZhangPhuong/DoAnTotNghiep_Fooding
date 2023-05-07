@@ -28,8 +28,8 @@ class AddLocationController extends GetxController {
   ///
   /// Add location on Firebase.
   ///
-  void addLocation() {
-    if (_validateAddAddress()) {
+  void addLocation() async {
+    if (await _validateAddAddress()) {
       LocationResponse request = LocationResponse(
         id: Uuid().v1(),
         address: addressEditingController.text,
@@ -55,9 +55,31 @@ class AddLocationController extends GetxController {
   }
 
   ///
+  /// Check phone Location.
+  ///
+  Future<bool> checkPhoneLocation() async {
+    bool isFlag = false;
+    await _userRepository.checkPhoneLocation(
+      phone: phoneEditingController.text,
+      onSucces: (isPhone) {
+        if (IZIValidate.nullOrEmpty(isPhone)) {
+          isFlag = false;
+        } else {
+          isFlag = true;
+        }
+      },
+      onError: (error) {
+        isFlag = false;
+        print(error.toString());
+      },
+    );
+    return isFlag;
+  }
+
+  ///
   /// Validate add address.
   ///
-  bool _validateAddAddress() {
+  Future<bool> _validateAddAddress() async {
     if (nameEditingController.text.isEmpty) {
       IZIAlert().error(message: "Tên của đang để trống");
       return false;
@@ -72,6 +94,10 @@ class AddLocationController extends GetxController {
     }
     if (!IZIValidate.phoneNumber(phoneEditingController.text)) {
       IZIAlert().error(message: "Số điện thoại không đúng định dạng");
+      return false;
+    }
+    if (await checkPhoneLocation() == false) {
+      IZIAlert().error(message: "Số điện thoại đã trùng");
       return false;
     }
     if (addressEditingController.text.isEmpty) {

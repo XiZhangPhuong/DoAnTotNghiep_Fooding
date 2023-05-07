@@ -1,6 +1,7 @@
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison, constant_identifier_names
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,6 @@ const String NOTIFICATION_KEY = 'notification_key';
 const String NOTIFICATION_TITLE = 'title';
 const String NOTIFICATION_BODY = 'body';
 
-
-
 ///
 /// random ID category
 ///
@@ -26,7 +25,8 @@ String generateRandomString(int length) {
   var random = Random();
   var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   return String.fromCharCodes(
-    List.generate(length, (index) => chars.codeUnitAt(random.nextInt(chars.length))),
+    List.generate(
+        length, (index) => chars.codeUnitAt(random.nextInt(chars.length))),
   );
 }
 
@@ -97,3 +97,13 @@ const String SUCCESS = 'SUCCESS';
 const String CUSTOMER = 'CUSTOMER';
 const String CASH = "CASH";
 const String BANKING = "BANKING";
+
+Future<void> LOGOUT() async {
+  await FirebaseAuth.instance.signOut();
+}
+
+const String PENDING = "PENDING",
+    CONFIRM = "CONFIRM",
+    DELIVERING = "DELIVERING",
+    DONE = "DONE",
+    CANCEL = "CANCEL";

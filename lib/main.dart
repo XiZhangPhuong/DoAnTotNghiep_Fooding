@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/firebase_service.dart';
 import 'package:fooding_project/utils/local_notification_service.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'app_binding.dart';
 import 'di_container.dart' as di;
 import 'firebase_options.dart';
@@ -24,16 +27,17 @@ Future<void> main() async {
 
   // Set timezone
   IZITimeZone().initializeTimeZones();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-   
-final FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  final FirebaseMessaging messaging = FirebaseMessaging.instance;
   await LocalNotificationService().init();
   await FcmService().init();
   await FcmService().initForegroundNotification();
   FcmService().backgroundHandler();
+
   /// Instance Easy Loading.
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 1500)
@@ -57,7 +61,9 @@ final FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   // Set Device Orientation.
   setOrientation();
-
+  if (Platform.isAndroid) {
+    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+  }
   runApp(const MyApp());
 }
 
@@ -76,8 +82,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-   // Đặt ứng dụng ở chế độ full màn hình
-   // SystemChrome.setEnabledSystemUIOverlays([]);
+    // Đặt ứng dụng ở chế độ full màn hình
+    // SystemChrome.setEnabledSystemUIOverlays([]);
     // SystemChrome.setSystemUIOverlayStyle(
     //    SystemUiOverlayStyle(
     //     statusBarColor: ColorResources.RED2, // Thiết lập màu sắc
@@ -91,9 +97,7 @@ class MyApp extends StatelessWidget {
       locale: const Locale('vi', 'VN'),
       localizationsDelegates: localizationsDelegates,
       initialBinding: AppBinding(),
-      theme: ThemeData(
-        primaryColor: ColorResources.BACK_GROUND
-      ),
+      theme: ThemeData(primaryColor: ColorResources.BACK_GROUND),
       builder: EasyLoading.init(
         builder: (context, widget) {
           return MediaQuery(
