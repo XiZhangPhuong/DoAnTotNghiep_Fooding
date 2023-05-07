@@ -5,6 +5,7 @@ import 'package:fooding_project/model/voucher/voucher.dart';
 import 'package:fooding_project/repository/voucher_repository.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class VoucherController extends GetxController {
   final VoucherRepository _voucherRepository = GetIt.I.get<VoucherRepository>();
@@ -13,10 +14,12 @@ class VoucherController extends GetxController {
   TextEditingController textvoucher = TextEditingController();
   double? price;
   int index = -1;
+  RefreshController refreshController = RefreshController();
   @override
   void dispose() {
     super.dispose();
     textvoucher.dispose();
+    refreshController.dispose();
   }
 
   @override
@@ -33,10 +36,12 @@ class VoucherController extends GetxController {
   /// Get all voucher.
   ///
   Future<void> getAllVoucher() async {
+    listVouchers.clear();
     await _voucherRepository.getAllVoucher(
       onSuccess: (onSuccess) {
         listVouchers = onSuccess;
         isLoading = false;
+        refreshController.refreshCompleted();
         update();
       },
       error: (e) {

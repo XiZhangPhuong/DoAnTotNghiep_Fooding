@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/voucher/voucher.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
 class VoucherRepository {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
@@ -17,7 +19,18 @@ class VoucherRepository {
           .where("isDeleted", isEqualTo: false)
           .where("isShow", isEqualTo: true)
           .get();
-      onSuccess(query.docs.map((e) => Voucher.fromMap(e.data())).toList());
+      List<Voucher> listTemps = [];
+      for (final element in query.docs) {
+        final voucher = Voucher.fromMap(element.data());
+        if (!voucher.listCustomer!
+                .contains(sl<SharedPreferenceHelper>().getIdUser) &&
+            voucher.limitMax! > voucher.listCustomer!.length &&
+            voucher.endDate!.millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch) {
+          listTemps.add(voucher);
+        }
+      }
+      onSuccess(listTemps);
     } catch (e) {
       error(e);
     }
@@ -39,7 +52,22 @@ class VoucherRepository {
           .where("isDeleted", isEqualTo: false)
           .get();
       if (query.docs.isNotEmpty) {
-        onSuccess(Voucher.fromMap(query.docs.first.data()));
+        List<Voucher> listTemps = [];
+        for (final element in query.docs) {
+          final voucher = Voucher.fromMap(element.data());
+          if (!voucher.listCustomer!
+              .contains(sl<SharedPreferenceHelper>().getIdUser)) {
+            listTemps.add(voucher);
+          }
+        }
+        if (listTemps.isNotEmpty &&
+            listTemps.first.limitMax! > listTemps.first.listCustomer!.length &&
+            listTemps.first.endDate!.millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch) {
+          onSuccess(listTemps.first);
+        } else {
+          error("Voucher này đã được sử dụng hoặc hết hạn");
+        }
       } else {
         error("Không tìm thấy voucher");
       }

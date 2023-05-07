@@ -29,17 +29,22 @@ class ForgotPasswordController extends GetxController {
   ///
   Future<void> gotoOTP() async {
     if (validateForgotpassword()) {
-      if (await _userRepository.checPhone(phoneEditingController.text)) {
-        await _authRepository.phoneAuthentication(phoneEditingController.text);
-        await await Get.toNamed(
-          AuthRoutes.OTP,
-          arguments: [
-            "forgot",
-            phoneEditingController.text,
-          ],
-        );
-      } else {
-        IZIAlert().error(message: "Số điện thoại này không có");
+      try {
+        if (await _userRepository.checPhone(phoneEditingController.text)) {
+          await _authRepository
+              .phoneAuthentication(phoneEditingController.text);
+          await await Get.toNamed(
+            AuthRoutes.OTP,
+            arguments: [
+              "forgot",
+              phoneEditingController.text,
+            ],
+          );
+        } else {
+          IZIAlert().error(message: "Số điện thoại này không có");
+        }
+      } catch (e) {
+        IZIAlert().error(message: e.toString());
       }
     }
   }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_zalopay_sdk/flutter_zalopay_sdk.dart';
@@ -8,9 +9,10 @@ import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/location/location_response.dart';
-import 'package:fooding_project/model/user.dart';
+import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/model/voucher/voucher.dart';
 import 'package:fooding_project/repository/user_repository.dart';
+import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/cart_routes.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
@@ -39,12 +41,13 @@ class PaymentController extends GetxController {
   double tamtinh = 0.0;
 
   CartRquest cartResponse = CartRquest();
-  User userResponse = User();
+  model.User userResponse = model.User();
   LocationResponse location = LocationResponse();
   double? distance;
   double priceShip = 0;
   bool flagSpam = true;
   Voucher? myVourcher;
+  String? timeDelivery;
 
   TextEditingController noteEditingController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -106,6 +109,9 @@ class PaymentController extends GetxController {
             onSucces: () async {
               await _orderResponsitory.deleteCart();
               flagSpam = true;
+              final bot = Get.find<BottomBarController>();
+              bot.countCartByIDStore();
+              bot.update();
             },
             onError: (e) {
               IZIAlert().error(message: e.toString());
@@ -160,6 +166,12 @@ class PaymentController extends GetxController {
   Future<void> findUser() async {
     isLoading = true;
     userResponse = await _userRepository.findUser();
+    if (userResponse.isDeleted!) {
+      await LOGOUT();
+      sl<SharedPreferenceHelper>().removeLogin();
+      sl<SharedPreferenceHelper>().removeIdUser();
+      Get.offNamed(AuthRoutes.LOGIN);
+    }
     isLoading = false;
   }
 
@@ -289,6 +301,7 @@ class PaymentController extends GetxController {
             distance = double.parse(distanceResponse
                 .rows[0].elements[0].distance.text
                 .split(' ')[0]);
+            timeDelivery = distanceResponse.rows[0].elements[0].duration.text;
             priceShip = distance! * 10000;
             update();
           }
@@ -306,43 +319,64 @@ class PaymentController extends GetxController {
   void onClickPay() async {
     if (handleValidate()) {
       if (flagSpam) {
-        flagSpam = false;
-        EasyLoading.show(status: "Đang cập nhật dữ liệu");
-        OrderResponse order = OrderResponse();
-        order.id = const Uuid().v1();
-        order.address = location.address;
-        order.phone = location.phone;
-        if (!IZIValidate.nullOrEmpty(myVourcher)) {
-          order.discount = myVourcher!.discountMoney.toString();
-        }
-        order.listProduct = cartResponse.listProduct;
-        order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
-        order.latLong = location.latlong;
-        order.note = noteEditingController.text;
-        order.shipPrice = priceShip.toString();
-        order.typePayment = typePayment;
-        order.timeOrder =
-            IZIDate.formatDate(DateTime.now(), format: "HH:mm dd/MM/yyyy");
-        order.statusOrder = "PENDING";
-        order.totalPrice = totalPay().toInt().toString();
-        order.note = descriptionController.text.trim();
-        if (typePayment == CASH) {
-          await _orderResponsitory.addOrder(
-            orderRequest: order,
-            onSucces: () async {
-              await _orderResponsitory.deleteCart();
-              flagSpam = true;
-            },
-            onError: (e) {
-              IZIAlert().error(message: e.toString());
-            },
-          );
-          IZIAlert().success(message: "Đặt hàng thành công");
-          EasyLoading.dismiss();
-          Get.back();
-        } else {
-          payWithZaloPay(totalPay().toInt().toString(), order);
-        }
+        _orderResponsitory.checkOrderExists(
+          onSuccess: (onSuccess) async {
+            if (onSuccess) {
+              IZIAlert().error(message: "Bạn đang có đơn hàng chưa hoàn thành");
+            } else {
+              flagSpam = false;
+              EasyLoading.show(status: "Đang cập nhật dữ liệu");
+              OrderResponse order = OrderResponse();
+              order.id = const Uuid().v1();
+              order.address = location.address;
+              order.phone = location.phone;
+              if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                order.discount = myVourcher!.discountMoney.toString();
+              }
+              order.listProduct = cartResponse.listProduct;
+              order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
+              order.latLong = location.latlong;
+              order.note = noteEditingController.text;
+              order.shipPrice = priceShip.toString();
+              order.typePayment = typePayment;
+              order.timePeding = IZIDate.formatDate(DateTime.now(),
+                  format: "HH:mm dd/MM/yyyy");
+              order.statusOrder = "PENDING";
+              order.totalPrice = totalPay().toInt().toString();
+              order.note = descriptionController.text.trim();
+              if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                order.idVoucher = myVourcher!.id;
+              }
+              if (!IZIValidate.nullOrEmpty(timeDelivery)) {
+                final split = timeDelivery!.split(' ');
+                order.timeDelivery = (double.parse(split[0]) + 20).toString();
+              }
+              if (typePayment == CASH) {
+                await _orderResponsitory.addOrder(
+                  orderRequest: order,
+                  onSucces: () async {
+                    await _orderResponsitory.deleteCart();
+                    flagSpam = true;
+                    final bot = Get.find<BottomBarController>();
+                    bot.countCartByIDStore();
+                    bot.update();
+                  },
+                  onError: (e) {
+                    IZIAlert().error(message: e.toString());
+                  },
+                );
+                IZIAlert().success(message: "Đặt hàng thành công");
+                EasyLoading.dismiss();
+                Get.back();
+              } else {
+                payWithZaloPay(totalPay().toInt().toString(), order);
+              }
+            }
+          },
+          onError: (erorr) {
+            IZIAlert().error(message: erorr.toString());
+          },
+        );
       }
     }
   }
@@ -393,6 +427,7 @@ class PaymentController extends GetxController {
   }
 
   ///
-  /// show notification
+  /// add iduser to voucher table.
   ///
+  void addIdUserToVoucherTable() async {}
 }

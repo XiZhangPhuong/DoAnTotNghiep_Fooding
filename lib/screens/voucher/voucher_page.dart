@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
+import 'package:fooding_project/base_widget/izi_loading_card.dart';
+import 'package:fooding_project/base_widget/izi_smart_refresher.dart';
 import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
@@ -24,7 +26,9 @@ class VoucherPage extends GetView {
         builder: (VoucherController controller) {
           return controller.isLoading
               ? const Center(
-                  child: CircularProgressIndicator(),
+                  child: CardLoadingItem(
+                    count: 10,
+                  ),
                 )
               : GestureDetector(
                   onTap: () {
@@ -50,139 +54,161 @@ class VoucherPage extends GetView {
                           height: IZIDimensions.SPACE_SIZE_2X,
                         ),
                         Expanded(
-                          child: ListView.builder(
-                            itemCount: controller.listVouchers.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  if (controller.index == index) {
-                                    controller.index = -1;
-                                    controller.update();
-                                  } else {
-                                    controller.index = index;
-                                    controller.update();
-                                  }
-                                },
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      height: IZIDimensions.ONE_UNIT_SIZE * 200,
-                                      margin: EdgeInsets.all(
-                                        IZIDimensions.SPACE_SIZE_1X,
-                                      ),
-                                      padding: EdgeInsets.all(
-                                        IZIDimensions.SPACE_SIZE_1X * 0.5,
-                                      ),
-                                      color: controller.index == index
-                                          ? const Color(0xfff99b7d)
-                                          : Colors.white,
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            height:
-                                                IZIDimensions.ONE_UNIT_SIZE *
-                                                    200,
-                                            width: IZIDimensions.ONE_UNIT_SIZE *
-                                                180,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                IZIDimensions.BORDER_RADIUS_4X,
-                                              ),
-                                              child: IZIImage(
-                                                IZIValidate.nullOrEmpty(
-                                                        controller
-                                                            .listVouchers[index]
-                                                            .image)
-                                                    ? ImagesPath.placeHolder
-                                                    : controller
-                                                        .listVouchers[index]
-                                                        .image!,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: IZIDimensions.SPACE_SIZE_2X,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                SizedBox(
-                                                  height: IZIDimensions
-                                                      .SPACE_SIZE_1X,
+                          child: IZISmartRefresher(
+                            refreshController: controller.refreshController,
+                            onRefresh: () {
+                              controller.getAllVoucher();
+                            },
+                            onLoading: () {},
+                            enablePullUp: true,
+                            enablePullDown: true,
+                            child: ListView.builder(
+                              itemCount: controller.listVouchers.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (controller.index == index) {
+                                      controller.index = -1;
+                                      controller.update();
+                                    } else {
+                                      controller.index = index;
+                                      controller.update();
+                                    }
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        height:
+                                            IZIDimensions.ONE_UNIT_SIZE * 200,
+                                        margin: EdgeInsets.all(
+                                          IZIDimensions.SPACE_SIZE_1X,
+                                        ),
+                                        padding: EdgeInsets.all(
+                                          IZIDimensions.SPACE_SIZE_1X * 0.5,
+                                        ),
+                                        color: controller.index == index
+                                            ? const Color(0xfff99b7d)
+                                            : Colors.white,
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              height:
+                                                  IZIDimensions.ONE_UNIT_SIZE *
+                                                      200,
+                                              width:
+                                                  IZIDimensions.ONE_UNIT_SIZE *
+                                                      180,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  IZIDimensions
+                                                      .BORDER_RADIUS_4X,
                                                 ),
-                                                Text(
+                                                child: IZIImage(
                                                   IZIValidate.nullOrEmpty(
                                                           controller
                                                               .listVouchers[
                                                                   index]
-                                                              .name)
-                                                      ? "Không xác định"
+                                                              .image)
+                                                      ? ImagesPath.placeHolder
                                                       : controller
                                                           .listVouchers[index]
-                                                          .name!,
-                                                  style: TextStyle(
-                                                    fontSize: IZIDimensions
-                                                        .FONT_SIZE_SPAN,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: ColorResources
-                                                        .colorMain,
-                                                  ),
+                                                          .image!,
                                                 ),
-                                                Text(
-                                                  "Đơn tối thiểu: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].minOrderPrice) ? "Không xác định" : IZIPrice.currencyConverterVND(double.parse(controller.listVouchers[index].minOrderPrice.toString()))}vnđ",
-                                                  style: TextStyle(
-                                                    fontSize: IZIDimensions
-                                                            .FONT_SIZE_SPAN *
-                                                        0.8,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorResources.BLACK,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "Giảm giá: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].discountMoney) ? "Không xác định" : IZIPrice.currencyConverterVND(double.parse(controller.listVouchers[index].discountMoney.toString()))}vnđ",
-                                                  style: TextStyle(
-                                                    fontSize: IZIDimensions
-                                                            .FONT_SIZE_SPAN *
-                                                        0.8,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorResources.BLACK,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "Ngày hết hạn: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].endDate) ? "Không xác định" : IZIDate.formatDate(controller.listVouchers[index].endDate!, format: "HH:mm dd/MM/yyy")}",
-                                                  style: TextStyle(
-                                                    fontSize: IZIDimensions
-                                                            .FONT_SIZE_SPAN *
-                                                        0.8,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorResources.BLACK,
-                                                  ),
-                                                ),
-                                              ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: IZIDimensions.ONE_UNIT_SIZE * 20,
-                                      top: IZIDimensions.ONE_UNIT_SIZE * 30,
-                                      child: const Text(
-                                        "Xem thêm",
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
+                                            SizedBox(
+                                              width:
+                                                  IZIDimensions.SPACE_SIZE_2X,
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  SizedBox(
+                                                    height: IZIDimensions
+                                                        .SPACE_SIZE_1X,
+                                                  ),
+                                                  Text(
+                                                    IZIValidate.nullOrEmpty(
+                                                            controller
+                                                                .listVouchers[
+                                                                    index]
+                                                                .name)
+                                                        ? "Không xác định"
+                                                        : controller
+                                                            .listVouchers[index]
+                                                            .name!,
+                                                    style: TextStyle(
+                                                      fontSize: IZIDimensions
+                                                          .FONT_SIZE_SPAN,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: ColorResources
+                                                          .colorMain,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Đơn tối thiểu: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].minOrderPrice) ? "Không xác định" : IZIPrice.currencyConverterVND(double.parse(controller.listVouchers[index].minOrderPrice.toString()))}vnđ",
+                                                    style: TextStyle(
+                                                      fontSize: IZIDimensions
+                                                              .FONT_SIZE_SPAN *
+                                                          0.8,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color:
+                                                          ColorResources.BLACK,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Giảm giá: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].discountMoney) ? "Không xác định" : IZIPrice.currencyConverterVND(double.parse(controller.listVouchers[index].discountMoney.toString()))}vnđ",
+                                                    style: TextStyle(
+                                                      fontSize: IZIDimensions
+                                                              .FONT_SIZE_SPAN *
+                                                          0.8,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color:
+                                                          ColorResources.BLACK,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Ngày hết hạn: ${IZIValidate.nullOrEmpty(controller.listVouchers[index].endDate) ? "Không xác định" : IZIDate.formatDate(controller.listVouchers[index].endDate!, format: "HH:mm dd/MM/yyy")}",
+                                                    style: TextStyle(
+                                                      fontSize: IZIDimensions
+                                                              .FONT_SIZE_SPAN *
+                                                          0.8,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color:
+                                                          ColorResources.BLACK,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                                      Positioned(
+                                        right: IZIDimensions.ONE_UNIT_SIZE * 20,
+                                        top: IZIDimensions.ONE_UNIT_SIZE * 30,
+                                        child: const Text(
+                                          "Xem thêm",
+                                          style: TextStyle(
+                                            color: Colors.blueAccent,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ],

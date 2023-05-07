@@ -30,12 +30,16 @@ class PaymentPage extends GetView<PaymentController> {
                   child: CircularProgressIndicator(),
                 )
               : IZIValidate.nullOrEmpty(controller.cartResponse.listProduct)
-                  ? Center(child: Text('Giỏ hàng của bạn trống',style: TextStyle(
-                    color: ColorResources.BLACK,
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.w600,
-                    fontSize: IZIDimensions.FONT_SIZE_H6
-                  ),),)
+                  ? Center(
+                      child: Text(
+                        'Giỏ hàng của bạn trống',
+                        style: TextStyle(
+                            color: ColorResources.BLACK,
+                            fontFamily: 'Nunito',
+                            fontWeight: FontWeight.w600,
+                            fontSize: IZIDimensions.FONT_SIZE_H6),
+                      ),
+                    )
                   : Container(
                       margin: EdgeInsets.only(
                           bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
@@ -295,11 +299,10 @@ class PaymentPage extends GetView<PaymentController> {
                       height: IZIDimensions.SPACE_SIZE_2X,
                     ),
                     Text(
-                      IZIValidate.nullOrEmpty(controller
-                              .cartResponse.listProduct![index].name)
+                      IZIValidate.nullOrEmpty(
+                              controller.cartResponse.listProduct![index].name)
                           ? "Không xác định"
-                          : controller
-                              .cartResponse.listProduct![index].name!,
+                          : controller.cartResponse.listProduct![index].name!,
                       style: TextStyle(
                         color: ColorResources.GREY,
                         fontFamily: NUNITO,
@@ -657,11 +660,16 @@ class PaymentPage extends GetView<PaymentController> {
     );
   }
 }
-  ///
-  /// Introduce.
-  ///
-  Widget _introduce(PaymentController controller) {
-    return IZIInput(
+
+///
+/// Introduce.
+///
+Widget _introduce(PaymentController controller) {
+  return Container(
+    padding: EdgeInsets.only(
+      left: IZIDimensions.SPACE_SIZE_2X,
+    ),
+    child: IZIInput(
       controller: controller.descriptionController,
       maxLine: 5,
       label: "Nhập ghi chú",
@@ -669,8 +677,10 @@ class PaymentPage extends GetView<PaymentController> {
       placeHolder: "Nhập text vào đây...",
       type: IZIInputType.MILTIPLINE,
       disbleError: true,
-    );
-  }
+    ),
+  );
+}
+
 ///
 /// address.
 ///
