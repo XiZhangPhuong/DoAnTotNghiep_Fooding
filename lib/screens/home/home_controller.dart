@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/banner/banner.dart';
 import 'package:fooding_project/model/category/category.dart';
@@ -96,6 +97,14 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
+  ///
+  ///
+  ///
+  String tietKiemPrice(int price,int priceDiscount){
+    String str = '';
+    
+    return str;
+  }
   ///
   /// go to category
   ///

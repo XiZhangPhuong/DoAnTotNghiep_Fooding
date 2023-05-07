@@ -8,6 +8,8 @@ import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
 
 class BottomBarPage extends GetView<BottomBarController> {
+  const BottomBarPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -139,7 +141,7 @@ Widget _floattingButton(BottomBarController controller) {
 Widget statusOrder(BottomBarController controller) {
   return GestureDetector(
     onTap: () {
-      
+      controller.goToStatusOrder();
     },
     child: Container(
       height: IZIDimensions.ONE_UNIT_SIZE * 80,

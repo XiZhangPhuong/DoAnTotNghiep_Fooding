@@ -304,7 +304,9 @@ class HomeScreenPage extends GetView<HomeController> {
                     child: Row(
                       children: [
                         Text(
-                          '${IZIPrice.currencyConverterVND((controller.listProductRecommend[index].price!.toDouble()))}đ',
+                          controller.listProductRecommend[index].priceDiscount==0  ? 
+                          '${IZIPrice.currencyConverterVND((controller.listProductRecommend[index].price!.toDouble()))}đ' : 
+                          '${IZIPrice.currencyConverterVND((controller.listProductRecommend[index].priceDiscount!.toDouble()))}đ',
                           style: TextStyle(
                             color: ColorResources.colorMain,
                             fontFamily: NUNITO,
@@ -437,15 +439,30 @@ class HomeScreenPage extends GetView<HomeController> {
                           ),
                         ),
                         SizedBox(width: IZIDimensions.SPACE_SIZE_1X * 0.5),
-                        Text(
-                          controller.formatSold(controller.listProducts[index].sold!),
-                          style: TextStyle(
-                            color: ColorResources.GREY,
-                            fontFamily: NUNITO,
-                            fontWeight: FontWeight.w600,
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              controller.formatSold(controller.listProducts[index].sold!),
+                              style: TextStyle(
+                                color: ColorResources.GREY,
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w600,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                              ),
+                            ),
+                             Text(
+                              '',
+                              style: TextStyle(
+                                color: ColorResources.GREY,
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w600,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
