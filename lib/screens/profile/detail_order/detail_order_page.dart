@@ -56,6 +56,10 @@ class DetailOrderPage extends GetView {
                           SizedBox(
                             height: IZIDimensions.SPACE_SIZE_2X,
                           ),
+                          _note(controller),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
+                          ),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -261,7 +265,64 @@ class DetailOrderPage extends GetView {
                 height: IZIDimensions.SPACE_SIZE_1X,
               ),
               Text(
-                "Thanh toán bằng tiền mặt",
+                "Thanh toán bằng ${controller.orderResponse.typePayment == CASH ? "tiền mặt" : "chuyển khoản"} ",
+                style: TextStyle(
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w400,
+                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  ///
+  /// Note.
+  ///
+  Container _note(DetailOrderController controller) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(
+          IZIDimensions.BORDER_RADIUS_4X,
+        ),
+      ),
+      padding: EdgeInsets.all(
+        IZIDimensions.SPACE_SIZE_1X,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.note,
+            color: Colors.redAccent,
+            size: IZIDimensions.ONE_UNIT_SIZE * 50,
+          ),
+          SizedBox(
+            width: IZIDimensions.SPACE_SIZE_2X,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Ghi chú",
+                style: TextStyle(
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w700,
+                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                ),
+              ),
+              SizedBox(
+                height: IZIDimensions.SPACE_SIZE_1X,
+              ),
+              Text(
+                IZIValidate.nullOrEmpty(controller.orderResponse.note)
+                    ? "Không có ghi chú"
+                    : controller.orderResponse.note!,
                 style: TextStyle(
                   fontFamily: NUNITO,
                   fontWeight: FontWeight.w400,
