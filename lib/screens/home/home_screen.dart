@@ -439,30 +439,15 @@ class HomeScreenPage extends GetView<HomeController> {
                           ),
                         ),
                         SizedBox(width: IZIDimensions.SPACE_SIZE_1X * 0.5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              controller.formatSold(controller.listProducts[index].sold!),
-                              style: TextStyle(
-                                color: ColorResources.GREY,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
-                              ),
-                            ),
-                             Text(
-                              '',
-                              style: TextStyle(
-                                color: ColorResources.GREY,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          controller.formatSold(controller.listProducts[index].sold!),
+                          style: TextStyle(
+                            color: ColorResources.GREY,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                          ),
                         ),
                       ],
                     ),

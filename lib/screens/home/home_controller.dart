@@ -102,7 +102,8 @@ class HomeController extends GetxController {
   ///
   String tietKiemPrice(int price,int priceDiscount){
     String str = '';
-    
+    double money = (priceDiscount - price).toDouble();
+    str = 'Giảm ${IZIPrice.currencyConverterVND(money)}đ';
     return str;
   }
   ///
