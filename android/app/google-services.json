@@ -30,6 +30,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4"
+        },
+        {
+          "current_key": "AIzaSyDOF_fUhbgEwSozn_ZqZB-dQ7sDC-ZuStU"
         }
       ],
       "services": {
@@ -38,6 +41,13 @@
             {
               "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "156540035401-vf64osft6st286hui46kcl8f85etk3q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodingProject"
+              }
             }
           ]
         }
@@ -67,6 +77,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4"
+        },
+        {
+          "current_key": "AIzaSyDOF_fUhbgEwSozn_ZqZB-dQ7sDC-ZuStU"
         }
       ],
       "services": {
@@ -75,64 +88,13 @@
             {
               "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
               "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:156540035401:android:d1181d4efc6cc803b13a98",
-        "android_client_info": {
-          "package_name": "com.example.fastfooddelivery2023"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
+            },
             {
-              "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:156540035401:android:3cf7081ebfb735b1b13a98",
-        "android_client_info": {
-          "package_name": "com.example.fastfooddelivery2025"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
-              "client_type": 3
+              "client_id": "156540035401-vf64osft6st286hui46kcl8f85etk3q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodingProject"
+              }
             }
           ]
         }
@@ -147,6 +109,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "156540035401-k3ugbov88nr7ln8uig4osot7jntmhr5f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fooding_project",
+            "certificate_hash": "7ec7b2c7e82299554899027d7fbb0c45933f2dfb"
+          }
+        },
+        {
+          "client_id": "156540035401-s5br89ogkv60ah6pm1cokblem1ltto3f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fooding_project",
+            "certificate_hash": "eee3104b2b3182421aa986faa9260d74906a0376"
+          }
+        },
+        {
           "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -154,6 +132,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4"
+        },
+        {
+          "current_key": "AIzaSyDOF_fUhbgEwSozn_ZqZB-dQ7sDC-ZuStU"
         }
       ],
       "services": {
@@ -162,6 +143,52 @@
             {
               "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "156540035401-vf64osft6st286hui46kcl8f85etk3q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodingProject"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156540035401:android:a8eaded30a828155b13a98",
+        "android_client_info": {
+          "package_name": "com.example.fooding_project_shipper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4"
+        },
+        {
+          "current_key": "AIzaSyDOF_fUhbgEwSozn_ZqZB-dQ7sDC-ZuStU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156540035401-ko1cs6fi46mqlis6bep1scd5d0bu0vb5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "156540035401-vf64osft6st286hui46kcl8f85etk3q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.foodingProject"
+              }
             }
           ]
         }

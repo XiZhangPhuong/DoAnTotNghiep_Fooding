@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,20 +49,9 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA8yG5u1sBlyZmI4hJmqiR81j5pb5F9Bz4',
-    appId: '1:156540035401:web:f243528b418881adb13a98',
-    messagingSenderId: '156540035401',
-    projectId: 'fastfooddelivery-646b3',
-    authDomain: 'fastfooddelivery-646b3.firebaseapp.com',
-    databaseURL: 'https://fastfooddelivery-646b3-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'fastfooddelivery-646b3.appspot.com',
-    measurementId: 'G-WQY72443NV',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAHueeKcKT6RkTtgbKLI7qm-nza7mwldz4',
-    appId: '1:156540035401:android:64083a50019007cbb13a98',
+    appId: '1:156540035401:android:a8eaded30a828155b13a98',
     messagingSenderId: '156540035401',
     projectId: 'fastfooddelivery-646b3',
     databaseURL: 'https://fastfooddelivery-646b3-default-rtdb.asia-southeast1.firebasedatabase.app',
@@ -64,18 +59,6 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBGHD0kNCzOsMcATRo50ZdwyEbLsG1nUe0',
-    appId: '1:156540035401:ios:5390b11ced86a427b13a98',
-    messagingSenderId: '156540035401',
-    projectId: 'fastfooddelivery-646b3',
-    databaseURL: 'https://fastfooddelivery-646b3-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'fastfooddelivery-646b3.appspot.com',
-    androidClientId: '156540035401-cfn6pm1jueon3m1438csi39b6f2dntu9.apps.googleusercontent.com',
-    iosClientId: '156540035401-vf64osft6st286hui46kcl8f85etk3q6.apps.googleusercontent.com',
-    iosBundleId: 'com.example.foodingProject',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBGHD0kNCzOsMcATRo50ZdwyEbLsG1nUe0',
     appId: '1:156540035401:ios:5390b11ced86a427b13a98',
     messagingSenderId: '156540035401',

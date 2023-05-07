@@ -16,8 +16,6 @@ import '../../screens/auth/login/login_binding.dart';
 import '../../screens/auth/otp/otp_binding.dart';
 import '../../screens/auth/reset_password/reset_password_binding.dart';
 import '../../screens/auth/singup/singup_binding.dart';
-import '../../screens/dashboard/dashboard_binding.dart';
-import '../../screens/dashboard/dashboard_screen.dart';
 
 class AuthRoutes {
   static const LOGIN = '/login';
@@ -34,11 +32,7 @@ class AuthRoutes {
       page: () => const LoginPage(),
       binding: LoginBinding(),
     ),
-    GetPage(
-      name: DASHBOARD,
-      page: () =>   BottomBarPage(),
-      binding: DashBoardBinding(),
-    ),
+
     GetPage(
       name: SPLASH,
       page: () => const SplashScreen(),
