@@ -5,8 +5,8 @@ class ImagesPath {
   // Logo application path.
   static String logoApp = 'assets/images/logo_app.png';
   // bottombar
-   static String icon_trangchu = 'assets/icons/icon_trangchu.png';
-   static String icon_taikhoan = 'assets/icons/icon_taikhoan.png';
+  static String icon_trangchu = 'assets/icons/icon_trangchu.png';
+  static String icon_taikhoan = 'assets/icons/icon_taikhoan.png';
   // Alert.
   static String successAlert = 'assets/icons/success.svg';
   static String helpAlert = 'assets/icons/help.svg';
@@ -29,8 +29,8 @@ class ImagesPath {
   //star
   static String icon_star = 'assets/icons/icon_start.png';
 
-  // cart 
-   static String icon_minus = 'assets/icons/icon_minus.png';
+  // cart
+  static String icon_minus = 'assets/icons/icon_minus.png';
 
   static String icon_delete = 'assets/icons/icon_delete.png';
 
@@ -43,4 +43,17 @@ class ImagesPath {
   static String iconVerified = 'assets/icons/iconVerified.png';
   static String iconCancel = 'assets/icons/iconCancel.png';
   static String iconElevated = 'assets/icons/iconElevated.png';
+
+  //Auht.
+  static String imageLogin = 'assets/images/imageLogin.png';
+  // Forgot password.
+  static String imageForgotImage = 'assets/images/imageForgotImage.png';
+
+  // Reset password and otp.
+  static String imageOTPResetPassword =
+      'assets/images/imageOTPResetPassword.png';
+  static String imageResetPassword = 'assets/images/imageResetPassword.png';
+
+  //Sing up.
+  static String imageSingup = 'assets/images/imageSingup.png';
 }

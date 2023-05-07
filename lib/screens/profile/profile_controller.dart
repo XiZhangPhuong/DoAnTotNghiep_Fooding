@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/profile_routes.dart';
@@ -5,13 +6,13 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../di_container.dart';
-import '../../model/user.dart';
+import '../../model/user.dart' as model;
 import '../../routes/routes_path/auth_routes.dart';
 import '../../sharedpref/shared_preference_helper.dart';
 
 class ProfileController extends GetxController {
   UserRepository userRepository = GetIt.I.get<UserRepository>();
-  User? user;
+  model.User? user;
   RxBool isLoading = false.obs;
   @override
   void onInit() {
@@ -32,7 +33,8 @@ class ProfileController extends GetxController {
   ///
   /// Log out.
   ///
-  void logout() {
+  void logout() async {
+    await FirebaseAuth.instance.signOut();
     sl<SharedPreferenceHelper>().removeLogin();
     sl<SharedPreferenceHelper>().removeIdUser();
     Get.offNamed(AuthRoutes.LOGIN);
@@ -62,5 +64,4 @@ class ProfileController extends GetxController {
       arguments: status,
     );
   }
-
 }

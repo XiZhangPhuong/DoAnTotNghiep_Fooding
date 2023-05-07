@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/screens/profile/profile_controller.dart';
@@ -17,7 +18,10 @@ class ProfilePage extends GetView {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appbar(),
+      appBar: const P45AppBarP(
+        title: 'Trang cá nhân',
+        isShowLeadingIcon: false,
+      ),
       body: GetBuilder(
           init: ProfileController(),
           builder: (ProfileController controller) {
@@ -383,51 +387,36 @@ class ProfilePage extends GetView {
       onTap: () {
         ontap();
       },
-      child: Stack(
+      child: Column(
         children: [
-          Column(
-            children: [
-              Container(
-                height: IZIDimensions.ONE_UNIT_SIZE * 110,
-                width: IZIDimensions.ONE_UNIT_SIZE * 110,
-                decoration: BoxDecoration(
-                  color: ColorResources.colorBGItemListOrder.withOpacity(.3),
-                  shape: BoxShape.circle,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IZIImage(
-                      image,
-                      width: IZIDimensions.ONE_UNIT_SIZE * 70,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: IZIDimensions.SPACE_SIZE_1X,
-              ),
-              Text(
-                status,
-                style: TextStyle(
-                  color: ColorResources.colorTextItemListOrder,
-                  fontWeight: FontWeight.w500,
-                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            right: 0,
-            child: SizedBox(
-              height: IZIDimensions.ONE_UNIT_SIZE * 35,
-              width: IZIDimensions.ONE_UNIT_SIZE * 35,
-              child: badge.Badge(
-                badgeContent: Center(child: Text(count)),
-                badgeColor: ColorResources.WHITE,
-              ),
+          Container(
+            height: IZIDimensions.ONE_UNIT_SIZE * 110,
+            width: IZIDimensions.ONE_UNIT_SIZE * 110,
+            decoration: BoxDecoration(
+              color: ColorResources.colorBGItemListOrder.withOpacity(.3),
+              shape: BoxShape.circle,
             ),
-          )
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IZIImage(
+                  image,
+                  width: IZIDimensions.ONE_UNIT_SIZE * 70,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_1X,
+          ),
+          Text(
+            status,
+            style: TextStyle(
+              color: ColorResources.colorTextItemListOrder,
+              fontWeight: FontWeight.w500,
+              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+            ),
+          ),
         ],
       ),
     );

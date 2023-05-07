@@ -11,13 +11,13 @@ class IntroductionController extends GetxController {
   List<Map<String, dynamic>> introductionData = [
     {
       'image': ImagesPath.imageIntroduction1,
-      'title': 'Tìm kiếm\nvà đặt lịch khám',
+      'title': 'Tìm kiếm\nvà đặt đồ ăn',
       'content':
           'Khách hàng có thể sử dụng bất kì lúc nào, bất kì nơi đâu, thao tác dễ dàng, quan trọng nhất là độ bảo mật an toàn',
     },
     {
       'image': ImagesPath.imageIntroduction2,
-      'title': 'Xem chi tiết\nlịch sử đặt lịch',
+      'title': 'Xem chi tiết\nlịch sử đặt hàng',
       'content':
           'Khách hàng có thể sử dụng bất kì lúc nào, bất kì nơi đâu, thao tác dễ dàng, quan trọng nhất là độ bảo mật an toàn',
     },

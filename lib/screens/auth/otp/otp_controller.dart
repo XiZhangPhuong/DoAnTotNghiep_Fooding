@@ -67,6 +67,7 @@ class OTPController extends GetxController {
           );
         }
       } catch (e) {
+        IZIAlert().error(message: e.toString());
         IZIAlert().error(message: "Mã OTP không đúng hoặc OTP hết hạn");
       }
     } else {

@@ -11,6 +11,7 @@ import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 
+import '../../base_widget/izi_input.dart';
 import '../../utils/id_get_builder.dart';
 
 class PaymentPage extends GetView<PaymentController> {
@@ -28,8 +29,17 @@ class PaymentPage extends GetView<PaymentController> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : IZIValidate.nullOrEmpty(controller.cartResponse)
-                  ? Text("Chưa có món nào trong giỏ hàng!")
+              : IZIValidate.nullOrEmpty(controller.cartResponse.listProduct)
+                  ? Center(
+                      child: Text(
+                        'Giỏ hàng của bạn trống',
+                        style: TextStyle(
+                            color: ColorResources.BLACK,
+                            fontFamily: 'Nunito',
+                            fontWeight: FontWeight.w600,
+                            fontSize: IZIDimensions.FONT_SIZE_H6),
+                      ),
+                    )
                   : Container(
                       margin: EdgeInsets.only(
                           bottom: IZIDimensions.ONE_UNIT_SIZE * 80),
@@ -64,6 +74,8 @@ class PaymentPage extends GetView<PaymentController> {
 
                                   // tổng tiền hàng
                                   _totalPriceOrder(controller),
+
+                                  _introduce(controller),
                                 ],
                               ),
                             ),
@@ -287,11 +299,10 @@ class PaymentPage extends GetView<PaymentController> {
                       height: IZIDimensions.SPACE_SIZE_2X,
                     ),
                     Text(
-                      IZIValidate.nullOrEmpty(controller
-                              .cartResponse.listProduct![index].nameCategory)
+                      IZIValidate.nullOrEmpty(
+                              controller.cartResponse.listProduct![index].name)
                           ? "Không xác định"
-                          : controller
-                              .cartResponse.listProduct![index].nameCategory!,
+                          : controller.cartResponse.listProduct![index].name!,
                       style: TextStyle(
                         color: ColorResources.GREY,
                         fontFamily: NUNITO,
@@ -392,69 +403,76 @@ class PaymentPage extends GetView<PaymentController> {
   }
 
   Widget _bottomSheet(PaymentController controller) {
-    return SizedBox(
-      height: IZIDimensions.ONE_UNIT_SIZE * 80,
-      child: Row(
-        children: [
-          Flexible(
-            flex: 3,
-            child: Container(
-              color: ColorResources.WHITE,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Tổng thanh toán : ',
-                      style: TextStyle(
-                        color: ColorResources.BLACK,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w400,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                      ),
-                    ),
-                    Text(
-                      '125.000 vnđ',
-                      style: TextStyle(
-                        color: ColorResources.colorMain,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_H4,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              //controller.payWithZaloPay();
-            },
-            child: Container(
-              color: ColorResources.colorMain,
-              padding: EdgeInsets.symmetric(
-                horizontal: IZIDimensions.SPACE_SIZE_5X * 1.2,
-              ),
-              child: Center(
-                child: Text(
-                  'Đặt hàng',
-                  style: TextStyle(
+    return IZIValidate.nullOrEmpty(controller.cartResponse.listProduct)
+        ? const SizedBox()
+        : SizedBox(
+            height: IZIDimensions.ONE_UNIT_SIZE * 80,
+            child: Row(
+              children: [
+                Flexible(
+                  flex: 3,
+                  child: Container(
                     color: ColorResources.WHITE,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w600,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Tổng thanh toán : ',
+                            style: TextStyle(
+                              color: ColorResources.BLACK,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w400,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            ),
+                          ),
+                          Text(
+                            '${IZIPrice.currencyConverterVND(controller.totalPay())}vnđ',
+                            style: TextStyle(
+                              color: ColorResources.colorMain,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w600,
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: IZIDimensions.FONT_SIZE_H4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                GestureDetector(
+                  onTap: () {
+                    controller.onClickPay();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: IZIDimensions.SPACE_SIZE_5X * 1.2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: ColorResources.colorMain,
+                      borderRadius: BorderRadius.circular(
+                        IZIDimensions.BLUR_RADIUS_2X,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Đặt hàng',
+                        style: TextStyle(
+                          color: ColorResources.WHITE,
+                          fontFamily: NUNITO,
+                          fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: IZIDimensions.FONT_SIZE_H6,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   ///
@@ -477,35 +495,40 @@ class PaymentPage extends GetView<PaymentController> {
               vertical: IZIDimensions.SPACE_SIZE_2X,
               horizontal: IZIDimensions.SPACE_SIZE_3X,
             ),
-            child: Row(
-              children: [
-                Text(
-                  'Voucher cửa hàng',
-                  style: TextStyle(
-                    color: ColorResources.BLACK,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w600,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: IZIDimensions.FONT_SIZE_H6,
+            child: GestureDetector(
+              onTap: () {
+                controller.goToVoucher();
+              },
+              child: Row(
+                children: [
+                  Text(
+                    'Voucher của bạn',
+                    style: TextStyle(
+                      color: ColorResources.BLACK,
+                      fontFamily: NUNITO,
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: IZIDimensions.FONT_SIZE_H6,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                Text(
-                  'Chọn hoặc nhập mã',
-                  style: TextStyle(
+                  const Spacer(),
+                  Text(
+                    'Chọn hoặc nhập mã',
+                    style: TextStyle(
+                      color: ColorResources.GREY,
+                      fontFamily: NUNITO,
+                      fontWeight: FontWeight.w500,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                    ),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_right,
                     color: ColorResources.GREY,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                  ),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_right,
-                  color: ColorResources.GREY,
-                  size: IZIDimensions.ONE_UNIT_SIZE * 40,
-                )
-              ],
+                    size: IZIDimensions.ONE_UNIT_SIZE * 40,
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -575,7 +598,8 @@ class PaymentPage extends GetView<PaymentController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Phí vận chuyển(3 km)',
+                //'Phí vận chuyển(${IZIValidate.nullOrEmpty(controller.distance) ? "unknown" : IZIValidate.nullOrEmpty(controller.distance!.rows) ? "Unknown" : controller.distance!.rows[0].elements[0].distance.text})',
+                'Phí vận chuyển(${IZIValidate.nullOrEmpty(controller.distance) ? "unknown" : controller.distance.toString()} km)',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -585,7 +609,9 @@ class PaymentPage extends GetView<PaymentController> {
                 ),
               ),
               Text(
-                '25.000 vnđ',
+                IZIValidate.nullOrEmpty(controller.priceShip)
+                    ? "Unknow"
+                    : '${IZIPrice.currencyConverterVND(controller.priceShip)}vnđ',
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,
@@ -599,31 +625,33 @@ class PaymentPage extends GetView<PaymentController> {
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_1X,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Giảm giá',
-                style: TextStyle(
-                  color: ColorResources.GREY,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w400,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+          IZIValidate.nullOrEmpty(controller.myVourcher)
+              ? const SizedBox()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Giảm giá',
+                      style: TextStyle(
+                        color: ColorResources.GREY,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w400,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                      ),
+                    ),
+                    Text(
+                      '-${IZIPrice.currencyConverterVND(controller.myVourcher!.discountMoney!.toDouble())}vnđ',
+                      style: TextStyle(
+                        color: ColorResources.GREY,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w400,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Text(
-                '12.000 vnđ',
-                style: TextStyle(
-                  color: ColorResources.GREY,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w400,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                ),
-              ),
-            ],
-          ),
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_1X,
           ),
@@ -631,6 +659,26 @@ class PaymentPage extends GetView<PaymentController> {
       ),
     );
   }
+}
+
+///
+/// Introduce.
+///
+Widget _introduce(PaymentController controller) {
+  return Container(
+    padding: EdgeInsets.only(
+      left: IZIDimensions.SPACE_SIZE_2X,
+    ),
+    child: IZIInput(
+      controller: controller.descriptionController,
+      maxLine: 5,
+      label: "Nhập ghi chú",
+      borderRadius: IZIDimensions.BORDER_RADIUS_3X,
+      placeHolder: "Nhập text vào đây...",
+      type: IZIInputType.MILTIPLINE,
+      disbleError: true,
+    ),
+  );
 }
 
 ///

@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/location/location_response.dart';
+import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
@@ -25,7 +26,7 @@ class UserRepository {
         BCrypt.gensalt(),
       );
       userRequest.avatar = "";
-      userRequest.fullName = "";
+      userRequest.fullName = "No Name";
       userRequest.email = "";
       userRequest.isDeleted = false;
       userRequest.typeUser = "CUSTOMER";
@@ -66,6 +67,7 @@ class UserRepository {
     final querySnapshot = await _fireStore
         .collection("users")
         .where("phone", isEqualTo: phone)
+        .where("typeUser", isEqualTo: "CUSTOMER")
         .get();
     if (querySnapshot.docs.isNotEmpty) {
       return true;
@@ -119,12 +121,35 @@ class UserRepository {
           .doc(sl<SharedPreferenceHelper>().getIdUser)
           .collection("locations")
           .doc(request.id)
-          .set(request.toMap());
+          .set(request.toMap(), SetOptions(merge: true));
       onSucces();
     } catch (e) {
       onError(e);
     }
   }
+
+  ///
+  /// Add Location.
+  ///
+  Future<void> updateLocation({
+    required LocationResponse request,
+    required String id,
+    required Function onSucces,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      await _fireStore
+          .collection("users")
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .collection("locations")
+          .doc(id)
+          .update(request.toMap());
+      onSucces();
+    } catch (e) {
+      onError(e);
+    }
+  }
+
   ///
   /// Get all location.
   ///
@@ -138,11 +163,13 @@ class UserRepository {
           .doc(sl<SharedPreferenceHelper>().getIdUser)
           .collection("locations")
           .get();
-      onSucces(query.docs.map((e) => LocationResponse.fromMap(e.data())).toList());
+      onSucces(
+          query.docs.map((e) => LocationResponse.fromMap(e.data())).toList());
     } catch (e) {
       onError(e);
     }
   }
+
   ///
   /// Find Location.
   ///
@@ -155,9 +182,68 @@ class UserRepository {
       final query = await _fireStore
           .collection("users")
           .doc(sl<SharedPreferenceHelper>().getIdUser)
-          .collection("locations").doc(idLocation)
+          .collection("locations")
+          .doc(idLocation)
           .get();
       onSucces(LocationResponse.fromMap(query.data()!));
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  ///
+  /// Check phone Location.
+  ///
+  Future<void> checkPhoneLocation({
+    required String phone,
+    required Function(bool isPhone) onSucces,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      final query = await _fireStore
+          .collection("users")
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .collection("locations")
+          .where("phone", isEqualTo: phone)
+          .get();
+      onSucces(query.docs.isNotEmpty);
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  ///
+  /// Delete Location.
+  ///
+  Future<void> deleteLocation({
+    required String id,
+    required Function onSucces,
+    required Function onError,
+  }) async {
+    try {
+      final query = await _fireStore
+          .collection("users")
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .collection("locations")
+          .doc(id)
+          .delete();
+      onSucces();
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  ///
+  /// find store by id
+  ///
+  Future<void> findStoreByID({
+    required String idStore,
+    required Function(Store store) onSucces,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      final query = await _fireStore.collection("users").doc(idStore).get();
+      onSucces(Store.fromMap(query.data() as Map<String, dynamic>));
     } catch (e) {
       onError(e);
     }
