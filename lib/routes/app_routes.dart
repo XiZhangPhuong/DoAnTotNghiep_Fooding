@@ -4,6 +4,7 @@ import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/routes/routes_path/location_routes.dart';
 import 'package:fooding_project/routes/routes_path/profile_routes.dart';
+import 'package:fooding_project/routes/routes_path/store_routes.dart';
 import 'package:get/get.dart';
 
 class AppPages {
@@ -13,6 +14,7 @@ class AppPages {
     ...CartRoutes.list,
     ...ProfileRoutes.list,
     ...LocationRoutes.list,
-    ...DetailtFoodRoutes.list
+    ...DetailtFoodRoutes.list,
+    ...StoreRoutes.list
   ];
 }
