@@ -129,3 +129,16 @@ Widget _floattingButton(BottomBarController controller) {
           ),
         );
 }
+
+
+///
+///  bottom sheet status order 
+///
+Widget statusOrder(){
+  return Container(
+    height: IZIDimensions.ONE_UNIT_SIZE*80,
+    width:IZIDimensions.iziSize.width,
+    padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_1X),
+    
+  );
+}

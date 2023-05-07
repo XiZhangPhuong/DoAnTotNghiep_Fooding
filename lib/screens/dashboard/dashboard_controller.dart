@@ -27,7 +27,7 @@ class BottomBarController extends GetxController {
     },
     {
       'label': "Yêu thích",
-      'icon': ImagesPath.icon_trangchu,
+      'icon': ImagesPath.icon_yeuthich,
       'page': const HomeScreenPage(),
     }, 
     {
