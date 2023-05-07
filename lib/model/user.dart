@@ -18,6 +18,7 @@ class User {
   String? dateOfBirth;
   String? latLong;
   String? idLocation;
+  String? idVehicle;
   User({
     this.id,
     this.fullName,
@@ -33,6 +34,7 @@ class User {
     this.gender,
     this.latLong,
     this.idLocation,
+    this.idVehicle,
   });
 
   Map<String, dynamic> toMap() {
@@ -61,9 +63,7 @@ class User {
       phone: map['phone'] != null ? map['phone'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
       passWord: map['passWord'] != null ? map['passWord'] as String : null,
-      avatar: map['avatar'] != null
-          ? map['avatar'] as String
-          : null,
+      avatar: map['avatar'] != null ? map['avatar'] as String : null,
       typeUser: map['typeUser'] != null ? map['typeUser'] as String : null,
       isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
       address: map['address'] != null ? map['address'] as String : null,
@@ -74,6 +74,9 @@ class User {
       latLong: map['latLong'] != null ? map['latLong'] as String : null,
       idLocation:
           map['idLocation'] != null ? map['idLocation'] as String : null,
+                idVehicle:
+          map['idVehicle'] != null ? map['idVehicle'] as String : null,
+          
     );
   }
 

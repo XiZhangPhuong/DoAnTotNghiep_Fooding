@@ -24,7 +24,7 @@ class StoreController extends GetxController {
   bool isLoadingNameCategory = false;
   bool isLoadingCountCart = false;
   String idStore = Get.arguments as String;
-   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
+  final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   Store storeResponse = Store();
   String idUser = sl<SharedPreferenceHelper>().getIdUser;
   List<Products> listProducts = [];
@@ -38,8 +38,8 @@ class StoreController extends GetxController {
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
 
-   List<Products> listProductsCart =
-      Get.find<BottomBarController>().listProductsCard;   
+   List<Products> listProductsCart = [];
+   
   @override
   void onInit() {
     super.onInit();

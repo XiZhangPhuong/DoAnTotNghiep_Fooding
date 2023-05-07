@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
-import 'package:fooding_project/model/product/products.dart';
 
 class CartRepository {
   ///
@@ -38,27 +37,59 @@ class CartRepository {
   ///
   /// count cart by idUser
   ///
+  // Future<void> counCartByIDUser({
+  //   required String idUser,
+  //   required Function(int data) onSucess,
+  //   required Function(dynamic error) onError,
+  // }) async {
+  //   try {
+  //     final cartCollection = FirebaseFirestore.instance
+  //         .collection('carts')
+  //         .where('idUser', isEqualTo: idUser);
+  //     final querySnapshot = await cartCollection.get();
+  //     var productCount = 0;
+  //     for (final doc in querySnapshot.docs) {
+  //       final listProduct = doc['listProduct'] as List;
+  //       productCount += listProduct.length;
+  //     }
+  //     cartCollection.snapshots().listen((querySnapshot) {
+  //       productCount = 0;
+  //       for (final doc in querySnapshot.docs) {
+  //         final listProduct = doc['listProduct'] as List;
+  //         productCount += listProduct.length;
+  //       }
+  //     });
+
+  //     onSucess(productCount);
+  //   } catch (e) {
+  //     onError(e);
+  //   }
+  // }
+
+  ///
+  /// count cart by idUser 1
+  ///
   Future<void> counCartByIDUser({
-    required String idUser,
-    required Function(int data) onSucess,
-    required Function(dynamic error) onError,
-  }) async {
-    try {
-      final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance
-              .collection('carts')
-              .where('idUser', isEqualTo: idUser)
-              .get();
-    List<Products> listProductsCard = [];
-    if (querySnapshot.docs.isNotEmpty) {
-      for (var element in querySnapshot.docs) {
-        CartRquest cartRquest = CartRquest.fromMap(element.data());
-        listProductsCard = cartRquest.listProduct!;
-      } 
-    }
-   onSucess(listProductsCard.length);
-    } catch (e) {
-      onError(e);
-    }
+  required String idUser,
+  required Function(int data) onSucess,
+  required Function(dynamic error) onError,
+}) async {
+  try {
+    final reference = FirebaseFirestore.instance.collection('carts').where('idUser', isEqualTo: idUser);
+    reference.snapshots().listen((querySnapshot) {
+      var countList = 0;
+      for (var docChange in querySnapshot.docChanges) {
+        if (docChange.doc.exists) {
+          final cartRequest = CartRquest.fromMap(docChange.doc.data() as Map<String, dynamic>);
+          countList += cartRequest.listProduct?.length ?? 0;
+        }else{
+          countList = 0;
+        }
+      }
+      onSucess(countList);
+    });
+  } catch (e) {
+    onError(e);
   }
+}
 }

@@ -14,7 +14,7 @@ class AuthRepository {
       phoneNumber: "+84$phoneNumber",
       timeout: const Duration(seconds: 60),
       verificationCompleted: (phoneAuthCredential) async {
-        await _auth.signInWithCredential(phoneAuthCredential);
+        //await _auth.signInWithCredential(phoneAuthCredential);
       },
       verificationFailed: (error) {
         IZIAlert().error(

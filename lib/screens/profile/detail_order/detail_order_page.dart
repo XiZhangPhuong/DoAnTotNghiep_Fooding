@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
+import 'package:fooding_project/helper/izi_price.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/screens/components/button_app.dart';
+import 'package:fooding_project/screens/profile/detail_order/detail_order_controller.dart';
 import 'package:fooding_project/screens/widgets/app_bar.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -14,169 +18,213 @@ class DetailOrderPage extends GetView {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarFooding(title: "Chi Tiết đơn hàng"),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(
-            IZIDimensions.SPACE_SIZE_3X,
-          ),
-          child: Column(
-            children: [
-              //
-              // Infor Delivery Person.
-              _inforDeliveryPerson(),
-              SizedBox(
-                height: IZIDimensions.SPACE_SIZE_2X,
-              ),
-              //
-              // infor Location.
-              _inforLocation(),
-              SizedBox(
-                height: IZIDimensions.SPACE_SIZE_2X,
-              ),
-              //
-              // Infor Order
-              _inforOrder(),
-              SizedBox(
-                height: IZIDimensions.SPACE_SIZE_2X,
-              ),
-              _payment(),
-              SizedBox(
-                height: IZIDimensions.SPACE_SIZE_2X,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(
-                    IZIDimensions.BORDER_RADIUS_4X,
-                  ),
-                ),
-                padding: EdgeInsets.all(
-                  IZIDimensions.SPACE_SIZE_1X,
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Mã đơn hàng",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
+      body: GetBuilder(
+          init: DetailOrderController(),
+          builder: (DetailOrderController controller) {
+            return controller.isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.all(
+                        IZIDimensions.SPACE_SIZE_3X,
+                      ),
+                      child: Column(
+                        children: [
+                          //
+                          // Infor Delivery Person.
+                          if (!IZIValidate.nullOrEmpty(
+                              controller.orderResponse.idEmployee))
+                            _inforDeliveryPerson(controller),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
                           ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "sjkdfghjk12",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
-                            color: ColorResources.colorMain,
+                          //
+                          // infor Location.
+                          _inforLocation(controller),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_1X,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Thời gian đặt hàng",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
+                          //
+                          // Infor Order
+                          _inforOrder(controller),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
                           ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "15:25 07/05/2023",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
+                          _payment(controller),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
                           ),
-                        ),
-                      ],
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(
+                                IZIDimensions.BORDER_RADIUS_4X,
+                              ),
+                            ),
+                            padding: EdgeInsets.all(
+                              IZIDimensions.SPACE_SIZE_1X,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Mã đơn hàng",
+                                      style: TextStyle(
+                                        fontSize:
+                                            IZIDimensions.FONT_SIZE_DEFAULT,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      IZIValidate.nullOrEmpty(
+                                              controller.orderResponse.id)
+                                          ? "Không xác định"
+                                          : controller.orderResponse.id!
+                                              .substring(20),
+                                      style: TextStyle(
+                                        fontSize:
+                                            IZIDimensions.FONT_SIZE_DEFAULT,
+                                        fontWeight: FontWeight.w500,
+                                        color: ColorResources.colorMain,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: IZIDimensions.SPACE_SIZE_1X,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Dự kiến giao hàng thành công",
+                                      style: TextStyle(
+                                        fontSize:
+                                            IZIDimensions.FONT_SIZE_DEFAULT,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      IZIValidate.nullOrEmpty(controller
+                                              .orderResponse.timeDelivery)
+                                          ? "Không xác định"
+                                          : "${controller.orderResponse.timeDelivery!} phút",
+                                      style: TextStyle(
+                                        fontSize:
+                                            IZIDimensions.FONT_SIZE_DEFAULT,
+                                        fontWeight: FontWeight.w500,
+                                        color: ColorResources.colorMain,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                _itemTime(
+                                  title: "Thời gian đặt hàng",
+                                  content: IZIValidate.nullOrEmpty(
+                                          controller.orderResponse.timePeding)
+                                      ? "Không xác định"
+                                      : controller.orderResponse.timePeding!,
+                                ),
+                                if (!IZIValidate.nullOrEmpty(
+                                    controller.orderResponse.timeConfirm))
+                                  _itemTime(
+                                    title: "Thời gian xác nhận",
+                                    content:
+                                        controller.orderResponse.timeConfirm!,
+                                  ),
+                                if (!IZIValidate.nullOrEmpty(
+                                    controller.orderResponse.timeDelivering))
+                                  _itemTime(
+                                    title: "Lấy thành công, đang giao",
+                                    content:
+                                        controller.orderResponse.timeConfirm!,
+                                  ),
+                                if (!IZIValidate.nullOrEmpty(
+                                    controller.orderResponse.timeDone))
+                                  _itemTime(
+                                    title: "Giao thành công",
+                                    content: controller.orderResponse.timeDone!,
+                                  ),
+                                if (!IZIValidate.nullOrEmpty(
+                                    controller.orderResponse.timeCancel))
+                                  _itemTime(
+                                    title: "Lấy thành công, đang giao",
+                                    content:
+                                        controller.orderResponse.timeCancel!,
+                                  ),
+                                SizedBox(
+                                  height: IZIDimensions.iziSize.height * 0.1,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_1X,
+                  );
+          }),
+      bottomSheet: GetBuilder(
+          init: DetailOrderController(),
+          builder: (DetailOrderController controller) {
+            return controller.orderResponse.statusOrder == PENDING ||
+                    controller.orderResponse.statusOrder == DONE
+                ? Container(
+                    margin: EdgeInsets.only(
+                      bottom: IZIDimensions.SPACE_SIZE_2X,
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "Thời gian xác nhận",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "15:25 07/05/2023",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                    child: ButtonFooding(
+                      text: controller.orderResponse.statusOrder == PENDING
+                          ? "Hủy đơn hàng"
+                          : "Đánh giá",
+                      ontap: () {},
+                      border: IZIDimensions.BORDER_RADIUS_4X,
                     ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_1X,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Thời gian lấy món ăn",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "15:25 07/05/2023",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_1X,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Thời gian giao thành công",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          "15:25 07/05/2023",
-                          style: TextStyle(
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_2X,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+                  )
+                : const SizedBox();
+          }),
     );
   }
 
-  Container _payment() {
+  ///
+  /// Item time.
+  ///
+  Widget _itemTime({required String title, required String content}) {
+    return Column(
+      children: [
+        SizedBox(
+          height: IZIDimensions.SPACE_SIZE_1X,
+        ),
+        Row(
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              content,
+              style: TextStyle(
+                fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  ///
+  /// Payment.
+  ///
+  Container _payment(DetailOrderController controller) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -231,7 +279,7 @@ class DetailOrderPage extends GetView {
   ///
   /// Infor order.
   ///
-  Widget _inforOrder() {
+  Widget _inforOrder(DetailOrderController controller) {
     return Container(
       padding: EdgeInsets.all(
         IZIDimensions.SPACE_SIZE_1X,
@@ -255,7 +303,9 @@ class DetailOrderPage extends GetView {
                 width: IZIDimensions.SPACE_SIZE_3X,
               ),
               Text(
-                "Hoàn Mỹ Sport",
+                IZIValidate.nullOrEmpty(controller.storeResponse.fullName)
+                    ? "Không xác định"
+                    : controller.storeResponse.fullName!,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontFamily: NUNITO,
@@ -263,10 +313,16 @@ class DetailOrderPage extends GetView {
                 ),
               ),
               const Spacer(),
-              const Text(
-                "Xem shop >>>",
-                style: TextStyle(
-                  color: ColorResources.RED,
+              GestureDetector(
+                onTap: () {
+                  // do something.
+                  controller.goToShop();
+                },
+                child: const Text(
+                  "Xem shop >>>",
+                  style: TextStyle(
+                    color: ColorResources.RED,
+                  ),
                 ),
               ),
               SizedBox(
@@ -290,9 +346,11 @@ class DetailOrderPage extends GetView {
             height: IZIDimensions.iziSize.height * 0.13,
             width: IZIDimensions.iziSize.width,
             child: ListView.builder(
-              itemCount: 3,
+              itemCount: controller.orderResponse.listProduct!.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
+                final itemProduct =
+                    controller.orderResponse.listProduct![index];
                 return Container(
                   height: IZIDimensions.iziSize.height * 0.13,
                   width: IZIDimensions.iziSize.width * 0.8,
@@ -312,9 +370,11 @@ class DetailOrderPage extends GetView {
                         borderRadius: BorderRadius.circular(
                             IZIDimensions.BORDER_RADIUS_3X),
                         child: IZIImage(
-                          ImagesPath.placeHolder,
-                          height: IZIDimensions.ONE_UNIT_SIZE * 120,
-                          width: IZIDimensions.ONE_UNIT_SIZE * 120,
+                          IZIValidate.nullOrEmpty(itemProduct.image)
+                              ? ImagesPath.placeHolder
+                              : itemProduct.image!.first!,
+                          height: IZIDimensions.ONE_UNIT_SIZE * 140,
+                          width: IZIDimensions.ONE_UNIT_SIZE * 140,
                         ),
                       ),
                       SizedBox(
@@ -326,7 +386,9 @@ class DetailOrderPage extends GetView {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
-                              "Gà ủ muối",
+                              IZIValidate.nullOrEmpty(itemProduct.name)
+                                  ? "không xác định"
+                                  : itemProduct.name!,
                               style: TextStyle(
                                 color: ColorResources.colorMain,
                                 fontFamily: NUNITO,
@@ -335,7 +397,7 @@ class DetailOrderPage extends GetView {
                               ),
                             ),
                             Text(
-                              "Số lượng : 1",
+                              "Số lượng : ${IZIValidate.nullOrEmpty(itemProduct.quantity) ? "không xác định" : itemProduct.quantity!}",
                               style: TextStyle(
                                 color: ColorResources.GREY,
                                 fontFamily: NUNITO,
@@ -346,7 +408,7 @@ class DetailOrderPage extends GetView {
                             Row(
                               children: [
                                 Text(
-                                  "Giá tiền : 150.000",
+                                  "Giá tiền : ${IZIValidate.nullOrEmpty(itemProduct.price) ? "không xác định" : IZIPrice.currencyConverterVND(itemProduct.price!.toDouble())}vnđ",
                                   style: TextStyle(
                                     color: ColorResources.GREY,
                                     fontFamily: NUNITO,
@@ -377,6 +439,67 @@ class DetailOrderPage extends GetView {
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_1X,
           ),
+          if (!IZIValidate.nullOrEmpty(controller.orderResponse.discount))
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Giảm giá: ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                        color: ColorResources.camNhat,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      IZIValidate.nullOrEmpty(controller.orderResponse.discount)
+                          ? "Không xác định"
+                          : IZIPrice.currencyConverterVND(
+                              controller.orderResponse.discount!),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                        color: ColorResources.camNhat,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: IZIDimensions.SPACE_SIZE_1X,
+                ),
+              ],
+            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                "Phí ship: ",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                  color: ColorResources.camNhat,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                IZIValidate.nullOrEmpty(controller.orderResponse.shipPrice)
+                    ? "Không xác định"
+                    : IZIPrice.currencyConverterVND(
+                        controller.orderResponse.shipPrice!),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                  color: ColorResources.camNhat,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_1X,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -390,7 +513,10 @@ class DetailOrderPage extends GetView {
               ),
               const Spacer(),
               Text(
-                "120.000",
+                IZIValidate.nullOrEmpty(controller.orderResponse.totalPrice)
+                    ? "Không xác định"
+                    : IZIPrice.currencyConverterVND(
+                        controller.orderResponse.totalPrice!),
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: IZIDimensions.FONT_SIZE_H6,
@@ -410,7 +536,7 @@ class DetailOrderPage extends GetView {
   ///
   /// Infor Delivery Person.
   ///
-  Widget _inforDeliveryPerson() {
+  Widget _inforDeliveryPerson(DetailOrderController controller) {
     return Container(
       height: IZIDimensions.iziSize.height * 0.18,
       width: IZIDimensions.iziSize.width,
@@ -449,7 +575,9 @@ class DetailOrderPage extends GetView {
             children: [
               ClipOval(
                 child: IZIImage(
-                  ImagesPath.imageIntroduction1,
+                  IZIValidate.nullOrEmpty(controller.shipper.avatar)
+                      ? ImagesPath.placeHolder
+                      : controller.shipper.avatar!,
                   height: IZIDimensions.ONE_UNIT_SIZE * 150,
                   width: IZIDimensions.ONE_UNIT_SIZE * 150,
                 ),
@@ -469,12 +597,15 @@ class DetailOrderPage extends GetView {
                           fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                           fontWeight: FontWeight.w400,
                         ),
-                        children: const [
-                          TextSpan(
+                        children: [
+                          const TextSpan(
                             text: "Họ và tên: ",
                           ),
                           TextSpan(
-                            text: "Trương Đình Quyền",
+                            text: IZIValidate.nullOrEmpty(
+                                    controller.shipper.fullName)
+                                ? "không xác định"
+                                : controller.shipper.fullName!,
                           ),
                         ],
                       ),
@@ -489,12 +620,15 @@ class DetailOrderPage extends GetView {
                           fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                           fontWeight: FontWeight.w400,
                         ),
-                        children: const [
-                          TextSpan(
+                        children: [
+                          const TextSpan(
                             text: "Số điện thoại: ",
                           ),
                           TextSpan(
-                            text: "Trương Đình Quyền",
+                            text: IZIValidate.nullOrEmpty(
+                                    controller.shipper.phone)
+                                ? "không xác định"
+                                : controller.shipper.phone!,
                           ),
                         ],
                       ),
@@ -509,12 +643,15 @@ class DetailOrderPage extends GetView {
                           fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                           fontWeight: FontWeight.w400,
                         ),
-                        children: const [
-                          TextSpan(
+                        children: [
+                          const TextSpan(
                             text: "Biển số xe: ",
                           ),
                           TextSpan(
-                            text: "Trương Đình Quyền",
+                            text: IZIValidate.nullOrEmpty(
+                                    controller.shipper.idVehicle)
+                                ? "không xác định"
+                                : controller.shipper.idVehicle!,
                           ),
                         ],
                       ),
@@ -532,7 +669,7 @@ class DetailOrderPage extends GetView {
   ///
   /// Infor Location Person.
   ///
-  Widget _inforLocation() {
+  Widget _inforLocation(DetailOrderController controller) {
     return Container(
       width: IZIDimensions.iziSize.width,
       decoration: BoxDecoration(
@@ -582,12 +719,15 @@ class DetailOrderPage extends GetView {
                       fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                       fontWeight: FontWeight.w400,
                     ),
-                    children: const [
-                      TextSpan(
+                    children: [
+                      const TextSpan(
                         text: "Họ và tên: ",
                       ),
                       TextSpan(
-                        text: "Trương Đình Quyền",
+                        text: IZIValidate.nullOrEmpty(
+                                controller.orderResponse.name)
+                            ? "Không xác định"
+                            : controller.orderResponse.name!,
                       ),
                     ],
                   ),
@@ -602,12 +742,15 @@ class DetailOrderPage extends GetView {
                       fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                       fontWeight: FontWeight.w400,
                     ),
-                    children: const [
-                      TextSpan(
+                    children: [
+                      const TextSpan(
                         text: "Số điện thoại: ",
                       ),
                       TextSpan(
-                        text: "0332854541",
+                        text: IZIValidate.nullOrEmpty(
+                                controller.orderResponse.phone)
+                            ? "Không xác định"
+                            : controller.orderResponse.phone!,
                       ),
                     ],
                   ),
@@ -622,12 +765,15 @@ class DetailOrderPage extends GetView {
                       fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                       fontWeight: FontWeight.w400,
                     ),
-                    children: const [
-                      TextSpan(
+                    children: [
+                      const TextSpan(
                         text: "Địa chỉ: ",
                       ),
                       TextSpan(
-                        text: "55 Lưu Hữu Phước, An Hải Bắc, Đà Nẵng, Việt Nam",
+                        text: IZIValidate.nullOrEmpty(
+                                controller.orderResponse.address)
+                            ? "Không xác định"
+                            : controller.orderResponse.address!,
                       ),
                     ],
                   ),

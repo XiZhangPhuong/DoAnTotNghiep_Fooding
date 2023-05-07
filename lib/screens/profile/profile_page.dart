@@ -48,7 +48,7 @@ class ProfilePage extends GetView {
                           ontap: () {
                             controller.logout();
                           },
-                          image: '',
+                          image: Icons.exit_to_app,
                           text: 'Đăng xuất',
                         ),
                       ],
@@ -60,7 +60,7 @@ class ProfilePage extends GetView {
 
   Widget _itemFuction({
     required Function ontap,
-    required String image,
+    required IconData image,
     required String text,
   }) {
     return GestureDetector(
@@ -74,7 +74,10 @@ class ProfilePage extends GetView {
         ),
         child: Row(
           children: [
-            IZIImage(image),
+            Icon(
+              image,
+              color: Colors.red,
+            ),
             SizedBox(
               width: IZIDimensions.BLUR_RADIUS_4X,
             ),
@@ -129,8 +132,11 @@ class ProfilePage extends GetView {
               ),
             ],
           ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_3X,
+          ),
           _itemEdit(
-              '',
+              Icons.person,
               "Họ và tên",
               IZIValidate.nullOrEmpty(controller.user!.fullName)
                   ? "No Name"
@@ -138,12 +144,12 @@ class ProfilePage extends GetView {
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_2X,
           ),
-          _itemEdit('', "Số điện thoại", controller.user!.phone!),
+          _itemEdit(Icons.phone, "Số điện thoại", controller.user!.phone!),
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_2X,
           ),
           _itemEdit(
-            '',
+            Icons.date_range,
             "Ngày tháng năm sinh",
             IZIValidate.nullOrEmpty(controller.user!.dateOfBirth)
                 ? "Chưa có dữ liệu"
@@ -157,11 +163,15 @@ class ProfilePage extends GetView {
     );
   }
 
-  Row _itemEdit(String image, String label, String fullname) {
+  Row _itemEdit(IconData image, String label, String fullname) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        IZIImage(image),
+        Icon(
+          image,
+          color: Colors.red,
+          size: IZIDimensions.ONE_UNIT_SIZE * 40,
+        ),
         SizedBox(
           width: IZIDimensions.SPACE_SIZE_1X,
         ),
@@ -295,7 +305,11 @@ class ProfilePage extends GetView {
         children: [
           Row(
             children: [
-              IZIImage(''),
+              Icon(
+                Icons.store,
+                color: Colors.red,
+                size: IZIDimensions.ONE_UNIT_SIZE * 45,
+              ),
               SizedBox(
                 width: IZIDimensions.SPACE_SIZE_1X,
               ),

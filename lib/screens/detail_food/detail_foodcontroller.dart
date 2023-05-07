@@ -33,8 +33,8 @@ class DetailFoodController extends GetxController {
   int limit = 10;
   int countProduct = 0;
   List<Products> listProducts = [];
-  List<Products> listProductsCart =
-      Get.find<BottomBarController>().listProductsCard;
+  List<Products> listProductsCart = [];
+      
   int quantity = 0;
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
   final ProductsRepository _productsRepository =
@@ -164,8 +164,6 @@ class DetailFoodController extends GetxController {
       onSucces: () {
         EasyLoading.show(status: "Đang cập nhật");
         IZIAlert().success(message: 'Thêm món ăn thành công');
-        Get.find<BottomBarController>().countCartByIDStore();
-        //Get.find<BottomBarController>().update();
         EasyLoading.dismiss();
         update();
       },

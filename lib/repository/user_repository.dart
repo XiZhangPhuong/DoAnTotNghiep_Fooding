@@ -85,7 +85,16 @@ class UserRepository {
         .get();
     return model.User.fromMap(querySnapshot.data() as Map<String, dynamic>);
   }
-
+  ///
+  /// Find user.
+  ///
+  Future<model.User> findbyId({required String idUser}) async {
+    final querySnapshot = await _fireStore
+        .collection("users")
+        .doc(idUser)
+        .get();
+    return model.User.fromMap(querySnapshot.data() as Map<String, dynamic>);
+  }
   ///
   /// Update User.
   ///

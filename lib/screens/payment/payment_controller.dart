@@ -12,6 +12,7 @@ import 'package:fooding_project/model/location/location_response.dart';
 import 'package:fooding_project/model/user.dart' as model;
 import 'package:fooding_project/model/voucher/voucher.dart';
 import 'package:fooding_project/repository/user_repository.dart';
+import 'package:fooding_project/repository/voucher_repository.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/cart_routes.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
@@ -33,7 +34,7 @@ class PaymentController extends GetxController {
   // Declare API
   final OrderResponsitory _orderResponsitory = GetIt.I.get<OrderResponsitory>();
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
-
+  final VoucherRepository _voucherRepository = GetIt.I.get<VoucherRepository>();
   // Init value.
   String typePayment = CASH;
   String zpTransToken = "", payResult = "";
@@ -108,6 +109,13 @@ class PaymentController extends GetxController {
             orderRequest: order,
             onSucces: () async {
               await _orderResponsitory.deleteCart();
+              await _voucherRepository.addidCustomerToVoucher(
+                idvoucher: order.idVoucher!,
+                onSuccess: () {},
+                error: (e) {
+                  IZIAlert().error(message: e.toString());
+                },
+              );
               flagSpam = true;
               final bot = Get.find<BottomBarController>();
               bot.countCartByIDStore();
@@ -331,18 +339,19 @@ class PaymentController extends GetxController {
               order.address = location.address;
               order.phone = location.phone;
               if (!IZIValidate.nullOrEmpty(myVourcher)) {
-                order.discount = myVourcher!.discountMoney.toString();
+                order.discount = myVourcher!.discountMoney!.toDouble();
               }
               order.listProduct = cartResponse.listProduct;
               order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
               order.latLong = location.latlong;
               order.note = noteEditingController.text;
-              order.shipPrice = priceShip.toString();
+              order.shipPrice = priceShip;
+              order.name = location.name;
               order.typePayment = typePayment;
               order.timePeding = IZIDate.formatDate(DateTime.now(),
                   format: "HH:mm dd/MM/yyyy");
               order.statusOrder = "PENDING";
-              order.totalPrice = totalPay().toInt().toString();
+              order.totalPrice = totalPay().toDouble();
               order.note = descriptionController.text.trim();
               if (!IZIValidate.nullOrEmpty(myVourcher)) {
                 order.idVoucher = myVourcher!.id;
@@ -357,6 +366,15 @@ class PaymentController extends GetxController {
                   onSucces: () async {
                     await _orderResponsitory.deleteCart();
                     flagSpam = true;
+                    //
+                    // Add idCustomer to voucher
+                    await _voucherRepository.addidCustomerToVoucher(
+                      idvoucher: order.idVoucher!,
+                      onSuccess: () {},
+                      error: (e) {
+                        IZIAlert().error(message: e.toString());
+                      },
+                    );
                     final bot = Get.find<BottomBarController>();
                     bot.countCartByIDStore();
                     bot.update();

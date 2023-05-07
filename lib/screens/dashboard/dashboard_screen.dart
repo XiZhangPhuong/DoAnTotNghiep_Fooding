@@ -2,6 +2,7 @@ import 'package:badges/badges.dart ' as badge;
 import 'package:flutter/material.dart';
 
 import 'package:fooding_project/helper/izi_dimensions.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -17,10 +18,11 @@ class BottomBarPage extends GetView<BottomBarController> {
         builder: (BottomBarController controller) => WillPopScope(
               child: Scaffold(
                 floatingActionButton: _floattingButton(controller),
-                bottomSheet: statusOrder(controller),
+                bottomSheet: IZIValidate.nullOrEmpty(controller.statusOrder)
+                    ? null
+                    : statusOrder(controller),
                 backgroundColor: Colors.white,
-                body: Obx(() => 
-                controller.pages[controller.currentIndex.value]
+                body: Obx(() => controller.pages[controller.currentIndex.value]
                     ['page'] as Widget),
                 bottomNavigationBar: bottomNavigator(context),
               ),
@@ -143,29 +145,30 @@ Widget statusOrder(BottomBarController controller) {
     onTap: () {
       controller.goToStatusOrder();
     },
-    child: Visibility(
-      visible: false,
-      child: Container(
-        height: IZIDimensions.ONE_UNIT_SIZE * 80,
-        width: IZIDimensions.iziSize.width,
-        padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
-        color: ColorResources.colorMain,
-        child: Row(
-          children: [
-            Text(
-              'Đơn hàng #g655fdfdf112e đang đợi tài xế...',
-              style: TextStyle(
-                color: ColorResources.WHITE,
-                fontFamily: NUNITO,
-                overflow: TextOverflow.ellipsis,
-                fontWeight: FontWeight.w600,
-                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-              ),
+    child: Container(
+      height: IZIDimensions.ONE_UNIT_SIZE * 80,
+      width: IZIDimensions.iziSize.width,
+      padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+      color: ColorResources.colorMain,
+      child: Row(
+        children: [
+          Text(
+            'Đơn hàng #${controller.idOrder}   ${controller.statusOrder}...',
+            style: TextStyle(
+              color: ColorResources.WHITE,
+              fontFamily: NUNITO,
+              overflow: TextOverflow.ellipsis,
+              fontWeight: FontWeight.w600,
+              fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
             ),
-            const Spacer(),
-            Icon(Icons.keyboard_arrow_right,color: ColorResources.WHITE,size: IZIDimensions.ONE_UNIT_SIZE*40,)
-          ],
-        ),
+          ),
+          const Spacer(),
+          Icon(
+            Icons.keyboard_arrow_right,
+            color: ColorResources.WHITE,
+            size: IZIDimensions.ONE_UNIT_SIZE * 40,
+          )
+        ],
       ),
     ),
   );
