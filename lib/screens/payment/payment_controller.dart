@@ -366,15 +366,19 @@ class PaymentController extends GetxController {
                   onSucces: () async {
                     await _orderResponsitory.deleteCart();
                     flagSpam = true;
+
                     //
                     // Add idCustomer to voucher
-                    await _voucherRepository.addidCustomerToVoucher(
-                      idvoucher: order.idVoucher!,
-                      onSuccess: () {},
-                      error: (e) {
-                        IZIAlert().error(message: e.toString());
-                      },
-                    );
+                    if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                      await _voucherRepository.addidCustomerToVoucher(
+                        idvoucher: myVourcher!.id!,
+                        onSuccess: () {},
+                        error: (e) {
+                          IZIAlert().error(message: e.toString());
+                        },
+                      );
+                    }
+
                     final bot = Get.find<BottomBarController>();
                     bot.countCartByIDStore();
                     bot.update();

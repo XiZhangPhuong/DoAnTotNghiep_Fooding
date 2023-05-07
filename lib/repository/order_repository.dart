@@ -123,7 +123,16 @@ class OrderResponsitory {
           .where('idCustomer',
               isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
           .get();
-      if (ref.docs.isNotEmpty) {
+      bool flag = false;
+      List<OrderResponse> list =
+          ref.docs.map((e) => OrderResponse.fromMap(e.data())).toList();
+      for (final item in list) {
+        if (item.statusOrder! != "DONE") {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
         onSuccess(true);
       } else {
         onSuccess(false);
