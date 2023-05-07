@@ -20,7 +20,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     return GetBuilder(
       init: DetailFoodController(),
       builder: (DetailFoodController controller) {
-        return controller.isLoading == false  
+        return controller.isLoading == false
             ? const Center(
                 child: CircularProgressIndicator(),
               )
@@ -154,37 +154,48 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                             width: IZIDimensions.SPACE_SIZE_1X,
                                           ),
                                           Text(
-                                            controller.isLoadingStore==false ? 'Loading' : 
-                                              controller.checkOpeningHours(
-                                                  controller
-                                                      .userModel!.openHour!,
-                                                  controller
-                                                      .userModel!.closeHour!),
+                                              controller.isLoadingStore == false
+                                                  ? 'Loading'
+                                                  : controller
+                                                      .checkOpeningHours(
+                                                          controller.userModel!
+                                                              .openHour!,
+                                                          controller.userModel!
+                                                              .closeHour!),
                                               style: TextStyle(
                                                 color: ColorResources.BLACK,
                                                 fontFamily: NUNITO,
                                                 fontWeight: FontWeight.w400,
-                                                decoration:  
-                                                controller.isLoadingStore==false ? null 
-                                                :                                           
-                                                controller
-                                                        .checkOpeningHours(
-                                                            controller
-                                                                .userModel!
-                                                                .openHour!,
-                                                            controller
-                                                                .userModel!
-                                                                .closeHour!)
-                                                        .contains('Đã đóng cửa')
-                                                    ? TextDecoration.lineThrough
-                                                    : TextDecoration.none,
+                                                decoration: controller
+                                                            .isLoadingStore ==
+                                                        false
+                                                    ? null
+                                                    : controller
+                                                            .checkOpeningHours(
+                                                                controller
+                                                                    .userModel!
+                                                                    .openHour!,
+                                                                controller
+                                                                    .userModel!
+                                                                    .closeHour!)
+                                                            .contains(
+                                                                'Đã đóng cửa')
+                                                        ? TextDecoration
+                                                            .lineThrough
+                                                        : TextDecoration.none,
                                                 fontSize: IZIDimensions
                                                     .FONT_SIZE_SPAN_SMALL,
                                               )),
                                           const Spacer(),
                                           Text(
-                                            IZIValidate.nullOrEmpty(controller.productsModel) ? 'Loading' : 
-                                            '${IZIPrice.currencyConverterVND(controller.productsModel!.price!.toDouble())}đ',
+                                            IZIValidate.nullOrEmpty(
+                                                    controller.productsModel)
+                                                ? 'Loading'
+                                                : controller.productsModel!
+                                                            .priceDiscount ==
+                                                        0
+                                                    ? '${IZIPrice.currencyConverterVND(controller.productsModel!.price!.toDouble())}đ'
+                                                    : '${IZIPrice.currencyConverterVND(controller.productsModel!.priceDiscount!.toDouble())}đ',
                                             style: TextStyle(
                                               color: ColorResources.colorMain,
                                               fontFamily: NUNITO,
@@ -277,14 +288,13 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                         itemCount: 5,
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
-                                            onTap : () {
-                                                           
-                                            },
+                                            onTap: () {},
                                             child: Card(
                                               elevation: 0.3,
                                               child: Container(
                                                 padding: EdgeInsets.all(
-                                                    IZIDimensions.SPACE_SIZE_2X),
+                                                    IZIDimensions
+                                                        .SPACE_SIZE_2X),
                                                 child: Row(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -312,8 +322,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                         Text(
                                                           'Văn Văn Phương',
                                                           style: TextStyle(
-                                                            color: ColorResources
-                                                                .BLACK,
+                                                            color:
+                                                                ColorResources
+                                                                    .BLACK,
                                                             fontFamily: NUNITO,
                                                             fontWeight:
                                                                 FontWeight.w600,
@@ -347,8 +358,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                         Text(
                                                           'Món này rất ngon nha',
                                                           style: TextStyle(
-                                                            color: ColorResources
-                                                                .BLACK,
+                                                            color:
+                                                                ColorResources
+                                                                    .BLACK,
                                                             fontFamily: NUNITO,
                                                             fontWeight:
                                                                 FontWeight.w400,
@@ -400,7 +412,8 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                               onTap: () {},
                                                               child: Text(
                                                                 'Thích',
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   color:
                                                                       ColorResources
                                                                           .BLACK,
@@ -423,7 +436,8 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                               onTap: () {},
                                                               child: Text(
                                                                 'Bình luận',
-                                                                style: TextStyle(
+                                                                style:
+                                                                    TextStyle(
                                                                   color:
                                                                       ColorResources
                                                                           .BLACK,
@@ -476,12 +490,12 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     );
   }
 
-///
-/// slililarProduct
-///
+  ///
+  /// slililarProduct
+  ///
   Widget _sililarProduct(DetailFoodController controller) {
     return Visibility(
-      visible: controller.listProducts.isEmpty ?  false : true ,
+      visible: controller.listProducts.isEmpty ? false : true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -514,7 +528,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                 SizedBox(
                   width: IZIDimensions.SPACE_SIZE_2X,
                 ),
-    
+
                 // view all list products
                 GestureDetector(
                   onTap: () {},
@@ -600,7 +614,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                   Padding(
                     padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
                     child: Text(
-                      '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ',
+                      controller.listProducts[index].priceDiscount == 0
+                          ? '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ'
+                          : '${IZIPrice.currencyConverterVND((controller.listProducts[index].priceDiscount!.toDouble()))}đ',
                       style: TextStyle(
                         color: ColorResources.colorMain,
                         fontFamily: NUNITO,
@@ -608,7 +624,6 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                         overflow: TextOverflow.ellipsis,
                         fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
                       ),
-                      maxLines: 2,
                     ),
                   ),
                 ],

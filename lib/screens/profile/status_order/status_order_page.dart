@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_smart_refresher.dart';
 import 'package:fooding_project/base_widget/izi_tabbar.dart';
+import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/screens/profile/status_order/status_order_controller.dart';
@@ -19,9 +20,7 @@ class StatusOrderPage extends GetView {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarFooding(
-        title: "Trạng thái đơn hàng",
-      ),
+      appBar: const P45AppBarP(title: 'Trạng thái đơn hàng'),
       body: GetBuilder(
         init: StatusOrderController(),
         builder: (controller) => controller.isLoading
