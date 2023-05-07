@@ -8,9 +8,9 @@ class OrderResponse {
   String? id;
   String? idCustomer;
   String? idEmployee;
-  String? shipPrice;
-  String? totalPrice;
-  String? discount;
+  double? shipPrice;
+  double? totalPrice;
+  double? discount;
   String? typePayment;
   String? timePeding;
   String? timeDelivering;
@@ -25,6 +25,7 @@ class OrderResponse {
   List<Products>? listProduct;
   String? timeDelivery;
   String? idVoucher;
+  String? name;
   OrderResponse({
     this.id,
     this.idCustomer,
@@ -46,6 +47,7 @@ class OrderResponse {
     this.timeDelivering,
     this.timeDone,
     this.timeConfirm,
+    this.name,
   });
 
   Map<String, dynamic> toMap() {
@@ -65,6 +67,7 @@ class OrderResponse {
       if (!IZIValidate.nullOrEmpty(phone)) 'phone': phone,
       if (!IZIValidate.nullOrEmpty(timeDelivery)) 'timeDelivery': timeDelivery,
       if (!IZIValidate.nullOrEmpty(idVoucher)) 'idVoucher': idVoucher,
+      if (!IZIValidate.nullOrEmpty(name)) 'name': name,
       if (!IZIValidate.nullOrEmpty(listProduct))
         'listProduct': listProduct?.map((x) => x.toMap()).toList(),
     };
@@ -72,41 +75,41 @@ class OrderResponse {
 
   factory OrderResponse.fromMap(Map<String, dynamic> map) {
     return OrderResponse(
-        id: map['id'] != null ? map['id'] as String : null,
-        idCustomer:
-            map['idCustomer'] != null ? map['idCustomer'] as String : null,
-        idEmployee:
-            map['idEmployee'] != null ? map['idEmployee'] as String : null,
-        shipPrice: map['shipPrice'] != null ? map['shipPrice'] as String : null,
-        totalPrice:
-            map['totalPrice'] != null ? map['totalPrice'] as String : null,
-        discount: map['discount'] != null ? map['discount'] as String : null,
-        typePayment:
-            map['typePayment'] != null ? map['typePayment'] as String : null,
-        timePeding:
-            map['timeOrder'] != null ? map['timeOrder'] as String : null,
-        timeDelivering:
-            map['timeOrder'] != null ? map['timeOrder'] as String : null,
-        timeCancel:
-            map['timeOrder'] != null ? map['timeOrder'] as String : null,
-        timeDone: map['timeOrder'] != null ? map['timeOrder'] as String : null,
-        timeConfirm:
-            map['timeConfirm'] != null ? map['timeConfirm'] as String : null,
-        statusOrder:
-            map['statusOrder'] != null ? map['statusOrder'] as String : null,
-        latLong: map['latLong'] != null ? map['latLong'] as String : null,
-        address: map['address'] != null ? map['address'] as String : null,
-        note: map['note'] != null ? map['note'] as String : null,
-        phone: map['phone'] != null ? map['phone'] as String : null,
-        listProduct: map['listProduct'] != null
-            ? (map['listProduct'] as List<dynamic>)
-                .map((e) => Products.fromMap(e as Map<String, dynamic>))
-                .toList()
-            : null,
-        timeDelivery:
-            map['timeDelivery'] != null ? map['timeDelivery'] as String : null,
-        idVoucher:
-            map['idVoucher'] != null ? map['idVoucher'] as String : null);
+      id: map['id'] != null ? map['id'] as String : null,
+      idCustomer:
+          map['idCustomer'] != null ? map['idCustomer'] as String : null,
+      idEmployee:
+          map['idEmployee'] != null ? map['idEmployee'] as String : null,
+      shipPrice: map['shipPrice'] != null ? map['shipPrice'] as double : null,
+      totalPrice:
+          map['totalPrice'] != null ? map['totalPrice'] as double : null,
+      discount: map['discount'] != null ? map['discount'] as double : null,
+      typePayment:
+          map['typePayment'] != null ? map['typePayment'] as String : null,
+      timePeding:
+          map['timePeding'] != null ? map['timePeding'] as String : null,
+      timeDelivering:
+          map['timeDelivering'] != null ? map['timeDelivering'] as String : null,
+      timeCancel: map['timeCancel'] != null ? map['timeCancel'] as String : null,
+      timeDone: map['timeDone'] != null ? map['timeDone'] as String : null,
+      timeConfirm:
+          map['timeConfirm'] != null ? map['timeConfirm'] as String : null,
+      statusOrder:
+          map['statusOrder'] != null ? map['statusOrder'] as String : null,
+      latLong: map['latLong'] != null ? map['latLong'] as String : null,
+      address: map['address'] != null ? map['address'] as String : null,
+      note: map['note'] != null ? map['note'] as String : null,
+      phone: map['phone'] != null ? map['phone'] as String : null,
+      listProduct: map['listProduct'] != null
+          ? (map['listProduct'] as List<dynamic>)
+              .map((e) => Products.fromMap(e as Map<String, dynamic>))
+              .toList()
+          : null,
+      timeDelivery:
+          map['timeDelivery'] != null ? map['timeDelivery'] as String : null,
+      idVoucher: map['idVoucher'] != null ? map['idVoucher'] as String : null,
+      name: map['name'] != null ? map['name'] as String : null,
+    );
   }
 
   String toJson() => json.encode(toMap());

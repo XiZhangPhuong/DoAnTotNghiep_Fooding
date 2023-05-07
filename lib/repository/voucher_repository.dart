@@ -28,6 +28,7 @@ class VoucherRepository {
             voucher.endDate!.millisecondsSinceEpoch >
                 DateTime.now().millisecondsSinceEpoch) {
           listTemps.add(voucher);
+          print("123");
         }
       }
       onSuccess(listTemps);
@@ -71,6 +72,25 @@ class VoucherRepository {
       } else {
         error("Không tìm thấy voucher");
       }
+    } catch (e) {
+      error(e);
+    }
+  }
+
+  ///
+  /// Add voucher.
+  ///
+  Future<void> addidCustomerToVoucher({
+    required String idvoucher,
+    required Function() onSuccess,
+    required Function(dynamic e) error,
+  }) async {
+    try {
+      await _fireStore.collection("vouchers").doc(idvoucher).update({
+        "listCusomer":
+            FieldValue.arrayUnion([sl<SharedPreferenceHelper>().getIdUser])
+      });
+      onSuccess();
     } catch (e) {
       error(e);
     }

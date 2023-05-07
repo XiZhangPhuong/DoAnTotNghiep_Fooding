@@ -58,5 +58,6 @@ class ImagesPath {
   //Sing up.
   static String imageSingup = 'assets/images/imageSingup.png';
 
-  
+  // Empty Card.
+  static String emptyCart = 'assets/images/empty-cart.png';
 }
