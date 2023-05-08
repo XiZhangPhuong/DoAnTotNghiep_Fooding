@@ -22,6 +22,7 @@ class VoucherRepository {
       List<Voucher> listTemps = [];
       for (final element in query.docs) {
         final voucher = Voucher.fromMap(element.data());
+        print(voucher.toJson());
         if (!voucher.listCustomer!
                 .contains(sl<SharedPreferenceHelper>().getIdUser) &&
             voucher.limitMax! > voucher.listCustomer!.length &&
@@ -87,7 +88,7 @@ class VoucherRepository {
   }) async {
     try {
       await _fireStore.collection("vouchers").doc(idvoucher).update({
-        "listCusomer":
+        "listCustomer":
             FieldValue.arrayUnion([sl<SharedPreferenceHelper>().getIdUser])
       });
       onSuccess();

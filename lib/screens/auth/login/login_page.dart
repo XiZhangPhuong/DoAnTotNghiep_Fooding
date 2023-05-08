@@ -299,13 +299,10 @@ class LoginPage extends GetView {
             onTap: () {
               controller.goDashBoardToExits();
             },
-            child: Text(
-              'Bỏ Qua',
-              style: TextStyle(
-                fontFamily: NUNITO,
-                fontSize: IZIDimensions.FONT_SIZE_H6,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Icon(
+              Icons.exit_to_app,
+              color: ColorResources.colorMain,
+              size: IZIDimensions.ONE_UNIT_SIZE * 80,
             ),
           ),
           SizedBox(

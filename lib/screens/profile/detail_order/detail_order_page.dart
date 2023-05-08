@@ -469,7 +469,19 @@ class DetailOrderPage extends GetView {
                             Row(
                               children: [
                                 Text(
-                                  "Giá tiền : ${IZIValidate.nullOrEmpty(itemProduct.price) ? "không xác định" : IZIPrice.currencyConverterVND(itemProduct.price!.toDouble())}",
+                                  "Giá tiền : ",
+                                  style: TextStyle(
+                                    color: ColorResources.GREY,
+                                    fontFamily: NUNITO,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                                  ),
+                                ),
+                                Text(
+                                  IZIValidate.nullOrEmpty(itemProduct.price)
+                                      ? "không xác định"
+                                      : IZIPrice.currencyConverterVND(
+                                          itemProduct.price!.toDouble()),
                                   style: TextStyle(
                                     color: ColorResources.GREY,
                                     fontFamily: NUNITO,
@@ -482,7 +494,9 @@ class DetailOrderPage extends GetView {
                                 ),
                                 itemProduct.priceDiscount != 0
                                     ? Text(
-                                        itemProduct.priceDiscount!.toString(),
+                                        IZIPrice.currencyConverterVND(
+                                            itemProduct.priceDiscount!
+                                                .toDouble()),
                                         style: TextStyle(
                                           color: ColorResources.GREY,
                                           fontFamily: NUNITO,
