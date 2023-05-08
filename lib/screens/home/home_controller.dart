@@ -88,8 +88,8 @@ class HomeController extends GetxController {
     super.onInit();
     paginateFlashSaleProduct();
     getCategoryList();
-    _getCurrentLocation();
     paginateProductsRecommnend();
+    _getCurrentLocation();
   }
 
   @override
@@ -100,18 +100,20 @@ class HomeController extends GetxController {
   ///
   ///
   ///
-  String tietKiemPrice(int price,int priceDiscount){
+  String tietKiemPrice(int price, int priceDiscount) {
     String str = '';
     double money = (priceDiscount - price).toDouble();
     str = 'Giảm ${IZIPrice.currencyConverterVND(money)}đ';
     return str;
   }
+
   ///
   /// go to category
   ///
-  void gotoCategoryPage(String name){
-    Get.toNamed(HomeRoutes.CATEGORY,arguments: name);
+  void gotoCategoryPage(String name) {
+    Get.toNamed(HomeRoutes.CATEGORY, arguments: name);
   }
+
   ///
   /// go to SearchPage
   ///
@@ -121,23 +123,25 @@ class HomeController extends GetxController {
 
   ///
   ///  get list category
-  /// 
+  ///
   Future<void> getCategoryList() async {
     listCategory.clear();
-   await _categoryRepository.all(onSucess: (data) {
-       listCategory = data;
-       isLoadingCategory = false;
-       update();
-    }, onError: (error) {
-       print(error);
-    },);
+    await _categoryRepository.all(
+      onSucess: (data) {
+        listCategory = data;
+        isLoadingCategory = false;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
-
 
   ///
   /// get data products
   ///
-  Future<void> paginateProducts() async { 
+  Future<void> paginateProducts() async {
     listProducts.clear();
     _productsRepository.paginateProducts(
       limit: 10,
@@ -156,7 +160,7 @@ class HomeController extends GetxController {
   ///
   /// get data products recommend
   ///
-  Future<void> paginateProductsRecommnend() async { 
+  Future<void> paginateProductsRecommnend() async {
     listProductRecommend.clear();
     _productsRepository.paginateRecommendProducts(
       limit: 10,
@@ -171,10 +175,10 @@ class HomeController extends GetxController {
     );
   }
 
-    ///
+  ///
   /// get data products flash sale
   ///
-  Future<void> paginateFlashSaleProduct() async { 
+  Future<void> paginateFlashSaleProduct() async {
     listProducts.clear();
     _productsRepository.paginateFlashsaleProducts(
       limit: 10,
@@ -189,7 +193,6 @@ class HomeController extends GetxController {
     );
   }
 
-
   ///
   /// Get current
   ///
@@ -200,7 +203,8 @@ class HomeController extends GetxController {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      street = "Vui lòng bật vị trí";
+      await setCurrentLocation();
+
       return Future.error('Location services are disabled.');
     }
 
@@ -208,12 +212,18 @@ class HomeController extends GetxController {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        currentLocation = await Geolocator.getLastKnownPosition();
+        await setCurrentLocation();
+
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
+      currentLocation = await Geolocator.getLastKnownPosition();
+      await setCurrentLocation();
+
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
@@ -221,6 +231,13 @@ class HomeController extends GetxController {
     await Geolocator.getCurrentPosition().then((value) {
       currentLocation = value;
     });
+    await setCurrentLocation();
+  }
+
+  ///
+  /// Set Current location.
+  ///
+  Future<void> setCurrentLocation() async {
     if (!IZIValidate.nullOrEmpty(currentLocation)) {
       List<Placemark> placemarks = await placemarkFromCoordinates(
         currentLocation!.latitude,
@@ -256,7 +273,4 @@ class HomeController extends GetxController {
       return '$sales đã bán';
     }
   }
-
-  
-
 }
