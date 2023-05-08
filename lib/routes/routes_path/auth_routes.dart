@@ -1,5 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
+
+import 'package:fooding_project/screens/SHIPPER/dash_board_shipper/dash_board_shipper_binding.dart';
+import 'package:fooding_project/screens/SHIPPER/dash_board_shipper/dash_board_shipper_controller.dart';
+import 'package:fooding_project/screens/SHIPPER/dash_board_shipper/dash_board_shipper_page.dart';
 import 'package:fooding_project/screens/auth/forgot_password/forgot_password_page.dart';
 import 'package:fooding_project/screens/auth/login/login_page.dart';
 import 'package:fooding_project/screens/auth/otp/otp_page.dart';
@@ -16,13 +20,12 @@ import '../../screens/auth/login/login_binding.dart';
 import '../../screens/auth/otp/otp_binding.dart';
 import '../../screens/auth/reset_password/reset_password_binding.dart';
 import '../../screens/auth/singup/singup_binding.dart';
-import '../../screens/dashboard/dashboard_binding.dart';
-import '../../screens/dashboard/dashboard_screen.dart';
 
 class AuthRoutes {
   static const LOGIN = '/login';
   static const SINGUP = '/singup';
   static const DASHBOARD = '/dashboard';
+  static const DASHBOARD_SHIPPER = '/dashboard_shipper';
   static const SPLASH = '/splash';
   static const INTRODUCTION = '/introduction';
   static const OTP = '/otp';
@@ -34,10 +37,11 @@ class AuthRoutes {
       page: () => const LoginPage(),
       binding: LoginBinding(),
     ),
-    GetPage(
-      name: DASHBOARD,
-      page: () =>   BottomBarPage(),
-      binding: DashBoardBinding(),
+   
+      GetPage(
+      name: DASHBOARD_SHIPPER,
+      page: () => const  BottomBarShipperPage(),
+      binding: DashBoardBindingShipper(),
     ),
     GetPage(
       name: SPLASH,

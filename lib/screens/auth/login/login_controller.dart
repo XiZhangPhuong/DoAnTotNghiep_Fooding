@@ -39,7 +39,7 @@ class LoginController extends GetxController {
           await _userRepository.getUserDetails(phoneEditingController.text);
       print("quyen test ${phoneEditingController.text}");
       if (user != null) {
-        if (user.typeUser != CUSTOMER ||
+        if (user.typeUser != SHIPPER ||
             !BCrypt.checkpw(
               passwordEditingController.text,
               user.passWord!,

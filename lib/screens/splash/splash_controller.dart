@@ -45,7 +45,7 @@ class SplashController extends GetxController
         // Check if first login app.
         if (splash) {
           if (isLogged) {
-            Get.offNamed(AuthRoutes.DASHBOARD);
+            Get.offNamed(AuthRoutes.DASHBOARD_SHIPPER);
           } else {
             Get.offNamed(AuthRoutes.LOGIN);
           }

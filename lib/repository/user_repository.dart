@@ -67,7 +67,7 @@ class UserRepository {
     final querySnapshot = await _fireStore
         .collection("users")
         .where("phone", isEqualTo: phone)
-        .where("typeUser", isEqualTo: "CUSTOMER")
+        .where("typeUser", isEqualTo: "SHIPPER")
         .get();
     if (querySnapshot.docs.isNotEmpty) {
       return true;

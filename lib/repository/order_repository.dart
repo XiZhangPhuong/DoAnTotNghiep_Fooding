@@ -1,11 +1,14 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 
 import '../model/order/order.dart';
 
@@ -158,6 +161,34 @@ class OrderResponsitory {
           .get();
       OrderResponse? orderResponse;
       onSuccess(orderResponse!);
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  Future<void> getOrderListTen({
+    required Function(OrderResponse? onSuccess) onSuccess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      final ref = _fireStore.collection("orders");
+      QuerySnapshot snap =
+          await ref.where('statusOrder', isEqualTo: PENDING).get();
+      if (snap.docs.isNotEmpty) {
+        final order = OrderResponse.fromMap(
+            snap.docs.first.data() as Map<String, dynamic>);
+        final docRef = ref.doc(snap.docs.first.id);
+        final listener = docRef.snapshots().listen((snap) {
+          if (snap.exists) {
+            onSuccess(OrderResponse.fromMap(snap.data() as Map<String,dynamic>));
+          } else {
+            onSuccess(null);
+          }
+        });
+        onSuccess(order);
+      } else {
+        onSuccess(null);
+      }
     } catch (e) {
       onError(e);
     }

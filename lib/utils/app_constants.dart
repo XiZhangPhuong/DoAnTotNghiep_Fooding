@@ -95,6 +95,7 @@ const String FACEBOOK = 'FACEBOOK';
 const String SUCCESS = 'SUCCESS';
 
 const String CUSTOMER = 'CUSTOMER';
+const String SHIPPER = 'SHIPPER';
 const String CASH = "CASH";
 const String BANKING = "BANKING";
 
