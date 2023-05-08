@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 
@@ -18,23 +19,26 @@ class LoginPage extends GetView {
       backgroundColor: ColorResources.colorBackground,
       body: GetBuilder(
         init: LoginController(),
-        builder: (LoginController controller) => GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Header of page.
-                _header(),
+        builder: (LoginController controller) => WillPopScope(
+          onWillPop: () => controller.onDoubleBack(),
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Header of page.
+                  _header(),
 
-                SizedBox(
-                  height: IZIDimensions.SPACE_SIZE_5X * 1.5,
-                ),
+                  SizedBox(
+                    height: IZIDimensions.SPACE_SIZE_5X * 1.5,
+                  ),
 
-                // Login Form.
-                _loginForm(controller),
-              ],
+                  // Login Form.
+                  _loginForm(controller),
+                ],
+              ),
             ),
           ),
         ),
@@ -287,6 +291,22 @@ class LoginPage extends GetView {
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_3X,
+          ),
+          GestureDetector(
+            onTap: () {
+              controller.goDashBoardToExits();
+            },
+            child: Text(
+              'Bỏ Qua',
+              style: TextStyle(
+                fontFamily: NUNITO,
+                fontSize: IZIDimensions.FONT_SIZE_H6,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_3X,

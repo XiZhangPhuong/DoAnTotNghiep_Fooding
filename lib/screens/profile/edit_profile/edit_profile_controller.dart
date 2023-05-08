@@ -109,7 +109,7 @@ class EditProfileController extends GetxController {
       IZIAlert().error(message: "Không được để trống tên");
       return false;
     } else if (IZIValidate.nullOrEmpty(txtEmail.text.trim())) {
-      IZIAlert().error(message: "Không được để trống tên");
+      IZIAlert().error(message: "Không được để trống email");
       return false;
     } else if (IZIValidate.nullOrEmpty(txtPhone.text.trim())) {
       IZIAlert().error(message: "Không được để trống tên");

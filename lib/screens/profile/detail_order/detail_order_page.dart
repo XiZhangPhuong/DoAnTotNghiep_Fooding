@@ -104,7 +104,7 @@ class DetailOrderPage extends GetView {
                                 Row(
                                   children: [
                                     Text(
-                                      "Dự kiến giao hàng thành công",
+                                    "Dự kiến giao hàng thành công",
                                       style: TextStyle(
                                         fontSize:
                                             IZIDimensions.FONT_SIZE_DEFAULT,

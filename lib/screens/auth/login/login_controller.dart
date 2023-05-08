@@ -1,4 +1,5 @@
 import 'package:bcrypt/bcrypt.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/repository/user_repository.dart';
@@ -9,7 +10,7 @@ import 'package:get_it/get_it.dart';
 import '../../../base_widget/izi_alert.dart';
 import '../../../di_container.dart';
 import '../../../helper/izi_validate.dart';
-import '../../../model/user.dart';
+import '../../../model/user.dart' as model;
 import '../../../routes/routes_path/auth_routes.dart';
 
 class LoginController extends GetxController {
@@ -21,6 +22,7 @@ class LoginController extends GetxController {
   TextEditingController phoneEditingController = TextEditingController();
   TextEditingController passwordEditingController = TextEditingController();
   bool isCheck = false;
+  DateTime? currentBackPressTime;
 
   @override
   void dispose() {
@@ -35,7 +37,7 @@ class LoginController extends GetxController {
   Future<void> gotoDashBoard() async {
     if (validateLogin()) {
       EasyLoading.show(status: "Đang đăng nhập");
-      User? user =
+      model.User? user =
           await _userRepository.getUserDetails(phoneEditingController.text);
       print("quyen test ${phoneEditingController.text}");
       if (user != null) {
@@ -117,5 +119,27 @@ class LoginController extends GetxController {
   void oncheckboxChange(bool status) {
     isCheck = status;
     update();
+  }
+
+  ///
+  /// Go to dashBoard.
+  ///
+  void goDashBoardToExits() async {
+    await FirebaseAuth.instance.signOut();
+    sl<SharedPreferenceHelper>().removeLogin();
+    sl<SharedPreferenceHelper>().removeIdUser();
+    Get.offAllNamed(AuthRoutes.DASHBOARD);
+  }
+
+  /// double back press
+  Future<bool> onDoubleBack() {
+    final DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      IZIAlert().info(message: "Nhấn lần nữa để thoát ứng dụng.");
+      return Future.value(false);
+    }
+    return Future.value(true);
   }
 }

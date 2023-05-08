@@ -15,7 +15,7 @@ class StatusOrderController extends GetxController {
     "Chờ duyệt",
     "Đang giao",
     "Đã hủy",
-    "Đánh giá",
+    "Thành công",
   ];
   List<OrderResponse> listOrder = [];
   final _orderResponsitory = GetIt.I.get<OrderResponsitory>();

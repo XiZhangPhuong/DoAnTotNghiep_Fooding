@@ -1,10 +1,13 @@
 import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/routes/routes_path/location_routes.dart';
 import 'package:fooding_project/screens/profile/profile_controller.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 import '../../base_widget/izi_image.dart';
@@ -46,11 +49,41 @@ class ProfilePage extends GetView {
                         ),
                         _itemFuction(
                           ontap: () {
+                            Get.toNamed(LocationRoutes.LOCATION);
+                          },
+                          image: Icons.location_city_sharp,
+                          text: 'Quản lý địa chỉ',
+                        ),
+                        SizedBox(
+                          height: IZIDimensions.SPACE_SIZE_3X,
+                        ),
+                        _itemFuction(
+                          ontap: () {
+                            //Get.toNamed(LocationRoutes.LOCATION);
+                            IZIAlert().error(message: "Phương");
+                          },
+                          image: Icons.reviews,
+                          text: 'Đánh giá cảm nhận',
+                        ),
+                        SizedBox(
+                          height: IZIDimensions.SPACE_SIZE_3X,
+                        ),
+                        _itemFuction(
+                          ontap: () {
                             controller.logout();
                           },
                           image: Icons.exit_to_app,
                           text: 'Đăng xuất',
                         ),
+                        Obx(() {
+                          print(controller.isFooter.value);
+                          if (controller.isFooter.value) {
+                            return SizedBox(
+                              height: IZIDimensions.iziSize.height * 0.08,
+                            );
+                          }
+                          return const SizedBox();
+                        })
                       ],
                     ),
                   );
@@ -378,7 +411,7 @@ class ProfilePage extends GetView {
               ),
               _itemOrder(
                 ImagesPath.iconElevated,
-                "Đánh giá",
+                "Thành công",
                 () {
                   controller.gotoStatusOrder(3);
                 },

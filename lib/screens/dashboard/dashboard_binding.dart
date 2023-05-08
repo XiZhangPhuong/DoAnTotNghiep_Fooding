@@ -7,7 +7,7 @@ class DashBoardBinding extends Bindings {
   @override
   void dependencies() {
     // put all controller in dashboard
-    Get.lazyPut<BottomBarController>(() => BottomBarController());
+    Get.lazyReplace<BottomBarController>(() => BottomBarController());
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<ProfileController>(() => ProfileController());
   }
