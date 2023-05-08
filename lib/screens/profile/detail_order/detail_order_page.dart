@@ -104,7 +104,7 @@ class DetailOrderPage extends GetView {
                                 Row(
                                   children: [
                                     Text(
-                                    "Dự kiến giao hàng thành công",
+                                      "Dự kiến giao hàng thành công",
                                       style: TextStyle(
                                         fontSize:
                                             IZIDimensions.FONT_SIZE_DEFAULT,
@@ -469,14 +469,38 @@ class DetailOrderPage extends GetView {
                             Row(
                               children: [
                                 Text(
-                                  "Giá tiền : ${IZIValidate.nullOrEmpty(itemProduct.price) ? "không xác định" : IZIPrice.currencyConverterVND(itemProduct.price!.toDouble())}vnđ",
+                                  "Giá tiền : ${IZIValidate.nullOrEmpty(itemProduct.price) ? "không xác định" : IZIPrice.currencyConverterVND(itemProduct.price!.toDouble())}",
+                                  style: TextStyle(
+                                    color: ColorResources.GREY,
+                                    fontFamily: NUNITO,
+                                    fontWeight: FontWeight.w400,
+                                    decoration: itemProduct.priceDiscount != 0
+                                        ? TextDecoration.lineThrough
+                                        : null,
+                                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                                  ),
+                                ),
+                                itemProduct.priceDiscount != 0
+                                    ? Text(
+                                        itemProduct.priceDiscount!.toString(),
+                                        style: TextStyle(
+                                          color: ColorResources.GREY,
+                                          fontFamily: NUNITO,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize:
+                                              IZIDimensions.FONT_SIZE_DEFAULT,
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                                Text(
+                                  "vnđ",
                                   style: TextStyle(
                                     color: ColorResources.GREY,
                                     fontFamily: NUNITO,
                                     fontWeight: FontWeight.w400,
                                     fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                                   ),
-                                ),
+                                )
                               ],
                             ),
                           ],

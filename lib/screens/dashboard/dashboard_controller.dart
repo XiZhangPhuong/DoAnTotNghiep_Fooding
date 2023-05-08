@@ -146,25 +146,27 @@ class BottomBarController extends GetxController {
           if (orderResponse.statusOrder == PENDING ||
               orderResponse.statusOrder == DELIVERING) {
             print(orderResponse.toJson());
-            statusOrder = orderResponse.statusOrder! == PENDING
-                ? "Đang đợi tài xế"
-                : orderResponse.statusOrder == DELIVERING
-                    ? "Tài xế đang giao"
-                    : '';
+            if (orderResponse.statusOrder! == PENDING) {
+              statusOrder = "Đang đợi tài xế";
+            } else if (orderResponse.statusOrder == DELIVERING) {
+              statusOrder = "Tài xế đang giao";
+            }
+            print(statusOrder);
             idOrder = orderResponse.id!.split('-')[0];
             isFooter = true.obs;
+            update();
           } else {
             statusOrder = '';
             isFooter = false.obs;
+            update();
           }
-          update();
         } else {
           print("quyen test 123");
           isFooter = false.obs;
           statusOrder = '';
           update();
         }
-        // Do something with change
+        break;
       }
     });
   }
