@@ -106,3 +106,5 @@ const String PENDING = "PENDING",
     DELIVERING = "DELIVERING",
     DONE = "DONE",
     CANCEL = "CANCEL";
+
+const APIGG = "AIzaSyB5o0AVp5OB0El-Vo3Vu5w5TeaAqc8SYUw";

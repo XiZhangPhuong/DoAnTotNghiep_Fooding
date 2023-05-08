@@ -9,11 +9,13 @@ import '../../di_container.dart';
 import '../../model/user.dart' as model;
 import '../../routes/routes_path/auth_routes.dart';
 import '../../sharedpref/shared_preference_helper.dart';
+import '../dashboard/dashboard_controller.dart';
 
 class ProfileController extends GetxController {
   UserRepository userRepository = GetIt.I.get<UserRepository>();
   model.User? user;
   RxBool isLoading = false.obs;
+  RxBool isFooter = Get.find<BottomBarController>().isFooter;
   @override
   void onInit() {
     super.onInit();

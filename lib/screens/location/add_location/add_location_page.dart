@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 
 import '../../../helper/izi_dimensions.dart';
+import '../../../utils/app_constants.dart';
 import '../../../utils/color_resources.dart';
 
 class AddLocationPage extends StatelessWidget {
@@ -143,7 +144,7 @@ class AddLocationPage extends StatelessWidget {
             ),
             Expanded(
               child: PlacePicker(
-                apiKey: 'AIzaSyB1KM0R3xVa8P0_VvMQah-F16OFrIYORs8',
+                apiKey: APIGG,
                 region: 'VN',
                 onPlacePicked: (result) async {
                   if (!IZIValidate.nullOrEmpty(result.formattedAddress) &&

@@ -3,12 +3,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/order/order.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
+import 'package:fooding_project/screens/no_login/no_login_page.dart';
 import 'package:fooding_project/screens/profile/profile_page.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
@@ -24,6 +26,7 @@ class BottomBarController extends GetxController {
 
   String statusOrder = '';
   String idOrder = '';
+  RxBool isFooter = false.obs;
 
   final List<Map<String, dynamic>> pages = [
     {
@@ -34,12 +37,16 @@ class BottomBarController extends GetxController {
     {
       'label': "Yêu thích",
       'icon': ImagesPath.icon_yeuthich,
-      'page': const HomeScreenPage(),
+      'page': IZIValidate.nullOrEmpty(sl<SharedPreferenceHelper>().getIdUser)
+          ? const NoLoginPage()
+          : const HomeScreenPage(),
     },
     {
       'label': "Tài khoản",
       'icon': ImagesPath.icon_taikhoan,
-      'page': const ProfilePage(),
+      'page': IZIValidate.nullOrEmpty(sl<SharedPreferenceHelper>().getIdUser)
+          ? const NoLoginPage()
+          : const ProfilePage(),
     },
   ];
 
@@ -136,14 +143,24 @@ class BottomBarController extends GetxController {
         if (change.doc.exists) {
           OrderResponse orderResponse =
               OrderResponse.fromMap(change.doc.data() as Map<String, dynamic>);
-          statusOrder = orderResponse.statusOrder! == PENDING
-              ? "Đang đợi tài xế"
-              : orderResponse.statusOrder == DELIVERING
-                  ? "Tài xế đang giao"
-                  : '';
-          idOrder = orderResponse.id!.split('-')[0];
+          if (orderResponse.statusOrder == PENDING ||
+              orderResponse.statusOrder == DELIVERING) {
+            print(orderResponse.toJson());
+            statusOrder = orderResponse.statusOrder! == PENDING
+                ? "Đang đợi tài xế"
+                : orderResponse.statusOrder == DELIVERING
+                    ? "Tài xế đang giao"
+                    : '';
+            idOrder = orderResponse.id!.split('-')[0];
+            isFooter = true.obs;
+          } else {
+            statusOrder = '';
+            isFooter = false.obs;
+          }
           update();
         } else {
+          print("quyen test 123");
+          isFooter = false.obs;
           statusOrder = '';
           update();
         }

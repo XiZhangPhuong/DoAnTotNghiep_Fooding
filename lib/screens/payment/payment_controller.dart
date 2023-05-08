@@ -306,9 +306,10 @@ class PaymentController extends GetxController {
             //         1000)
             //     .toPrecision(2);
             var response = await Dio().get(
-                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=16.0718593,108.2206474&key=AIzaSyB1KM0R3xVa8P0_VvMQah-F16OFrIYORs8');
+                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=16.0718593,108.2206474&key=$APIGG');
             DistanceResponse distanceResponse = DistanceResponse.fromJson(
                 response.data as Map<String, dynamic>);
+            print(response);
             distance = double.parse(distanceResponse
                 .rows[0].elements[0].distance.text
                 .split(' ')[0]);
@@ -394,6 +395,8 @@ class PaymentController extends GetxController {
                 EasyLoading.dismiss();
                 Get.back();
               } else {
+                //
+                // Pay with zalo.
                 payWithZaloPay(totalPay().toInt().toString(), order);
               }
             }

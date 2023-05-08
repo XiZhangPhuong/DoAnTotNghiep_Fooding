@@ -91,12 +91,18 @@ class OrderResponsitory {
       final ref = _fireStore.collection("orders");
       if (IZIValidate.nullOrEmpty(idOrder)) {
         if (IZIValidate.nullOrEmpty(statusOrder)) {
-          final snap = await ref.get();
+          final snap = await ref
+              .where("idCustomer",
+                  isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
+              .get();
           onSuccess(
               snap.docs.map((e) => OrderResponse.fromMap(e.data())).toList());
         } else {
-          final snap =
-              await ref.where("statusOrder", isEqualTo: statusOrder).get();
+          final snap = await ref
+              .where("statusOrder", isEqualTo: statusOrder)
+              .where("idCustomer",
+                  isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
+              .get();
           print(snap.docs.toString());
           onSuccess(
               snap.docs.map((e) => OrderResponse.fromMap(e.data())).toList());
@@ -127,7 +133,8 @@ class OrderResponsitory {
       List<OrderResponse> list =
           ref.docs.map((e) => OrderResponse.fromMap(e.data())).toList();
       for (final item in list) {
-        if (item.statusOrder! != "DONE") {
+        if (item.statusOrder! == "PENDING" ||
+            item.statusOrder! == "DELIVERING") {
           flag = true;
           break;
         }

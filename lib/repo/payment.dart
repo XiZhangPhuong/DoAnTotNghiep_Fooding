@@ -8,9 +8,9 @@ import 'package:sprintf/sprintf.dart';
 import '../utils/endpoints.dart';
 
 class ZaloPayConfig {
-  static const String appId = "2553";
-  static const String key1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
-  static const String key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
+  static const String appId = "554";
+  static const String key1 = "8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn";
+  static const String key2 = "uUfsWgfLkRLzq6W2uNXTCxrfxs51auny";
 
   static const String appUser = "zalopaydemo";
   static int transIdDefault = 1;
