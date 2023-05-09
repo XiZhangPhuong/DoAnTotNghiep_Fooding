@@ -63,6 +63,7 @@ class PaymentController extends GetxController {
 
   @override
   void onInit() {
+    print(sl<SharedPreferenceHelper>().getIdUser);
     super.onInit();
     getAllCart();
   }
@@ -270,7 +271,11 @@ class PaymentController extends GetxController {
     tamtinh = 0;
     if (!IZIValidate.nullOrEmpty(cartResponse.listProduct)) {
       for (final element in cartResponse.listProduct!) {
-        tamtinh += element.price! * element.quantity!;
+        if (element.priceDiscount != 0) {
+          tamtinh += element.priceDiscount! * element.quantity!;
+        } else {
+          tamtinh += element.price! * element.quantity!;
+        }
       }
     }
   }
@@ -423,6 +428,10 @@ class PaymentController extends GetxController {
     }
     if (IZIValidate.nullOrEmpty(cartResponse.listProduct)) {
       IZIAlert().error(message: "Hiện tại chưa có món nào trong giỏ hàng");
+      return false;
+    }
+    if (distance! > 25) {
+      IZIAlert().error(message: "Vui lòng đặt hàng dưới 25 km");
       return false;
     }
     return true;

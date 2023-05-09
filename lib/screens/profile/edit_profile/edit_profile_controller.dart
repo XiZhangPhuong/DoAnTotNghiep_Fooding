@@ -114,7 +114,7 @@ class EditProfileController extends GetxController {
     } else if (!RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(txtEmail.text)) {
-      IZIAlert().error(message: "Không được để trống email");
+      IZIAlert().error(message: "Email không đúng định dạng");
       return false;
     } else if (IZIValidate.nullOrEmpty(txtPhone.text.trim())) {
       IZIAlert().error(message: "Không được để trống tên");

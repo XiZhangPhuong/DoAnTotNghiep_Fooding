@@ -316,10 +316,14 @@ class PaymentPage extends GetView<PaymentController> {
                     Row(
                       children: [
                         Text(
-                          IZIValidate.nullOrEmpty(controller
-                                  .cartResponse.listProduct![index].price)
+                          IZIValidate.nullOrEmpty(controller.cartResponse
+                                      .listProduct![index].price) ||
+                                  IZIValidate.nullOrEmpty(controller
+                                      .cartResponse
+                                      .listProduct![index]
+                                      .priceDiscount)
                               ? "Không xác định"
-                              : "${IZIPrice.currencyConverterVND(controller.cartResponse.listProduct![index].price!.toDouble())}vnđ",
+                              : "${IZIPrice.currencyConverterVND(controller.cartResponse.listProduct![index].priceDiscount != 0 ? controller.cartResponse.listProduct![index].priceDiscount!.toDouble() : controller.cartResponse.listProduct![index].price!.toDouble())}vnđ",
                           style: TextStyle(
                             color: ColorResources.colorMain,
                             fontFamily: NUNITO,
