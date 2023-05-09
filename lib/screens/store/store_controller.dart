@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
@@ -38,8 +39,8 @@ class StoreController extends GetxController {
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
 
-   List<Products> listProductsCart = [];
-   
+  List<Products> listProductsCart = [];
+
   @override
   void onInit() {
     super.onInit();
@@ -57,12 +58,12 @@ class StoreController extends GetxController {
     update();
   }
 
-   ///
- /// gotoCart
- ///
- void gotoCart(){
+  ///
+  /// gotoCart
+  ///
+  void gotoCart() {
     Get.toNamed(StoreRoutes.PAYMENT);
- }
+  }
 
   ///
   /// find store by id
@@ -103,23 +104,28 @@ class StoreController extends GetxController {
   ///
   /// count cart by idStore
   ///
-  void countCartByIDStore(){
-    _cartRepository.counCartByIDUser(idUser: idUser, onSucess: (data) {
-       countCart = data;
-       print(data);
-       isLoadingCountCart = true;
-       update();
-    }, onError: (error) {
-       print(error.toString());
-    },);
+  void countCartByIDStore() {
+    _cartRepository.counCartByIDUser(
+      idUser: idUser,
+      onSucess: (data) {
+        countCart = data;
+        print(data);
+        isLoadingCountCart = true;
+        update();
+      },
+      onError: (error) {
+        print(error.toString());
+      },
+    );
   }
 
   ///
   /// go to evualate
   ///
-  void gotoEvualate(){
+  void gotoEvualate() {
     Get.toNamed(StoreRoutes.EVALUATE);
   }
+
   ///
   /// paginate product by name Category
   ///
@@ -236,11 +242,14 @@ class StoreController extends GetxController {
     return false;
   }
 
-
- ///
+  ///
   /// add cart
   ///
   Future<void> addCart(Products products) async {
+    if (IZIValidate.nullOrEmpty(idUser)) {
+      Get.find<BottomBarController>().showLoginDialog();
+      return;
+    }
     if (checkIdProduct(products.id!)) {
       IZIAlert().error(message: 'Đã có trong giỏ hàng');
       return;
@@ -292,7 +301,7 @@ class StoreController extends GetxController {
         listProductsCart.clear();
         listProductsCart.add(products);
         addCartToFireStore(products);
-      //  pushProductToFireStore(idUser, listProductsCart);
+        //  pushProductToFireStore(idUser, listProductsCart);
         Get.find<BottomBarController>().update();
         update();
       },
@@ -301,5 +310,4 @@ class StoreController extends GetxController {
       },
     );
   }
- 
 }

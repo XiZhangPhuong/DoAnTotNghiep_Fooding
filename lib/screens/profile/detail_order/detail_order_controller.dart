@@ -3,6 +3,8 @@ import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
+import 'package:fooding_project/routes/routes_path/detail_order_routes.dart';
+import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
@@ -21,6 +23,19 @@ class DetailOrderController extends GetxController {
     findOrderDetail();
   }
 
+   ///
+  /// gotoDetailFood
+  ///
+  void gotoDetailFood(String id) {
+    Get.find<HomeController>().gotoDetailFood(id);
+  }
+
+  ///
+  /// go to evualate
+  ///
+  void gotoEvaluate(){
+    Get.toNamed(DetailOrderRoutes.EVALUATE);
+  }
   ///
   /// find order detail.
   ///

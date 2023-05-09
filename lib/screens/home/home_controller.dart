@@ -273,4 +273,15 @@ class HomeController extends GetxController {
       return '$sales đã bán';
     }
   }
+
+
+  ///
+  ///  price count product
+  ///
+  String getPriceDiscount(int price, int priceDiscount){
+    String str = '';
+    int temp = price - priceDiscount;
+    str = 'Giảm ${temp.toDouble()}đ';
+    return str;
+  }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
+import 'package:fooding_project/base_widget/p45_appbar.dart';
+import 'package:fooding_project/base_widget/p45_button.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/screens/components/button_app.dart';
 import 'package:fooding_project/screens/profile/detail_order/detail_order_controller.dart';
-import 'package:fooding_project/screens/widgets/app_bar.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/images_path.dart';
@@ -17,7 +18,7 @@ class DetailOrderPage extends GetView {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarFooding(title: "Chi Tiết đơn hàng"),
+      appBar: const P45AppBarP(title: 'Chi tiết đơn hàng'),
       body: GetBuilder(
           init: DetailOrderController(),
           builder: (DetailOrderController controller) {
@@ -180,13 +181,11 @@ class DetailOrderPage extends GetView {
                     margin: EdgeInsets.only(
                       bottom: IZIDimensions.SPACE_SIZE_2X,
                     ),
-                    child: ButtonFooding(
-                      text: controller.orderResponse.statusOrder == PENDING
+                    child: P45Button(title:  controller.orderResponse.statusOrder == PENDING
                           ? "Hủy đơn hàng"
-                          : "Đánh giá",
-                      ontap: () {},
-                      border: IZIDimensions.BORDER_RADIUS_4X,
-                    ),
+                          : "Đánh giá", onPressed: () {
+                            controller.gotoEvaluate();
+                          },)
                   )
                 : const SizedBox();
           }),
@@ -427,15 +426,20 @@ class DetailOrderPage extends GetView {
                       color: ColorResources.WHITE),
                   child: Row(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            IZIDimensions.BORDER_RADIUS_3X),
-                        child: IZIImage(
-                          IZIValidate.nullOrEmpty(itemProduct.image)
-                              ? ImagesPath.placeHolder
-                              : itemProduct.image!.first!,
-                          height: IZIDimensions.ONE_UNIT_SIZE * 140,
-                          width: IZIDimensions.ONE_UNIT_SIZE * 140,
+                      GestureDetector(
+                        onTap:  () {
+                          controller.gotoDetailFood(controller.orderResponse.listProduct![index].id!);
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              IZIDimensions.BORDER_RADIUS_3X),
+                          child: IZIImage(
+                            IZIValidate.nullOrEmpty(itemProduct.image)
+                                ? ImagesPath.placeHolder
+                                : itemProduct.image!.first!,
+                            height: IZIDimensions.ONE_UNIT_SIZE * 140,
+                            width: IZIDimensions.ONE_UNIT_SIZE * 140,
+                          ),
                         ),
                       ),
                       SizedBox(

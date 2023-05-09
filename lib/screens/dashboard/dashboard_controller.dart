@@ -1,19 +1,25 @@
 // ignore_for_file: avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/base_widget/izi_button.dart';
+import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/order/order.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
+import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/screens/no_login/no_login_page.dart';
 import 'package:fooding_project/screens/profile/profile_page.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
+import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -27,7 +33,7 @@ class BottomBarController extends GetxController {
   String statusOrder = '';
   String idOrder = '';
   RxBool isFooter = false.obs;
-
+  String idUser = sl<SharedPreferenceHelper>().getIdUser;
   final List<Map<String, dynamic>> pages = [
     {
       'label': "Home",
@@ -54,7 +60,6 @@ class BottomBarController extends GetxController {
   RxInt currentIndex = 0.obs;
   double sizeIcon = 24.0;
   List<Products> listProductsCard = [];
-  String idUser = sl<SharedPreferenceHelper>().getIdUser;
   bool isLoading = false;
   int countCart = 0;
 
@@ -74,6 +79,10 @@ class BottomBarController extends GetxController {
   /// Change page
   ///
   void onChangedPage(int index) {
+     if( IZIValidate.nullOrEmpty(idUser) && index!=0){
+         showLoginDialog();
+         return; 
+     }
     currentIndex.value = index;
     update();
   }
@@ -170,4 +179,81 @@ class BottomBarController extends GetxController {
       }
     });
   }
+
+///
+/// show dialog login
+///
+void showLoginDialog() {
+    Get.dialog(
+      SizedBox(
+        width: IZIDimensions.iziSize.width,
+        height: IZIDimensions.iziSize.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: IZIDimensions.iziSize.width * .8,
+              decoration: BoxDecoration(
+                color: ColorResources.WHITE,
+                borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: IZIDimensions.SPACE_SIZE_4X,
+                  vertical: IZIDimensions.SPACE_SIZE_2X,
+                ),
+                child: Column(
+                  children: [
+                    IZIImage(
+                      ImagesPath.logoApp,
+                      width: IZIDimensions.ONE_UNIT_SIZE * 150,
+                    ),
+                    Text(
+                      'Vui lòng đăng nhập để sử dụng ứng dụng',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                        color: ColorResources.BLACK,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IZIButton(
+                          borderRadius: IZIDimensions.BORDER_RADIUS_4X,
+                          padding: EdgeInsets.symmetric(vertical: IZIDimensions.SPACE_SIZE_2X),
+                          colorBG: ColorResources.colorMain,
+                          fontSizedLabel: IZIDimensions.FONT_SIZE_DEFAULT,
+                          width: IZIDimensions.iziSize.width * .3,
+                          label: 'Hủy',
+                          onTap: () {
+                            Get.back();
+                          },
+                        ),
+                        IZIButton(
+                          borderRadius: IZIDimensions.BORDER_RADIUS_4X,
+                          padding: EdgeInsets.symmetric(vertical: IZIDimensions.SPACE_SIZE_2X),
+                          fontSizedLabel: IZIDimensions.FONT_SIZE_DEFAULT,
+                          width: IZIDimensions.iziSize.width * .3,
+                          label: 'Đăng nhập',
+                          onTap: () {
+                            Get.offAllNamed(AuthRoutes.LOGIN);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+
 }
+
+

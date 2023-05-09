@@ -132,6 +132,25 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                   .FONT_SIZE_SPAN_SMALL,
                                             ),
                                           ),
+                                          const Spacer(),
+                                          Visibility(
+                                            visible: controller.productsModel!
+                                                    .priceDiscount !=
+                                                0,
+                                            child: Text(
+                                              '${IZIPrice.currencyConverterVND(controller.productsModel!.price!.toDouble())}đ',
+                                              style: TextStyle(
+                                                color: ColorResources.BLACK,
+                                                fontFamily: NUNITO,
+                                                overflow: TextOverflow.ellipsis,
+                                                fontWeight: FontWeight.w400,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                fontSize:
+                                                    IZIDimensions.FONT_SIZE_H6,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       SizedBox(
@@ -613,17 +632,38 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
-                    child: Text(
-                      controller.listProducts[index].priceDiscount == 0
-                          ? '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ'
-                          : '${IZIPrice.currencyConverterVND((controller.listProducts[index].priceDiscount!.toDouble()))}đ',
-                      style: TextStyle(
-                        color: ColorResources.colorMain,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          controller.listProducts[index].priceDiscount != 0
+                              ? '${IZIPrice.currencyConverterVND(controller.listProducts[index].price!.toDouble())}đ'
+                              : controller.formatSold(
+                                  controller.listProducts[index].sold!),
+                          style: TextStyle(
+                            color: ColorResources.GREY,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            decoration: 
+                              controller.listProducts[index].priceDiscount != 0 ? 
+                            TextDecoration.lineThrough : TextDecoration.none,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                          ),
+                        ),
+                        Text(
+                          controller.listProducts[index].priceDiscount == 0
+                              ? '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ'
+                              : '${IZIPrice.currencyConverterVND((controller.listProducts[index].priceDiscount!.toDouble()))}đ',
+                          style: TextStyle(
+                            color: ColorResources.colorMain,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

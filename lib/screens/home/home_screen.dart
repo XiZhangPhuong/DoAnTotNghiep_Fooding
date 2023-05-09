@@ -383,15 +383,41 @@ class HomeScreenPage extends GetView<HomeController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
-                    child: IZIImage(
-                      controller.listProducts[index].image!.first,
-                      height: IZIDimensions.ONE_UNIT_SIZE * 200,
-                      width: IZIDimensions.ONE_UNIT_SIZE * 230,
-                      fit: BoxFit.cover,
-                    ),
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius:
+                            BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+                        child: IZIImage(
+                          controller.listProducts[index].image!.first,
+                          height: IZIDimensions.ONE_UNIT_SIZE * 200,
+                          width: IZIDimensions.ONE_UNIT_SIZE * 230,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        right : 0,
+                        child : Container(
+                          padding: EdgeInsets.symmetric(vertical: IZIDimensions.SPACE_SIZE_1X*0,horizontal: IZIDimensions.SPACE_SIZE_1X),
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0.5,color: ColorResources.colorMain),
+                            color: ColorResources.WHITE
+                          ),
+                          child: Text(
+                      controller.getPriceDiscount(controller.listProducts[index].price!, controller.listProducts[index].priceDiscount!),
+                      style: TextStyle(
+                        color: ColorResources.colorMain,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w400,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                      ),
+
+                          )
+                        ),
+                      )
+                    ],
                   ),
                   SizedBox(
                     height: IZIDimensions.SPACE_SIZE_2X,
@@ -522,7 +548,6 @@ class HomeScreenPage extends GetView<HomeController> {
                                 controller.listCategory[index].name!);
                           },
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Container(
                                 margin: EdgeInsets.only(
@@ -536,8 +561,8 @@ class HomeScreenPage extends GetView<HomeController> {
                                       IZIDimensions.BORDER_RADIUS_7X),
                                   child: IZIImage(
                                     controller.listCategory[index].thumnail!,
-                                    width: IZIDimensions.ONE_UNIT_SIZE * 90,
-                                    height: IZIDimensions.ONE_UNIT_SIZE * 90,
+                                    width: IZIDimensions.ONE_UNIT_SIZE * 80,
+                                    height: IZIDimensions.ONE_UNIT_SIZE * 80,
                                     fit: BoxFit.fill,
                                   ),
                                 ),

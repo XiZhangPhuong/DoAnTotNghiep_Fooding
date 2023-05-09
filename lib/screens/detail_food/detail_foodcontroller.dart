@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
@@ -46,6 +47,10 @@ class DetailFoodController extends GetxController {
   /// click favorite
   ///
   void clickFavorite() {
+     if(IZIValidate.nullOrEmpty(idUser)){
+      Get.find<BottomBarController>().showLoginDialog();
+      return;
+    }
     isCheckFavorite = !isCheckFavorite;
     update();
   }
@@ -139,6 +144,10 @@ class DetailFoodController extends GetxController {
   /// add cart
   ///
   Future<void> addCart(Products products) async {
+    if(IZIValidate.nullOrEmpty(idUser)){
+      Get.find<BottomBarController>().showLoginDialog();
+      return;
+    }
     if (checkIdProduct(products.id!)) {
       IZIAlert().error(message: 'Đã có trong giỏ hàng');
       return;
