@@ -63,6 +63,7 @@ class PaymentController extends GetxController {
 
   @override
   void onInit() {
+    print(sl<SharedPreferenceHelper>().getIdUser);
     super.onInit();
     getAllCart();
   }

@@ -175,7 +175,8 @@ class DetailOrderPage extends GetView {
           init: DetailOrderController(),
           builder: (DetailOrderController controller) {
             return controller.orderResponse.statusOrder == PENDING ||
-                    controller.orderResponse.statusOrder == DONE
+                    controller.orderResponse.statusOrder == DONE ||
+                    controller.orderResponse.statusOrder == DELIVERING
                 ? Container(
                     margin: EdgeInsets.only(
                       bottom: IZIDimensions.SPACE_SIZE_2X,
@@ -183,8 +184,12 @@ class DetailOrderPage extends GetView {
                     child: ButtonFooding(
                       text: controller.orderResponse.statusOrder == PENDING
                           ? "Hủy đơn hàng"
-                          : "Đánh giá",
-                      ontap: () {},
+                          : controller.orderResponse.statusOrder == DELIVERING
+                              ? "Trạng thái giao hàng"
+                              : "Đánh giá",
+                      ontap: () {
+                        controller.handleTypeOrder();
+                      },
                       border: IZIDimensions.BORDER_RADIUS_4X,
                     ),
                   )
@@ -674,9 +679,9 @@ class DetailOrderPage extends GetView {
             children: [
               ClipOval(
                 child: IZIImage(
-                  IZIValidate.nullOrEmpty(controller.shipper.avatar)
+                  IZIValidate.nullOrEmpty(controller.shipperResponse.avatar)
                       ? ImagesPath.placeHolder
-                      : controller.shipper.avatar!,
+                      : controller.shipperResponse.avatar!,
                   height: IZIDimensions.ONE_UNIT_SIZE * 150,
                   width: IZIDimensions.ONE_UNIT_SIZE * 150,
                 ),
@@ -702,9 +707,9 @@ class DetailOrderPage extends GetView {
                           ),
                           TextSpan(
                             text: IZIValidate.nullOrEmpty(
-                                    controller.shipper.fullName)
+                                    controller.shipperResponse.fullName)
                                 ? "không xác định"
-                                : controller.shipper.fullName!,
+                                : controller.shipperResponse.fullName!,
                           ),
                         ],
                       ),
@@ -725,9 +730,9 @@ class DetailOrderPage extends GetView {
                           ),
                           TextSpan(
                             text: IZIValidate.nullOrEmpty(
-                                    controller.shipper.phone)
+                                    controller.shipperResponse.phone)
                                 ? "không xác định"
-                                : controller.shipper.phone!,
+                                : controller.shipperResponse.phone!,
                           ),
                         ],
                       ),
@@ -748,9 +753,9 @@ class DetailOrderPage extends GetView {
                           ),
                           TextSpan(
                             text: IZIValidate.nullOrEmpty(
-                                    controller.shipper.idVehicle)
+                                    controller.shipperResponse.idVehicle)
                                 ? "không xác định"
-                                : controller.shipper.idVehicle!,
+                                : controller.shipperResponse.idVehicle!,
                           ),
                         ],
                       ),
