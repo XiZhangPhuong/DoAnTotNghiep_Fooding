@@ -66,7 +66,7 @@ class BottomBarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    listenData();
+
     countCartByIDStore();
     if (Get.arguments != null) {
       if (Get.arguments.runtimeType == int) {
@@ -121,7 +121,7 @@ class BottomBarController extends GetxController {
       onSucess: (data) {
         countCart = data;
         isLoading = true;
-        update();
+        listenData();
       },
       onError: (error) {
         print(error.toString());
@@ -143,7 +143,7 @@ class BottomBarController extends GetxController {
   ///
   /// Listen Data.
   ///
-  void listenData() {
+  void listenData() async {
     final reference = FirebaseFirestore.instance
         .collection('orders')
         .where("idCustomer", isEqualTo: sl<SharedPreferenceHelper>().getIdUser);
@@ -164,6 +164,7 @@ class BottomBarController extends GetxController {
             idOrder = orderResponse.id!.split('-')[0];
             isFooter = true.obs;
             update();
+            break;
           } else {
             statusOrder = '';
             isFooter = false.obs;
@@ -175,8 +176,9 @@ class BottomBarController extends GetxController {
           statusOrder = '';
           update();
         }
-        break;
       }
+    }).onDone(() {
+      print("quyen done");
     });
   }
 

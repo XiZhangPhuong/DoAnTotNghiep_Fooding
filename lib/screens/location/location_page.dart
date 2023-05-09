@@ -30,37 +30,42 @@ class LocationPage extends GetView {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IZIValidate.nullOrEmpty(controller.user.idLocation)
-                          ? const SizedBox()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: IZIDimensions.SPACE_SIZE_3X,
-                                    vertical: IZIDimensions.SPACE_SIZE_2X,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: IZIDimensions.SPACE_SIZE_3X,
+                              vertical: IZIDimensions.SPACE_SIZE_2X,
+                            ),
+                            child: Text(
+                              "Địa chỉ mặc định",
+                              style: TextStyle(
+                                color: ColorResources.GREY,
+                                fontWeight: FontWeight.w500,
+                                fontSize: IZIDimensions.FONT_SIZE_H6,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: IZIDimensions.SPACE_SIZE_2X,
+                          ),
+                          IZIValidate.nullOrEmpty(controller.user.idLocation)
+                              ? const SizedBox(
+                                  child: Center(
+                                    child:
+                                        Text("Bạn chưa chọn địa chỉ mặc định"),
                                   ),
-                                  child: Text(
-                                    "Địa chỉ mặc định",
-                                    style: TextStyle(
-                                      color: ColorResources.GREY,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: IZIDimensions.FONT_SIZE_H6,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: IZIDimensions.SPACE_SIZE_2X,
-                                ),
-                                Container(
+                                )
+                              : Container(
                                   color: ColorResources.WHITE,
                                   padding: EdgeInsets.all(
                                     IZIDimensions.SPACE_SIZE_2X,
                                   ),
                                   child: _itemProfile(controller),
                                 ),
-                              ],
-                            ),
+                        ],
+                      ),
                       SizedBox(
                         height: IZIDimensions.SPACE_SIZE_2X,
                       ),

@@ -5,8 +5,13 @@ import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/routes/routes_path/detail_order_routes.dart';
 import 'package:fooding_project/screens/home/home_controller.dart';
+import 'package:fooding_project/routes/routes_path/profile_routes.dart';
+import 'package:fooding_project/screens/profile/google_map_marker/google_map_marker_page.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:lottie/lottie.dart';
+
 
 class DetailOrderController extends GetxController {
   String idOrder = Get.arguments as String;
@@ -15,8 +20,11 @@ class DetailOrderController extends GetxController {
   final _userResponsitory = GetIt.I.get<UserRepository>();
   bool isLoading = true;
   OrderResponse orderResponse = OrderResponse();
-  User shipper = User();
+
+  // Create user.
+  User shipperResponse = User();
   User storeResponse = User();
+  User userResponse = User();
   @override
   void onInit() {
     super.onInit();
@@ -62,7 +70,7 @@ class DetailOrderController extends GetxController {
   ///
   Future<void> findDeliveryMan() async {
     try {
-      shipper =
+      shipperResponse =
           await _userResponsitory.findbyId(idUser: orderResponse.idEmployee!);
     } catch (e) {
       print(e.toString());
@@ -89,5 +97,31 @@ class DetailOrderController extends GetxController {
   ///
   void goToShop() {
     Get.toNamed(DetailtFoodRoutes.STORE, arguments: storeResponse.id!);
+  }
+
+  ///
+  /// void goto GG map
+  ///
+  void gotoGoogleMapMaker() {
+    Get.toNamed(ProfileRoutes.GG_MAP_MARKER, arguments: [
+      storeResponse.id!,
+      //orderResponse.idEmployee!,
+    ]);
+  }
+
+  ///
+  /// Handle type order.
+  ///
+  void handleTypeOrder() {
+    switch (orderResponse.statusOrder) {
+      case PENDING:
+        break;
+      case DELIVERING:
+        gotoGoogleMapMaker();
+        break;
+      case DONE:
+        break;
+      default:
+    }
   }
 }

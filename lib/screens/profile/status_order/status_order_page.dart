@@ -257,19 +257,68 @@ class StatusOrderPage extends GetView {
                                                                 ),
                                                                 Row(
                                                                   children: [
-                                                                    Text(
-                                                                      "Giá tiền : ${IZIValidate.nullOrEmpty(item.price) ? "không xác định" : IZIPrice.currencyConverterVND(item.price!.toDouble())}vnđ",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: ColorResources
-                                                                            .GREY,
-                                                                        fontFamily:
-                                                                            NUNITO,
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                        fontSize:
-                                                                            IZIDimensions.FONT_SIZE_DEFAULT,
-                                                                      ),
+                                                                    Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          "Giá tiền : ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                ColorResources.GREY,
+                                                                            fontFamily:
+                                                                                NUNITO,
+                                                                            fontWeight:
+                                                                                FontWeight.w400,
+                                                                            fontSize:
+                                                                                IZIDimensions.FONT_SIZE_DEFAULT,
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          IZIValidate.nullOrEmpty(item.price)
+                                                                              ? "không xác định"
+                                                                              : IZIPrice.currencyConverterVND(item.price!.toDouble()),
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                ColorResources.GREY,
+                                                                            fontFamily:
+                                                                                NUNITO,
+                                                                            fontWeight:
+                                                                                FontWeight.w400,
+                                                                            decoration: item.priceDiscount != 0
+                                                                                ? TextDecoration.lineThrough
+                                                                                : null,
+                                                                            fontSize:
+                                                                                IZIDimensions.FONT_SIZE_DEFAULT,
+                                                                          ),
+                                                                        ),
+                                                                        item.priceDiscount !=
+                                                                                0
+                                                                            ? Text(
+                                                                                IZIPrice.currencyConverterVND(item.priceDiscount!.toDouble()),
+                                                                                style: TextStyle(
+                                                                                  color: ColorResources.GREY,
+                                                                                  fontFamily: NUNITO,
+                                                                                  fontWeight: FontWeight.w400,
+                                                                                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                                                                                ),
+                                                                              )
+                                                                            : const SizedBox(),
+                                                                        Text(
+                                                                          "vnđ",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                ColorResources.GREY,
+                                                                            fontFamily:
+                                                                                NUNITO,
+                                                                            fontWeight:
+                                                                                FontWeight.w400,
+                                                                            fontSize:
+                                                                                IZIDimensions.FONT_SIZE_DEFAULT,
+                                                                          ),
+                                                                        )
+                                                                      ],
                                                                     ),
                                                                   ],
                                                                 ),

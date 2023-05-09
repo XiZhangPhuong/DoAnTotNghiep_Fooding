@@ -63,6 +63,7 @@ class HomeController extends GetxController {
     paginateProductsRecommnend();
     final bot = Get.find<BottomBarController>();
     bot.countCartByIDStore();
+    bot.listenData();
     bot.update();
     refreshController.resetNoData();
     refreshController.refreshCompleted();
