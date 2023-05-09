@@ -30,11 +30,12 @@ class DetailOrderController extends GetxController {
     Get.find<HomeController>().gotoDetailFood(id);
   }
 
+  
   ///
   /// go to evualate
   ///
-  void gotoEvaluate(){
-    Get.toNamed(DetailOrderRoutes.EVALUATE);
+  void gotoEvaluate(OrderResponse orderResponse){
+    Get.toNamed(DetailOrderRoutes.EVALUATE,arguments: orderResponse);
   }
   ///
   /// find order detail.

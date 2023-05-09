@@ -209,7 +209,7 @@ void showLoginDialog() {
                       width: IZIDimensions.ONE_UNIT_SIZE * 150,
                     ),
                     Text(
-                      'Vui lòng đăng nhập để sử dụng ứng dụng',
+                      'Vui lòng đăng nhập\n để sử dụng ứng dụng',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
@@ -223,7 +223,6 @@ void showLoginDialog() {
                         IZIButton(
                           borderRadius: IZIDimensions.BORDER_RADIUS_4X,
                           padding: EdgeInsets.symmetric(vertical: IZIDimensions.SPACE_SIZE_2X),
-                          colorBG: ColorResources.colorMain,
                           fontSizedLabel: IZIDimensions.FONT_SIZE_DEFAULT,
                           width: IZIDimensions.iziSize.width * .3,
                           label: 'Hủy',
@@ -235,6 +234,7 @@ void showLoginDialog() {
                           borderRadius: IZIDimensions.BORDER_RADIUS_4X,
                           padding: EdgeInsets.symmetric(vertical: IZIDimensions.SPACE_SIZE_2X),
                           fontSizedLabel: IZIDimensions.FONT_SIZE_DEFAULT,
+                          colorBG: ColorResources.colorMain,
                           width: IZIDimensions.iziSize.width * .3,
                           label: 'Đăng nhập',
                           onTap: () {

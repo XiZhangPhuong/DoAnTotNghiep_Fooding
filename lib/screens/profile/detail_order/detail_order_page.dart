@@ -184,7 +184,7 @@ class DetailOrderPage extends GetView {
                     child: P45Button(title:  controller.orderResponse.statusOrder == PENDING
                           ? "Hủy đơn hàng"
                           : "Đánh giá", onPressed: () {
-                            controller.gotoEvaluate();
+                            controller.gotoEvaluate(controller.orderResponse);
                           },)
                   )
                 : const SizedBox();
