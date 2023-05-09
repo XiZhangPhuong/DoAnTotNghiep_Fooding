@@ -89,7 +89,7 @@ class DetailOrderController extends GetxController {
   void gotoGoogleMapMaker() {
     Get.toNamed(ProfileRoutes.GG_MAP_MARKER, arguments: [
       storeResponse.id!,
-      //orderResponse.idEmployee!,
+      orderResponse.idEmployee!,
     ]);
   }
 
