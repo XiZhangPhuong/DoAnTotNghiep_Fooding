@@ -48,16 +48,7 @@
                 <data android:scheme="demozpdk"
                     android:host="app" />
     </intent-filter>
-  
-   <meta-data
-            android:name="com.vng.zalo.sdk.APP_ID"
-            android:value="2553" />
-   <meta-data
-            android:name="com.vng.zalo.sdk.URI_SCHEME"
-            android:value="demozpdk://app" />
-   <meta-data
-            android:name="com.vng.zalo.sdk.ENVIRONMENT"
-            android:value="SANDBOX" /> // OR value="PRODUCTION"
+
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
