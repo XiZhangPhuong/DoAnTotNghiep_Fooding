@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_input.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/screens/location/add_location/add_location_controller.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 
 import '../../../helper/izi_dimensions.dart';
+import '../../../utils/app_constants.dart';
 import '../../../utils/color_resources.dart';
 
 class AddLocationPage extends StatelessWidget {
@@ -143,7 +145,7 @@ class AddLocationPage extends StatelessWidget {
             ),
             Expanded(
               child: PlacePicker(
-                apiKey: 'AIzaSyB1KM0R3xVa8P0_VvMQah-F16OFrIYORs8',
+                apiKey: APIGG,
                 region: 'VN',
                 onPlacePicked: (result) async {
                   if (!IZIValidate.nullOrEmpty(result.formattedAddress) &&
@@ -154,8 +156,10 @@ class AddLocationPage extends StatelessWidget {
                         "${result.geometry!.location.lat};${result.geometry!.location.lng}";
                   }
                 },
-                initialPosition: const LatLng(16.0746543, 108.2202951),
-                useCurrentLocation: true,
+                initialPosition: IZIValidate.nullOrEmpty(currentLocation)
+                    ? const LatLng(16.0746543, 108.2202951)
+                    : LatLng(
+                        currentLocation!.latitude, currentLocation!.longitude),
                 resizeToAvoidBottomInset:
                     true, // only works in page mode, less flickery, remove if wrong offsets
               ),

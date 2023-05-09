@@ -109,13 +109,16 @@ class PaymentController extends GetxController {
             orderRequest: order,
             onSucces: () async {
               await _orderResponsitory.deleteCart();
-              await _voucherRepository.addidCustomerToVoucher(
-                idvoucher: order.idVoucher!,
-                onSuccess: () {},
-                error: (e) {
-                  IZIAlert().error(message: e.toString());
-                },
-              );
+              if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                await _voucherRepository.addidCustomerToVoucher(
+                  idvoucher: myVourcher!.id!,
+                  onSuccess: () {},
+                  error: (e) {
+                    IZIAlert().error(message: e.toString());
+                  },
+                );
+              }
+
               flagSpam = true;
               final bot = Get.find<BottomBarController>();
               bot.countCartByIDStore();
@@ -303,9 +306,10 @@ class PaymentController extends GetxController {
             //         1000)
             //     .toPrecision(2);
             var response = await Dio().get(
-                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=16.0718593,108.2206474&key=AIzaSyB1KM0R3xVa8P0_VvMQah-F16OFrIYORs8');
+                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=16.0718593,108.2206474&key=$APIGG');
             DistanceResponse distanceResponse = DistanceResponse.fromJson(
                 response.data as Map<String, dynamic>);
+            print(response);
             distance = double.parse(distanceResponse
                 .rows[0].elements[0].distance.text
                 .split(' ')[0]);
@@ -366,15 +370,19 @@ class PaymentController extends GetxController {
                   onSucces: () async {
                     await _orderResponsitory.deleteCart();
                     flagSpam = true;
+
                     //
                     // Add idCustomer to voucher
-                    await _voucherRepository.addidCustomerToVoucher(
-                      idvoucher: order.idVoucher!,
-                      onSuccess: () {},
-                      error: (e) {
-                        IZIAlert().error(message: e.toString());
-                      },
-                    );
+                    if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                      await _voucherRepository.addidCustomerToVoucher(
+                        idvoucher: myVourcher!.id!,
+                        onSuccess: () {},
+                        error: (e) {
+                          IZIAlert().error(message: e.toString());
+                        },
+                      );
+                    }
+
                     final bot = Get.find<BottomBarController>();
                     bot.countCartByIDStore();
                     bot.update();
@@ -387,6 +395,8 @@ class PaymentController extends GetxController {
                 EasyLoading.dismiss();
                 Get.back();
               } else {
+                //
+                // Pay with zalo.
                 payWithZaloPay(totalPay().toInt().toString(), order);
               }
             }

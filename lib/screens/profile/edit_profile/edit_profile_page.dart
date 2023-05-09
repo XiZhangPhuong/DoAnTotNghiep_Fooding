@@ -254,6 +254,7 @@ class EditProfilePage extends GetView {
                           children: [
                             IZIText(
                               text: 'Email',
+
                               style: TextStyle(
                                 color: ColorResources.BLACK,
                                 fontFamily: 'Nunito',
@@ -279,6 +280,7 @@ class EditProfilePage extends GetView {
                           borderRadius: IZIDimensions.SPACE_SIZE_2X,
                           placeHolder: 'kymonos1@gmail.com',
                           initValue: controller.txtEmail.text,
+                          
                           onChanged: (value) {
                             controller.txtEmail.text = value;
                           },
