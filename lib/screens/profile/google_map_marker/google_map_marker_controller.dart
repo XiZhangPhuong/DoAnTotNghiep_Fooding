@@ -20,7 +20,6 @@ class GoogleMapMarkerController extends GetxController {
   Marker? markerCustomer;
   User userStore = User();
   User userCustomer = User();
-  User userShiper = User();
   List<String> listIdUser = [];
   bool isLoading = true;
   @override
@@ -52,9 +51,10 @@ class GoogleMapMarkerController extends GetxController {
   /// Find User
   ///
   Future<void> findAllUser() async {
+    // Get customer.
     userCustomer = await userResponsitory.findbyId(
         idUser: sl<SharedPreferenceHelper>().getIdUser);
-    print(userCustomer.toJson());
+
     await userResponsitory.finLocation(
       idLocation: userCustomer.idLocation!,
       onSucces: (loctions) async {
@@ -86,31 +86,34 @@ class GoogleMapMarkerController extends GetxController {
             snippet: userCustomer.phone,
           ),
         );
+
         ///
-        /// Shiper.
-        // FirebaseFirestore.instance
-        //     .collection('users')
-        //     .doc(userShiper.id)
-        //     .snapshots()
-        //     .listen((querySnapshot) {
-        //   userShiper =
-        //       User.fromMap(querySnapshot.data() as Map<String, dynamic>);
-        //   markerShiper = Marker(
-        //     markerId: MarkerId(
-        //       userShiper.id!,
-        //     ),
-        //     position: LatLng(
-        //       double.parse(userShiper.latLong!.split(';')[0]),
-        //       double.parse(
-        //         userShiper.latLong!.split(';')[1],
-        //       ),
-        //     ),
-        //     infoWindow: InfoWindow(
-        //       title: userCustomer.fullName,
-        //       snippet: userCustomer.phone,
-        //     ),
-        //   );
-        // });
+        // Shiper.
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(listIdUser[1])
+            .snapshots()
+            .listen((querySnapshot) {
+          User userShiper =
+              User.fromMap(querySnapshot.data() as Map<String, dynamic>);
+          markerShiper = Marker(
+            markerId: MarkerId(
+              userShiper.id!,
+            ),
+            position: LatLng(
+              double.parse(userShiper.latLong!.split(';')[0]),
+              double.parse(
+                userShiper.latLong!.split(';')[1],
+              ),
+            ),
+            infoWindow: InfoWindow(
+              title: userShiper.fullName,
+              snippet: userShiper.phone,
+            ),
+          );
+          print(userShiper.toJson());
+          update();
+        });
         isLoading = false;
         update();
       },
