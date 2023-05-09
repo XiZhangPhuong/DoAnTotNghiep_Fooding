@@ -265,29 +265,7 @@ class LoginPage extends GetView {
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_3X,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Bạn chưa có tài khoản? ',
-                style: TextStyle(
-                  fontFamily: 'Manrope',
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  controller.goToSingUp();
-                },
-                child: const Text(
-                  'Đăng ký',
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
+
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_3X,
           ),
