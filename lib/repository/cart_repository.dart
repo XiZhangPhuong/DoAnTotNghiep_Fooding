@@ -34,38 +34,7 @@ class CartRepository {
     }
   }
 
-  ///
-  /// count cart by idUser
-  ///
-  // Future<void> counCartByIDUser({
-  //   required String idUser,
-  //   required Function(int data) onSucess,
-  //   required Function(dynamic error) onError,
-  // }) async {
-  //   try {
-  //     final cartCollection = FirebaseFirestore.instance
-  //         .collection('carts')
-  //         .where('idUser', isEqualTo: idUser);
-  //     final querySnapshot = await cartCollection.get();
-  //     var productCount = 0;
-  //     for (final doc in querySnapshot.docs) {
-  //       final listProduct = doc['listProduct'] as List;
-  //       productCount += listProduct.length;
-  //     }
-  //     cartCollection.snapshots().listen((querySnapshot) {
-  //       productCount = 0;
-  //       for (final doc in querySnapshot.docs) {
-  //         final listProduct = doc['listProduct'] as List;
-  //         productCount += listProduct.length;
-  //       }
-  //     });
-
-  //     onSucess(productCount);
-  //   } catch (e) {
-  //     onError(e);
-  //   }
-  // }
-
+  
   ///
   /// count cart by idUser 1
   ///
