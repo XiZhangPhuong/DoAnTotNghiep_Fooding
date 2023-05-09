@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
@@ -58,6 +60,8 @@ class BottomBarController extends GetxController {
   bool isLoading = false;
   int countCart = 0;
 
+  late StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
+      listFireStoreChange;
   @override
   void onInit() {
     super.onInit();
@@ -103,6 +107,12 @@ class BottomBarController extends GetxController {
     super.onClose();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    listFireStoreChange.cancel();
+  }
+
   ///
   /// count cart by idStore
   ///
@@ -135,10 +145,11 @@ class BottomBarController extends GetxController {
   /// Listen Data.
   ///
   void listenData() async {
-    final reference = FirebaseFirestore.instance
+    listFireStoreChange = FirebaseFirestore.instance
         .collection('orders')
-        .where("idCustomer", isEqualTo: sl<SharedPreferenceHelper>().getIdUser);
-    reference.snapshots().listen((querySnapshot) {
+        .where("idCustomer", isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
+        .snapshots()
+        .listen((querySnapshot) {
       for (var change in querySnapshot.docChanges) {
         if (change.doc.exists) {
           OrderResponse orderResponse =
@@ -168,8 +179,6 @@ class BottomBarController extends GetxController {
           update();
         }
       }
-    }).onDone(() {
-      print("quyen done");
     });
   }
 }
