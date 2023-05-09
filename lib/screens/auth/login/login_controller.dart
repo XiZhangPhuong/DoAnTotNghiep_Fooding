@@ -39,7 +39,7 @@ class LoginController extends GetxController {
           await _userRepository.getUserDetails(phoneEditingController.text);
       print("quyen test ${phoneEditingController.text}");
       if (user != null) {
-        if (user.typeUser != CUSTOMER ||
+        if (user.typeUser != SHIPPER ||
             !BCrypt.checkpw(
               passwordEditingController.text,
               user.passWord!,
@@ -65,7 +65,7 @@ class LoginController extends GetxController {
         } else {
           sl<SharedPreferenceHelper>().setLogged(status: false);
         }
-        Get.offAllNamed(AuthRoutes.DASHBOARD);
+        Get.offAllNamed(AuthRoutes.HOME_SHIPPER);
       } else {
         if (await _userRepository.checPhone(phoneEditingController.text)) {
           IZIAlert().error(message: "Thông tin đăng nhập chưa chính xác");

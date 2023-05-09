@@ -19,23 +19,24 @@ class User {
   String? latLong;
   String? idLocation;
   String? idVehicle;
-  User({
-    this.id,
-    this.fullName,
-    this.phone,
-    this.email,
-    this.passWord,
-    this.avatar,
-    this.typeUser,
-    this.isDeleted,
-    this.address,
-    this.banner,
-    this.dateOfBirth,
-    this.gender,
-    this.latLong,
-    this.idLocation,
-    this.idVehicle,
-  });
+  bool? isOline;
+  User(
+      {this.id,
+      this.fullName,
+      this.phone,
+      this.email,
+      this.passWord,
+      this.avatar,
+      this.typeUser,
+      this.isDeleted,
+      this.address,
+      this.banner,
+      this.dateOfBirth,
+      this.gender,
+      this.latLong,
+      this.idLocation,
+      this.idVehicle,
+      this.isOline});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -53,6 +54,7 @@ class User {
       if (!IZIValidate.nullOrEmpty(gender)) 'gender': gender,
       if (!IZIValidate.nullOrEmpty(latLong)) 'latLong': latLong,
       if (!IZIValidate.nullOrEmpty(idLocation)) 'idLocation': idLocation,
+      if (!IZIValidate.nullOrEmpty(isOline)) 'isOline': isOline,
     };
   }
 
@@ -74,9 +76,8 @@ class User {
       latLong: map['latLong'] != null ? map['latLong'] as String : null,
       idLocation:
           map['idLocation'] != null ? map['idLocation'] as String : null,
-                idVehicle:
-          map['idVehicle'] != null ? map['idVehicle'] as String : null,
-          
+      idVehicle: map['idVehicle'] != null ? map['idVehicle'] as String : null,
+      isOline: map['isOline'] != null ? map['isOline'] as bool : null,
     );
   }
 

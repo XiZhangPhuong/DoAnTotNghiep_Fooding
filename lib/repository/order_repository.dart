@@ -6,6 +6,7 @@ import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 
 import '../model/order/order.dart';
 
@@ -153,4 +154,62 @@ class OrderResponsitory {
       onError(e);
     }
   }
+
+
+
+ Future<void> getOrderListTen({
+  required Function(List<OrderResponse> onSuccess) onSuccess,
+  required Function(dynamic error) onError,
+}) async {
+  try {
+    final ref = _fireStore.collection("orders");
+    QuerySnapshot snap =
+        await ref.where('statusOrder', isEqualTo: PENDING).get();
+    if (snap.docs.isNotEmpty) {
+      final orders = snap.docs.map((doc) => OrderResponse.fromMap(
+          doc.data() as Map<String, dynamic>)).toList();
+      final docRef = ref.doc(snap.docs.first.id);
+      final listener = docRef.snapshots().listen((snap) {
+        if (snap.exists) {
+          final updatedOrder = OrderResponse.fromMap(
+              snap.data() as Map<String, dynamic>);
+          final index = orders.indexWhere((order) =>
+              order.id == updatedOrder.id);
+          if (index != -1) {
+            orders[index] = updatedOrder;
+            onSuccess(orders);
+          }
+        } else {
+          onSuccess([]);
+        }
+      });
+      onSuccess(orders);
+    } else {
+      onSuccess([]);
+    }
+  } catch (e) {
+    onError(e);
+  }
+}
+
+///
+/// update order
+///
+Future<void> updateOrder({
+  required OrderResponse updatedOrder,
+  required Function() onSuccess,
+  required Function(dynamic e) onError,
+}) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(updatedOrder.id)
+        .update(updatedOrder.toMap());
+    onSuccess(
+        
+    );
+  } catch (e) {
+    onError(e);
+  }
+}
 }
