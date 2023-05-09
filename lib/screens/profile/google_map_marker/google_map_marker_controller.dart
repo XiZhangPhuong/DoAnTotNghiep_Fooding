@@ -86,6 +86,7 @@ class GoogleMapMarkerController extends GetxController {
             snippet: userCustomer.phone,
           ),
         );
+
         ///
         // Shiper.
         FirebaseFirestore.instance
@@ -106,10 +107,12 @@ class GoogleMapMarkerController extends GetxController {
               ),
             ),
             infoWindow: InfoWindow(
-              title: userCustomer.fullName,
-              snippet: userCustomer.phone,
+              title: userShiper.fullName,
+              snippet: userShiper.phone,
             ),
           );
+          print(userShiper.toJson());
+          update();
         });
         isLoading = false;
         update();

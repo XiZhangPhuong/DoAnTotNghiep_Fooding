@@ -29,7 +29,8 @@ class GoogleMapMarkerPage extends GetView {
                       ),
                       markers: {
                         controller.markerCustomer!,
-                        controller.markerStore!
+                        controller.markerStore!,
+                        controller.markerShiper!,
                       },
                       myLocationButtonEnabled: false,
                       onMapCreated: (GoogleMapController googleMapController) {
