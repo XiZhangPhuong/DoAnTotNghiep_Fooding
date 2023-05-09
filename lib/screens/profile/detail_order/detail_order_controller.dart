@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/order/order.dart';
 import 'package:fooding_project/model/user.dart';
+import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
@@ -7,6 +10,7 @@ import 'package:fooding_project/routes/routes_path/detail_order_routes.dart';
 import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/routes/routes_path/profile_routes.dart';
 import 'package:fooding_project/screens/profile/google_map_marker/google_map_marker_page.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -18,7 +22,9 @@ class DetailOrderController extends GetxController {
 
   final _orderRepository = GetIt.I.get<OrderResponsitory>();
   final _userResponsitory = GetIt.I.get<UserRepository>();
+  final _commentRepository = GetIt.I.get<CommentRepository>();
   bool isLoading = true;
+  bool checkComment = false;
   OrderResponse orderResponse = OrderResponse();
 
   // Create user.
@@ -38,12 +44,28 @@ class DetailOrderController extends GetxController {
     Get.find<HomeController>().gotoDetailFood(id);
   }
 
+  ///
+  /// check Comment
+  ///
+  bool checkCommentProduct({required String idProduct}){
+    _commentRepository.checkComment(idUser: sl.get<SharedPreferenceHelper>().getIdUser,
+     idProduct: idProduct, 
+     onSuccess: (check) {
+      print(check);
+       update();
+       return check;
+     }, onError:
+      (e) {
+        print(e);
+      },);
+      return false;
+  }
   
   ///
   /// go to evualate
   ///
-  void gotoEvaluate(OrderResponse orderResponse){
-    Get.toNamed(DetailOrderRoutes.EVALUATE,arguments: orderResponse);
+  void gotoEvaluate(String idOrder,String idProduct ){
+    Get.toNamed(DetailOrderRoutes.EVALUATE,arguments: [idOrder,idProduct]);
   }
   ///
   /// find order detail.

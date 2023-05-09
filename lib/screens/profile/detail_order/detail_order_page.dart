@@ -182,12 +182,17 @@ class DetailOrderPage extends GetView {
                     margin: EdgeInsets.only(
                       bottom: IZIDimensions.SPACE_SIZE_2X,
                     ),
-                    child: P45Button(title:  controller.orderResponse.statusOrder == PENDING
-                          ? "Hủy đơn hàng"
-                          : "Đánh giá", onPressed: () {
-                            controller.gotoEvaluate(controller.orderResponse);
-                          },)
-                  )
+                    child: Visibility(
+                      visible: false,
+                      child: P45Button(
+                        title: controller.orderResponse.statusOrder == PENDING
+                            ? "Hủy đơn hàng"
+                            : "Đánh giá",
+                        onPressed: () {
+                
+                        },
+                      ),
+                    ))
                 : const SizedBox();
           }),
     );
@@ -380,15 +385,14 @@ class DetailOrderPage extends GetView {
                   controller.goToShop();
                 },
                 child: const Text(
-                  "Xem shop >>>",
+                  "Xem shop",
                   style: TextStyle(
-                    color: ColorResources.RED,
+                    color: ColorResources.colorMain,
                   ),
                 ),
               ),
-              SizedBox(
-                width: IZIDimensions.SPACE_SIZE_2X,
-              ),
+            
+             const  Icon(Icons.keyboard_arrow_right_outlined,color: ColorResources.colorMain,)
             ],
           ),
           SizedBox(
@@ -407,17 +411,15 @@ class DetailOrderPage extends GetView {
             height: IZIDimensions.iziSize.height * 0.13,
             width: IZIDimensions.iziSize.width,
             child: ListView.builder(
+              shrinkWrap: true,
               itemCount: controller.orderResponse.listProduct!.length,
-              scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
                 final itemProduct =
                     controller.orderResponse.listProduct![index];
                 return Container(
                   height: IZIDimensions.iziSize.height * 0.13,
-                  width: IZIDimensions.iziSize.width * 0.8,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: IZIDimensions.SPACE_SIZE_2X,
-                  ),
+                  width: IZIDimensions.iziSize.width,
                   margin: EdgeInsets.only(
                     top: IZIDimensions.SPACE_SIZE_1X,
                   ),
@@ -428,8 +430,9 @@ class DetailOrderPage extends GetView {
                   child: Row(
                     children: [
                       GestureDetector(
-                        onTap:  () {
-                          controller.gotoDetailFood(controller.orderResponse.listProduct![index].id!);
+                        onTap: () {
+                          controller.gotoDetailFood(
+                              controller.orderResponse.listProduct![index].id!);
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(
@@ -451,16 +454,53 @@ class DetailOrderPage extends GetView {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              IZIValidate.nullOrEmpty(itemProduct.name)
-                                  ? "không xác định"
-                                  : itemProduct.name!,
-                              style: TextStyle(
-                                color: ColorResources.colorMain,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w600,
-                                fontSize: IZIDimensions.FONT_SIZE_H6,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  IZIValidate.nullOrEmpty(itemProduct.name)
+                                      ? "không xác định"
+                                      : itemProduct.name!,
+                                  style: TextStyle(
+                                    color: ColorResources.colorMain,
+                                    fontFamily: NUNITO,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: IZIDimensions.SPACE_SIZE_1X,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if(controller.checkCommentProduct(idProduct: itemProduct.id!)){
+                                      return;
+                                    }
+                                    controller.gotoEvaluate(controller.idOrder, itemProduct.id!);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: IZIDimensions.SPACE_SIZE_1X,                                   
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(width: 1,color: ColorResources.colorMain)
+                                    ),
+                                    child: Text(
+                                      'Đánh giá',
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        color: ColorResources.colorMain,
+                                        fontFamily: NUNITO,
+                                        fontWeight: FontWeight.w600,
+                                        decoration: controller.checkCommentProduct(idProduct: itemProduct.id!) ?
+                                        TextDecoration.lineThrough : TextDecoration.none
+                                         ,
+                                        overflow: TextOverflow.ellipsis,
+                                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             Text(
                               "Số lượng : ${IZIValidate.nullOrEmpty(itemProduct.quantity) ? "không xác định" : itemProduct.quantity!}",

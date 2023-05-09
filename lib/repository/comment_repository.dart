@@ -22,4 +22,24 @@ class CommentRepository{
       onError(e);
     }
   }
+
+  ///
+  /// check Comment
+  ///
+  Future<void> checkComment({
+    required String idUser,
+    required String idProduct,
+    required Function(bool check) onSuccess,
+    required Function(dynamic e) onError,
+  }) async {
+      try{
+       final ref = await FirebaseFirestore.instance.collection('comments')
+       .where('idUser',isEqualTo: idUser)
+       .where('idProduct',isEqualTo: idProduct).get();
+
+       onSuccess(ref.docs.isNotEmpty);
+      }catch(e){
+        onError(e);
+      }
+  }
 }

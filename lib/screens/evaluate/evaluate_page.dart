@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_is_empty
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
@@ -30,153 +32,171 @@ class EvaluatePage extends GetView<EvaluateController> {
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
-          body: Container(
-              child: Column(
-            children: [
-              // listview product order
-              _listViewProductOrder(),
-              SizedBox(
-                height: IZIDimensions.SPACE_SIZE_3X,
-              ),
-              // evaluate
-              Expanded(
-                child: Container(
-                  height: IZIDimensions.iziSize.height,
-                  width: IZIDimensions.iziSize.width,
-                  padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
-                  color: ColorResources.WHITE,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: IZIDimensions.SPACE_SIZE_2X,
-                      ),
-                      RatingStars(
-                        value: controller.countRating,
-                        starCount: 5,
-                        starSpacing: 4,
-                        starSize: IZIDimensions.ONE_UNIT_SIZE * 50,
-                        starColor: Colors.yellow,
-                        valueLabelVisibility: false,
-                        onValueChanged: (value) {
-                          controller.clickRatingBar(value);
-                          print(value);
-                        },
-                      ),
-                      SizedBox(
-                        height: IZIDimensions.SPACE_SIZE_3X,
-                      ),
-                      //
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            children: [
-                              Icon(
-                                Icons.thumb_up,
-                                color: Colors.blue,
-                                size: IZIDimensions.ONE_UNIT_SIZE * 45,
-                              ),
-                              Text(
-                                'Hài lòng',
-                                maxLines: 1,
-                                style: TextStyle(
-                                  color: ColorResources.GREY,
-                                  fontFamily: NUNITO,
-                                  fontWeight: FontWeight.w600,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontSize: IZIDimensions.FONT_SIZE_H6,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Icon(
-                                Icons.thumb_down,
-                                color: Colors.grey,
-                                size: IZIDimensions.ONE_UNIT_SIZE * 45,
-                              ),
-                              Text(
-                                'Không hài lòng',
-                                maxLines: 1,
-                                style: TextStyle(
-                                  color: ColorResources.GREY,
-                                  fontFamily: NUNITO,
-                                  fontWeight: FontWeight.w600,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontSize: IZIDimensions.FONT_SIZE_H6,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                      //
-                      ,
-                      _textFiled(controller),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin:
-                            EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_2X),
-                        padding:
-                            EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
-                        child: Row(
+          body: controller.isLoadingOrder == false
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Column(
+                  children: [
+                    // listview product order
+                    _listViewProductOrder(),
+                    SizedBox(
+                      height: IZIDimensions.SPACE_SIZE_3X,
+                    ),
+                    // evaluate
+                    Expanded(
+                      child: Container(
+                        height: IZIDimensions.iziSize.height,
+                        width: IZIDimensions.iziSize.width,
+                        padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
+                        color: ColorResources.WHITE,
+                        child: Column(
                           children: [
-                            // pick image
-                            GestureDetector(
-                              onTap: () {
-                                controller.pickAvatar();
+                            SizedBox(
+                              height: IZIDimensions.SPACE_SIZE_2X,
+                            ),
+                            RatingStars(
+                              value: controller.countRating,
+                              starCount: 5,
+                              starSpacing: 4,
+                              starSize: IZIDimensions.ONE_UNIT_SIZE * 50,
+                              starColor: Colors.yellow,
+                              valueLabelVisibility: false,
+                              onValueChanged: (value) {
+                                controller.clickRatingBar(value);
+                                print(value);
                               },
-                              child: Container(
-                                height: IZIDimensions.ONE_UNIT_SIZE * 180,
-                                width: IZIDimensions.ONE_UNIT_SIZE * 180,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      IZIDimensions.SPACE_SIZE_3X),
-                                  color: ColorResources.GREY.withOpacity(0.1),
+                            ),
+                            SizedBox(
+                              height: IZIDimensions.SPACE_SIZE_3X,
+                            ),
+                            //
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.clickSatisField();
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.thumb_up,
+                                        color: controller.satisFied
+                                            ? Colors.blue
+                                            : ColorResources.GREY,
+                                        size: IZIDimensions.ONE_UNIT_SIZE * 45,
+                                      ),
+                                      Text(
+                                        'Hài lòng',
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          color: ColorResources.GREY,
+                                          fontFamily: NUNITO,
+                                          fontWeight: FontWeight.w600,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontSize: IZIDimensions.FONT_SIZE_H6,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                child: Center(
-                                    child: Icon(
-                                  Icons.add_a_photo,
-                                  size: IZIDimensions.ONE_UNIT_SIZE * 50,
-                                  color: ColorResources.GREY,
-                                )),
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.clickSatisField();
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.thumb_down,
+                                        color: controller.satisFied
+                                            ? Colors.grey
+                                            : Colors.blue,
+                                        size: IZIDimensions.ONE_UNIT_SIZE * 45,
+                                      ),
+                                      Text(
+                                        'Không hài lòng',
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          color: ColorResources.GREY,
+                                          fontFamily: NUNITO,
+                                          fontWeight: FontWeight.w600,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontSize: IZIDimensions.FONT_SIZE_H6,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                            //
+                            ,
+                            _textFiled(controller),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.only(
+                                  top: IZIDimensions.SPACE_SIZE_2X),
+                              padding: EdgeInsets.only(
+                                  left: IZIDimensions.SPACE_SIZE_2X),
+                              child: Row(
+                                children: [
+                                  // pick image
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.pickAvatar();
+                                    },
+                                    child: Container(
+                                      height: IZIDimensions.ONE_UNIT_SIZE * 150,
+                                      width: IZIDimensions.ONE_UNIT_SIZE * 150,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            IZIDimensions.SPACE_SIZE_3X),
+                                        color: ColorResources.GREY
+                                            .withOpacity(0.1),
+                                      ),
+                                      child: Center(
+                                          child: Icon(
+                                        Icons.add_a_photo,
+                                        size: IZIDimensions.ONE_UNIT_SIZE * 50,
+                                        color: ColorResources.GREY,
+                                      )),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: IZIDimensions.SPACE_SIZE_1X,
+                                  ),
+
+                                  //  show imager picker
+                                  _showImagePicker(controller),
+                                ],
                               ),
                             ),
                             SizedBox(
-                              width: IZIDimensions.SPACE_SIZE_3X,
+                              height: IZIDimensions.SPACE_SIZE_4X,
                             ),
-
-                            //  show imager picker
-                            _showImagePicker(controller),
+                            const Divider(),
+                            SizedBox(
+                              height: IZIDimensions.SPACE_SIZE_2X,
+                            ),
+                            Text(
+                              'Chia sẻ cảm nhận, đánh giá để cửa hàng chúng tôi ngày càng hoàn thiện hơn. \nRất cảm ơn quý khách hàng đã lựa chọn cửa hàng chúng tôi trong hàng ngàn cửa hàng ngoài kia',
+                              maxLines: 2,
+                              style: TextStyle(
+                                color: ColorResources.GREY,
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w600,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: IZIDimensions.SPACE_SIZE_4X,
-                      ),
-                      const Divider(),
-                      SizedBox(
-                        height: IZIDimensions.SPACE_SIZE_2X,
-                      ),
-                      Text(
-                        'Chia sẻ cảm nhận, đánh giá để cửa hàng chúng tôi ngày càng hoàn thiện hơn. \nRất cảm ơn quý khách hàng đã lựa chọn cửa hàng chúng tôi trong hàng ngàn cửa hàng ngoài kia',
-                        maxLines: 2,
-                        style: TextStyle(
-                          color: ColorResources.GREY,
-                          fontFamily: NUNITO,
-                          fontWeight: FontWeight.w600,
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          )),
         );
       },
     );
@@ -186,21 +206,46 @@ class EvaluatePage extends GetView<EvaluateController> {
   /// show image picker
   ///
   Widget _showImagePicker(EvaluateController controller) {
-    return Container(
-      height: IZIDimensions.ONE_UNIT_SIZE * 180,
-      width: IZIDimensions.ONE_UNIT_SIZE * 180,
-      decoration: BoxDecoration(
-        border: Border.all(
-            color: ColorResources.GREY.withOpacity(0.5),
-            width: 1,
-            style: BorderStyle.solid),
-        borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
-      ),
-      child: IZIValidate.nullOrEmpty(controller.imageFile)
-          ? null
-          : ClipRRect(
+    return Stack(
+      children: [
+        Container(
+          height: IZIDimensions.ONE_UNIT_SIZE * 150,
+          width: IZIDimensions.ONE_UNIT_SIZE * 150,
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: ColorResources.GREY.withOpacity(0.5),
+                width: 1,
+                style: BorderStyle.solid),
             borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
-            child: IZIImage.file(controller.imageFile!)),
+          ),
+          child: IZIValidate.nullOrEmpty(controller.listImageFile)
+              ? Container()
+              : ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
+                  child: IZIImage.file(controller.listImageFile.first)),
+        ),
+        Positioned(
+          bottom: 0,
+          right: 5,
+          child: Visibility(
+            visible: controller.listImageFile.length>1 ? true : false ,
+            child: Text(
+              '+${controller.listImageFile.length-1}',
+              maxLines: 1,
+            
+              style: TextStyle(
+                color: ColorResources.WHITE,
+                fontFamily: NUNITO,
+                
+                fontWeight: FontWeight.w600,
+                overflow: TextOverflow.ellipsis,
+                fontSize: IZIDimensions.FONT_SIZE_H4,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -210,7 +255,7 @@ class EvaluatePage extends GetView<EvaluateController> {
   Widget _listViewProductOrder() {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: controller.orderResponse.listProduct!.length,
+      itemCount: controller.orderResponse!.listProduct!.length,
       itemBuilder: (context, index) {
         return Container(
           margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_1X),
@@ -224,7 +269,8 @@ class EvaluatePage extends GetView<EvaluateController> {
                     borderRadius:
                         BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
                     child: IZIImage(
-                      controller.orderResponse.listProduct![index].image!.first,
+                      controller
+                          .orderResponse!.listProduct![index].image!.first,
                       height: IZIDimensions.ONE_UNIT_SIZE * 150,
                       width: IZIDimensions.ONE_UNIT_SIZE * 150,
                       fit: BoxFit.cover,
@@ -238,7 +284,7 @@ class EvaluatePage extends GetView<EvaluateController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          controller.orderResponse.listProduct![index].name!,
+                          controller.orderResponse!.listProduct![index].name!,
                           style: TextStyle(
                             color: ColorResources.BLACK,
                             fontFamily: NUNITO,
@@ -250,7 +296,7 @@ class EvaluatePage extends GetView<EvaluateController> {
                           height: IZIDimensions.SPACE_SIZE_1X,
                         ),
                         Text(
-                          'x${controller.orderResponse.listProduct![index].quantity!}',
+                          'x${controller.orderResponse!.listProduct![index].quantity!}',
                           style: TextStyle(
                             color: ColorResources.GREY,
                             fontFamily: NUNITO,
@@ -262,11 +308,11 @@ class EvaluatePage extends GetView<EvaluateController> {
                           height: IZIDimensions.SPACE_SIZE_1X,
                         ),
                         Text(
-                          controller.orderResponse.listProduct![index]
+                          controller.orderResponse!.listProduct![index]
                                       .priceDiscount ==
                                   0
-                              ? '${IZIPrice.currencyConverterVND(controller.orderResponse.listProduct![index].price!.toDouble())}đ'
-                              : '${IZIPrice.currencyConverterVND(controller.orderResponse.listProduct![index].priceDiscount!.toDouble())}đ',
+                              ? '${IZIPrice.currencyConverterVND(controller.orderResponse!.listProduct![index].price!.toDouble())}đ'
+                              : '${IZIPrice.currencyConverterVND(controller.orderResponse!.listProduct![index].priceDiscount!.toDouble())}đ',
                           style: TextStyle(
                             color: ColorResources.colorMain,
                             fontFamily: NUNITO,
