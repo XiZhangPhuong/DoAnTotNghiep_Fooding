@@ -29,8 +29,8 @@ class StatusOrderController extends GetxController {
     super.onInit();
     if (!IZIValidate.nullOrEmpty(Get.arguments)) {
       choiceItem = Get.arguments as int;
+      getAllOrder();
     }
-    getAllOrder();
   }
 
   @override

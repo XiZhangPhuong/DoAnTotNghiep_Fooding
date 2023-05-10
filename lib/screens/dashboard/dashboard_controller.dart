@@ -145,6 +145,9 @@ class BottomBarController extends GetxController {
   /// Listen Data.
   ///
   void listenData() async {
+    if (IZIValidate.nullOrEmpty(sl<SharedPreferenceHelper>().getIdUser)) {
+      return;
+    }
     listFireStoreChange = FirebaseFirestore.instance
         .collection('orders')
         .where("idCustomer", isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
