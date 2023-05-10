@@ -15,6 +15,7 @@ import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
+import 'package:fooding_project/utils/fcmNotification.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
@@ -126,6 +127,11 @@ class HomeShipperController extends GetxController {
           DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
       orderResponse.statusOrder = DONE;
     }
+    FcmNotification.sendNotification(
+      body: "Đã cập nhật lại dữ liệu",
+      title: "Đã cập nhật trạng thái",
+      token: custommerReponse!.deviceId!,
+    );
     updateStatusOrder(orderResponse: orderResponse);
     EasyLoading.dismiss();
     IZIAlert().success(message: 'Cập nhập thành công');
