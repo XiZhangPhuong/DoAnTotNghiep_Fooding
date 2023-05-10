@@ -4,8 +4,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/routes/app_routes.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/firebase_service.dart';
@@ -35,6 +37,15 @@ Future<void> main() async {
   await FcmService().init();
   await FcmService().initForegroundNotification();
   FcmService().backgroundHandler();
+
+  // Get device token.
+  if (Platform.isAndroid) {
+    final token = await messaging.getToken();
+    sl<SharedPreferenceHelper>().setTokenDevice(token.toString());
+  } else if (Platform.isIOS) {
+    final token = await messaging.getAPNSToken();
+    sl<SharedPreferenceHelper>().setTokenDevice(token.toString());
+  }
 
   /// Instance Easy Loading.
   EasyLoading.instance
