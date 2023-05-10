@@ -18,6 +18,7 @@ import 'package:fooding_project/routes/routes_path/cart_routes.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
+import 'package:fooding_project/utils/fcm_notification.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -391,9 +392,13 @@ class PaymentController extends GetxController {
                     final bot = Get.find<BottomBarController>();
                     bot.countCartByIDStore();
                     bot.update();
+                    IZIAlert().success(message: "Đặt hàng thành công");
+                    EasyLoading.dismiss();
+                    Get.back();
                   },
                   onError: (e) {
                     IZIAlert().error(message: e.toString());
+                    EasyLoading.dismiss();
                   },
                 );
                 IZIAlert().success(message: "Đặt hàng thành công");

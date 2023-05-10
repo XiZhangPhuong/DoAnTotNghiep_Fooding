@@ -67,6 +67,9 @@ class LoginController extends GetxController {
         } else {
           sl<SharedPreferenceHelper>().setLogged(status: false);
         }
+        await _userRepository.updateUser(
+            model.User(deviceId: sl<SharedPreferenceHelper>().getTokenDevice),
+            user.id!);
         Get.offAllNamed(AuthRoutes.DASHBOARD);
       } else {
         if (await _userRepository.checPhone(phoneEditingController.text)) {

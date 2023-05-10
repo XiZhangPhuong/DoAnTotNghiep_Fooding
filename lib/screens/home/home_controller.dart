@@ -12,6 +12,7 @@ import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
+import 'package:fooding_project/utils/fcm_notification.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -87,6 +88,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+     FcmNotification.requestPermission();
     paginateFlashSaleProduct();
     getCategoryList();
     paginateProductsRecommnend();

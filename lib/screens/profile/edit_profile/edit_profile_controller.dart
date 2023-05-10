@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../di_container.dart';
+import '../../../utils/fcm_notification.dart';
 
 class EditProfileController extends GetxController {
   final profileCTL = Get.find<ProfileController>();
@@ -79,13 +80,14 @@ class EditProfileController extends GetxController {
     try {
       if (!validateProfile()) {
         return;
-      }
+      }    
       EasyLoading.show(status: "Đang cập nhật dữ liệu...");
       final User user = User();
       user.fullName = txtName.text.trim();
       user.dateOfBirth = dateOfBirth;
       user.email = txtEmail.text;
       user.gender = selectedType;
+
       if (!IZIValidate.nullOrEmpty(imageFile)) {
         user.avatar =
             await profileCTL.userRepository.unloadToStorage(imageFile!);
