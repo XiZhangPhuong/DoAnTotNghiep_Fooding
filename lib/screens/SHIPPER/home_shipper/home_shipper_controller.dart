@@ -127,11 +127,6 @@ class HomeShipperController extends GetxController {
           DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
       orderResponse.statusOrder = DONE;
     }
-    FcmNotification.sendNotification(
-      body: "Đã cập nhật lại dữ liệu",
-      title: "Đã cập nhật trạng thái",
-      token: custommerReponse!.deviceId!,
-    );
     updateStatusOrder(orderResponse: orderResponse);
     EasyLoading.dismiss();
     IZIAlert().success(message: 'Cập nhập thành công');
