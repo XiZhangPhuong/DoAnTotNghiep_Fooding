@@ -197,10 +197,15 @@ class VoucherPage extends GetView {
                                       Positioned(
                                         right: IZIDimensions.ONE_UNIT_SIZE * 20,
                                         top: IZIDimensions.ONE_UNIT_SIZE * 30,
-                                        child: const Text(
-                                          "Xem thêm",
-                                          style: TextStyle(
-                                            color: Colors.blueAccent,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            controller.seeMore(index);
+                                          },
+                                          child: const Text(
+                                            "Xem thêm",
+                                            style: TextStyle(
+                                              color: Colors.blueAccent,
+                                            ),
                                           ),
                                         ),
                                       ),

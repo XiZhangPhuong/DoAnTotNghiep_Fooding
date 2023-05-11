@@ -14,6 +14,7 @@ class Voucher {
   String? image;
   bool? isDeleted;
   String? description;
+  String? idStore;
   Voucher({
     this.id,
     this.name,
@@ -27,6 +28,7 @@ class Voucher {
     this.image,
     this.isDeleted,
     this.description,
+    this.idStore,
   });
 
   Map<String, dynamic> toMap() {
@@ -42,6 +44,7 @@ class Voucher {
       'isShow': isShow,
       'image': image,
       'isDeleted': isDeleted,
+      'idStore': idStore,
     };
   }
 
@@ -66,7 +69,9 @@ class Voucher {
       isShow: map['isShow'] != null ? map['isShow'] as bool : null,
       image: map['image'] != null ? map['image'] as String : null,
       isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
-      description: map['description'] != null ? map['description'] as String : null,
+      description:
+          map['description'] != null ? map['description'] as String : null,
+      idStore: map['idUser'] != null ? map['idUser'] as String : null,
     );
   }
 

@@ -65,10 +65,10 @@ class StatusOrderController extends GetxController {
         if (onSuccess.isNotEmpty) {
           listOrder = onSuccess;
           await findStore(listOrder.first.listProduct!.first.idUser!);
+          refreshController.refreshCompleted();
         }
         isLoading = false;
         update();
-        refreshController.refreshCompleted();
       },
       onError: (erorr) {
         isLoading = false;
@@ -85,7 +85,14 @@ class StatusOrderController extends GetxController {
     Get.toNamed(
       ProfileRoutes.DETAIL_ORDER,
       arguments: listOrder[index].id,
-    );
+    )?.then((value) async {
+      if (!IZIValidate.nullOrEmpty(value)) {
+        if (value.toString() == SUCCESS) {
+          await getAllOrder();
+        }
+      }
+
+    });
   }
 
   ///

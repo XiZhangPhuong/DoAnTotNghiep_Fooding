@@ -446,7 +446,9 @@ class PaymentController extends GetxController {
   /// Go to Voucher.
   ///
   void goToVoucher() {
-    Get.toNamed(CartRoutes.VOUCHER, arguments: tamtinh)?.then((value) {
+    Get.toNamed(CartRoutes.VOUCHER,
+            arguments: [tamtinh, cartResponse.listProduct!.first.idUser])
+        ?.then((value) {
       if (!IZIValidate.nullOrEmpty(value)) {
         myVourcher = value as Voucher;
         totalPay();
@@ -467,9 +469,4 @@ class PaymentController extends GetxController {
         ? 0
         : priceShip + tamtinh - discount;
   }
-
-  ///
-  /// add iduser to voucher table.
-  ///
-  void addIdUserToVoucherTable() async {}
 }
