@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/voucher/voucher.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
@@ -54,21 +55,17 @@ class VoucherRepository {
           .where("isDeleted", isEqualTo: false)
           .get();
       if (query.docs.isNotEmpty) {
-        List<Voucher> listTemps = [];
         for (final element in query.docs) {
           final voucher = Voucher.fromMap(element.data());
+          print(voucher.toJson());
           if (!voucher.listCustomer!
-              .contains(sl<SharedPreferenceHelper>().getIdUser)) {
-            listTemps.add(voucher);
+                  .contains(sl<SharedPreferenceHelper>().getIdUser) &&
+              voucher.limitMax! > voucher.listCustomer!.length &&
+              voucher.endDate!.millisecondsSinceEpoch >
+                  DateTime.now().millisecondsSinceEpoch) {
+            onSuccess(voucher);
+            return;
           }
-        }
-        if (listTemps.isNotEmpty &&
-            listTemps.first.limitMax! > listTemps.first.listCustomer!.length &&
-            listTemps.first.endDate!.millisecondsSinceEpoch >
-                DateTime.now().millisecondsSinceEpoch) {
-          onSuccess(listTemps.first);
-        } else {
-          error("Voucher này đã được sử dụng hoặc hết hạn");
         }
       } else {
         error("Không tìm thấy voucher");
@@ -92,6 +89,42 @@ class VoucherRepository {
             FieldValue.arrayUnion([sl<SharedPreferenceHelper>().getIdUser])
       });
       onSuccess();
+    } catch (e) {
+      error(e);
+    }
+  }
+
+  ///
+  /// Get all Voucher.
+  ///
+  Future<void> getAllVoucherStoreAndApp({
+    required String idStore,
+    required Function(List<Voucher> onSuccess) onSuccess,
+    required Function(dynamic e) error,
+  }) async {
+    try {
+      final query = await _fireStore
+          .collection("vouchers")
+          .where("isDeleted", isEqualTo: false)
+          .where("isShow", isEqualTo: true)
+          .get();
+      List<Voucher> listTemps = [];
+      for (final element in query.docs) {
+        final voucher = Voucher.fromMap(element.data());
+
+        if (!voucher.listCustomer!
+                .contains(sl<SharedPreferenceHelper>().getIdUser) &&
+            voucher.limitMax! > voucher.listCustomer!.length &&
+            voucher.endDate!.millisecondsSinceEpoch >
+                DateTime.now().millisecondsSinceEpoch) {
+          if (IZIValidate.nullOrEmpty(voucher.idStore)) {
+            listTemps.add(voucher);
+          } else if (voucher.idStore == idStore) {
+            listTemps.add(voucher);
+          }
+        }
+      }
+      onSuccess(listTemps);
     } catch (e) {
       error(e);
     }
