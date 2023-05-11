@@ -65,6 +65,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             ),
                             const Divider(),
                             _flashSale(controller),
+                            _nearYou(controller),
                             SizedBox(height: IZIDimensions.ONE_UNIT_SIZE*80,)
                           ],
                         ),
@@ -338,6 +339,184 @@ class HomeScreenPage extends GetView<HomeController> {
                               ? 'Loading'
                               : controller.formatSold(
                                   controller.listProductRecommend[index].sold!),
+                          style: TextStyle(
+                            color: ColorResources.GREY,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+ Widget _nearYou(HomeController controller) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_1X),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Đang gần bạn',
+            style: TextStyle(
+              color: ColorResources.titleLogin,
+              fontFamily: NUNITO,
+              fontWeight: FontWeight.w600,
+              fontSize: IZIDimensions.FONT_SIZE_H5,
+            ),
+          ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_3X,
+          ),
+
+          //
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Container(
+                  height: IZIDimensions.ONE_UNIT_SIZE * 320,
+                  color: ColorResources.WHITE,
+                  child: controller.isLoadingProductRecomment == true
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : _listViewProductNearYou(controller)
+                ),
+                SizedBox(
+                  width: IZIDimensions.SPACE_SIZE_2X,
+                ),
+
+                // view all list products
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: IZIDimensions.ONE_UNIT_SIZE * 320,
+                    width: IZIDimensions.ONE_UNIT_SIZE * 230,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
+                        border: Border.all(
+                            width: 0.3, color: ColorResources.colorMain)),
+                    child: Center(
+                      child: Text(
+                        'Xem tất cả',
+                        style: TextStyle(
+                            color: ColorResources.colorMain,
+                            fontSize: IZIDimensions.FONT_SIZE_H6,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+ 
+
+
+  ///
+  ///  list view products Near You
+  ///
+  Widget _listViewProductNearYou(HomeController controller) {
+    return ListView.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      itemCount: controller.listProductRecommend.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            controller
+                .gotoDetailFood(controller.listProductRecommend[index].id!);
+          },
+          child: Card(
+            elevation: 1,
+            child: Container(
+              width: IZIDimensions.ONE_UNIT_SIZE * 230,
+              margin: EdgeInsets.only(right: IZIDimensions.SPACE_SIZE_3X),
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+                    child: IZIImage(
+                      controller.listProductRecommend[index].image!.first,
+                      height: IZIDimensions.ONE_UNIT_SIZE * 200,
+                      width: IZIDimensions.ONE_UNIT_SIZE * 230,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(
+                    height: IZIDimensions.SPACE_SIZE_2X,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
+                    child: Text(
+                      controller.listProductRecommend[index].name!.capitalize!,
+                      style: TextStyle(
+                        color: ColorResources.titleLogin,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
+                    child: Row(
+                      children: [
+                        Text(
+                          controller.listProductRecommend[index].priceDiscount==0  ? 
+                          '${IZIPrice.currencyConverterVND((controller.listProductRecommend[index].price!.toDouble()))}đ' : 
+                          '${IZIPrice.currencyConverterVND((controller.listProductRecommend[index].priceDiscount!.toDouble()))}đ',
+                          style: TextStyle(
+                            color: ColorResources.colorMain,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                          ),
+                          maxLines: 2,
+                        ),
+                        SizedBox(
+                          width: IZIDimensions.SPACE_SIZE_1X * 0.5,
+                        ),
+                        Text(
+                          '|',
+                          style: TextStyle(
+                            color: ColorResources.GREY,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                          ),
+                        ),
+                        SizedBox(
+                          width: IZIDimensions.SPACE_SIZE_1X * 0.5,
+                        ),
+                        Text(
+                          controller.calculateDistance(controller.listProducts[index].idUser!).toString(),
                           style: TextStyle(
                             color: ColorResources.GREY,
                             fontFamily: NUNITO,
@@ -688,3 +867,4 @@ class HomeScreenPage extends GetView<HomeController> {
     );
   }
 }
+

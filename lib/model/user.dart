@@ -19,9 +19,10 @@ class User {
   String? latLong;
   String? idLocation;
   String? idVehicle;
+  String? deviceId;
   User({
     this.id,
-    this.fullName,
+    this.fullName,  
     this.phone,
     this.email,
     this.passWord,
@@ -35,6 +36,7 @@ class User {
     this.latLong,
     this.idLocation,
     this.idVehicle,
+    this.deviceId,
   });
 
   Map<String, dynamic> toMap() {
@@ -53,6 +55,7 @@ class User {
       if (!IZIValidate.nullOrEmpty(gender)) 'gender': gender,
       if (!IZIValidate.nullOrEmpty(latLong)) 'latLong': latLong,
       if (!IZIValidate.nullOrEmpty(idLocation)) 'idLocation': idLocation,
+      if (!IZIValidate.nullOrEmpty(deviceId)) 'deviceId': deviceId,
     };
   }
 
@@ -74,9 +77,8 @@ class User {
       latLong: map['latLong'] != null ? map['latLong'] as String : null,
       idLocation:
           map['idLocation'] != null ? map['idLocation'] as String : null,
-                idVehicle:
-          map['idVehicle'] != null ? map['idVehicle'] as String : null,
-          
+      idVehicle: map['idVehicle'] != null ? map['idVehicle'] as String : null,
+      deviceId: map['deviceId'] != null ? map['deviceId'] as String : null,
     );
   }
 

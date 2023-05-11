@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
@@ -14,6 +16,7 @@ import 'package:fooding_project/repository/cart_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
+import 'package:fooding_project/screens/favorite/favorite_page.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/screens/no_login/no_login_page.dart';
 import 'package:fooding_project/screens/profile/profile_page.dart';
@@ -45,7 +48,7 @@ class BottomBarController extends GetxController {
       'icon': ImagesPath.icon_yeuthich,
       'page': IZIValidate.nullOrEmpty(sl<SharedPreferenceHelper>().getIdUser)
           ? const NoLoginPage()
-          : const HomeScreenPage(),
+          : const FavoritePage(),
     },
     {
       'label': "Tài khoản",
@@ -63,6 +66,8 @@ class BottomBarController extends GetxController {
   bool isLoading = false;
   int countCart = 0;
 
+  late StreamSubscription<QuerySnapshot<Map<String, dynamic>>>
+      listFireStoreChange;
   @override
   void onInit() {
     super.onInit();
@@ -112,6 +117,12 @@ class BottomBarController extends GetxController {
     super.onClose();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    listFireStoreChange.cancel();
+  }
+
   ///
   /// count cart by idStore
   ///
@@ -145,10 +156,14 @@ class BottomBarController extends GetxController {
   /// Listen Data.
   ///
   void listenData() async {
-    final reference = FirebaseFirestore.instance
+    if (IZIValidate.nullOrEmpty(sl<SharedPreferenceHelper>().getIdUser)) {
+      return;
+    }
+    listFireStoreChange = FirebaseFirestore.instance
         .collection('orders')
-        .where("idCustomer", isEqualTo: sl<SharedPreferenceHelper>().getIdUser);
-    reference.snapshots().listen((querySnapshot) {
+        .where("idCustomer", isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
+        .snapshots()
+        .listen((querySnapshot) {
       for (var change in querySnapshot.docChanges) {
         if (change.doc.exists) {
           OrderResponse orderResponse =
@@ -178,8 +193,6 @@ class BottomBarController extends GetxController {
           update();
         }
       }
-    }).onDone(() {
-      print("quyen done");
     });
   }
 

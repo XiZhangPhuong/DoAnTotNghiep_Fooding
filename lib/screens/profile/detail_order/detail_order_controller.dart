@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/order/order.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/comment_repository.dart';
@@ -17,7 +20,6 @@ import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
-
 
 class DetailOrderController extends GetxController {
   String idOrder = Get.arguments as String;
@@ -128,10 +130,14 @@ class DetailOrderController extends GetxController {
   /// void goto GG map
   ///
   void gotoGoogleMapMaker() {
-    Get.toNamed(ProfileRoutes.GG_MAP_MARKER, arguments: [
-      storeResponse.id!,
-      //orderResponse.idEmployee!,
-    ]);
+    if (!IZIValidate.nullOrEmpty(orderResponse.idEmployee)) {
+      Get.toNamed(ProfileRoutes.GG_MAP_MARKER, arguments: [
+        storeResponse.id!,
+        orderResponse.idEmployee!,
+      ]);
+    } else {
+      IZIAlert().success(message: "Chưa có người nhận hàng");
+    }
   }
 
   ///
@@ -140,6 +146,7 @@ class DetailOrderController extends GetxController {
   void handleTypeOrder() {
     switch (orderResponse.statusOrder) {
       case PENDING:
+        handleCancleOrder();
         break;
       case DELIVERING:
         gotoGoogleMapMaker();
@@ -148,5 +155,20 @@ class DetailOrderController extends GetxController {
         break;
       default:
     }
+  }
+
+  ///
+  /// Handle cancle order.
+  ///
+  void handleCancleOrder() {
+    _orderRepository.updateOrder(
+      idOrder: idOrder,
+      orderResponse: OrderResponse(statusOrder: "CANCEL"),
+      onSuccess: () {
+        IZIAlert().success(message: "Hủy đơn hàng thành công");
+        Get.back(result: SUCCESS);
+      },
+      onError: (erorr) {},
+    );
   }
 }

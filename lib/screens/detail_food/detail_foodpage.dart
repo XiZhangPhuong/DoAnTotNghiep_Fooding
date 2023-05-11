@@ -76,7 +76,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                           // add cart
                                           GestureDetector(
                                             onTap: () {
-                                              controller.clickFavorite();
+                                              controller.addFavoriteToFireStore(product: controller.productsModel!);
                                             },
                                             child: Icon(Icons.favorite_border,
                                                 size: IZIDimensions
@@ -425,54 +425,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                             ),
                                                           ],
                                                         ),
-                                                        Row(
-                                                          children: [
-                                                            GestureDetector(
-                                                              onTap: () {},
-                                                              child: Text(
-                                                                'Thích',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color:
-                                                                      ColorResources
-                                                                          .BLACK,
-                                                                  fontFamily:
-                                                                      NUNITO,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize:
-                                                                      IZIDimensions
-                                                                          .FONT_SIZE_SPAN_SMALL,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: IZIDimensions
-                                                                  .SPACE_SIZE_2X,
-                                                            ),
-                                                            GestureDetector(
-                                                              onTap: () {},
-                                                              child: Text(
-                                                                'Bình luận',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color:
-                                                                      ColorResources
-                                                                          .BLACK,
-                                                                  fontFamily:
-                                                                      NUNITO,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize:
-                                                                      IZIDimensions
-                                                                          .FONT_SIZE_SPAN_SMALL,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
+                                                       
                                                       ],
                                                     ),
                                                     const Spacer(),

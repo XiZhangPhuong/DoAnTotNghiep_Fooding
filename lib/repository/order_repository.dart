@@ -149,22 +149,23 @@ class OrderResponsitory {
     }
   }
 
+
   ///
-  /// get order check status
+  /// update order.
   ///
-  Future<void> getOrderByidUser({
-    required String idCustommer,
-    required Function(OrderResponse onSuccess) onSuccess,
+  Future<void> updateOrder({
+    required String idOrder,
+    required OrderResponse orderResponse,
+    required Function() onSuccess,
     required Function(dynamic erorr) onError,
-    required String statusOrder,
   }) async {
     try {
       final ref = _fireStore
           .collection("orders")
-          .where('idCustommer', isEqualTo: idCustommer)
-          .get();
-      OrderResponse? orderResponse;
-      onSuccess(orderResponse!);
+          .doc(idOrder)
+          .update(orderResponse.toMap());
+
+      onSuccess();
     } catch (e) {
       onError(e);
     }

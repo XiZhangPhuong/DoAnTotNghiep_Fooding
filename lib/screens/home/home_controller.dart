@@ -1,19 +1,25 @@
 // ignore_for_file: avoid_print
 
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
+import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/banner/banner.dart';
 import 'package:fooding_project/model/category/category.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
+import 'package:fooding_project/model/user.dart';
+import 'package:fooding_project/repository/user_repository.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:fooding_project/repository/category_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
+import 'package:fooding_project/utils/fcm_notification.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -23,6 +29,7 @@ Position? currentLocation;
 class HomeController extends GetxController {
   final CategoryRepository _categoryRepository =
       GetIt.I.get<CategoryRepository>();
+  final UserRepository _userRepository = GetIt.I.get<UserRepository>();
   RefreshController refreshController = RefreshController();
   PageController pageController = PageController(initialPage: 0);
   List<Category> listCategory = [];
@@ -33,8 +40,19 @@ class HomeController extends GetxController {
   List<Products> listProductRecommend = [];
   bool isLoadingCategory = true;
   bool isLoadingProduct = true;
+  bool isLoadingUser = false;
+  bool isLoadingStore = false;
   bool isLoadingProductRecomment = true;
   int limit = 10;
+  double km = 0;
+  User userReponse = User();
+  User storeResponse = User();
+  String idUser = sl<SharedPreferenceHelper>().getIdUser;
+  String idStore = '';
+  double lat1 = 0;
+  double lat2 = 0;
+  double lon1 = 0;
+  double lon2 = 0;
   // list string imageslidershow
   List<String> listImageSlider = [
     'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
@@ -70,6 +88,32 @@ class HomeController extends GetxController {
   }
 
   ///
+  /// Find user.
+  ///
+  Future<void> findUser() async {
+    userReponse = await _userRepository.findbyId(idUser: idUser);
+    List<String> list = userReponse.latLong!.split(';');
+    lat1 = double.parse(list[0]);
+    lon1 = double.parse(list[1]);
+    isLoadingUser = true;
+    update();
+  }
+
+  ///
+  /// find store
+  ///
+  Future<void> findStore(String idStore) async {
+    storeResponse = await _userRepository.findbyId(idUser: idStore);
+    if (!IZIValidate.nullOrEmpty(storeResponse.latLong)) {
+      List<String> list = storeResponse.latLong!.split(';');
+      lat2 = double.parse(list[0]);
+      lon2 = double.parse(list[1]);
+      isLoadingStore = true;
+      update();
+    }
+  }
+
+  ///
   /// On loading.
   ///
   void onLoading() {
@@ -87,10 +131,13 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    FcmNotification.requestPermission();
     paginateFlashSaleProduct();
     getCategoryList();
     paginateProductsRecommnend();
     _getCurrentLocation();
+    findUser();
+    ;
   }
 
   @override
@@ -167,6 +214,7 @@ class HomeController extends GetxController {
       limit: 10,
       onSucess: (listProduct) {
         listProductRecommend = listProduct;
+
         isLoadingProductRecomment = false;
         update();
       },
@@ -275,14 +323,26 @@ class HomeController extends GetxController {
     }
   }
 
-
   ///
   ///  price count product
   ///
-  String getPriceDiscount(int price, int priceDiscount){
+  String getPriceDiscount(int price, int priceDiscount) {
     String str = '';
     int temp = price - priceDiscount;
     str = 'Giảm ${temp.toDouble()}đ';
     return str;
+  }
+
+  ///
+  ///
+  ///
+  String calculateDistance(String idStore) {
+    findStore(idStore);
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return (12742 * asin(sqrt(a))).toStringAsFixed(1);
   }
 }

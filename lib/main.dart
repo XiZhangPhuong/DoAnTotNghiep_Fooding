@@ -1,13 +1,17 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/model/order/order.dart';
 import 'package:fooding_project/routes/app_routes.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:fooding_project/utils/firebase_service.dart';
@@ -16,6 +20,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'app_binding.dart';
 import 'di_container.dart' as di;
+import 'di_container.dart';
 import 'firebase_options.dart';
 import 'helper/izi_dimensions.dart';
 import 'helper/izi_timezone.dart';
@@ -38,6 +43,14 @@ Future<void> main() async {
   await FcmService().initForegroundNotification();
   FcmService().backgroundHandler();
 
+  // Get device token.
+  if (Platform.isAndroid) {
+    final token = await messaging.getToken();
+    sl<SharedPreferenceHelper>().setTokenDevice(token.toString());
+  } else if (Platform.isIOS) {
+    final token = await messaging.getAPNSToken();
+    sl<SharedPreferenceHelper>().setTokenDevice(token.toString());
+  }
   /// Instance Easy Loading.
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 1500)
@@ -59,6 +72,38 @@ Future<void> main() async {
     )
     ..dismissOnTap = false;
 
+  // FirebaseFirestore.instance
+  //     .collection('orders')
+  //     .where("idCustomer", isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
+  //     .snapshots()
+  //     .listen((event) {
+  //   for (var change in event.docChanges) {
+  //     OrderResponse orderResponse =
+  //         OrderResponse.fromMap(change.doc.data() as Map<String, dynamic>);
+  //     if (sl<SharedPreferenceHelper>().getIdUser == orderResponse.idCustomer) {
+  //       switch (orderResponse.statusOrder) {
+  //         case PENDING:
+  //           LocalNotificationService().showNotification(
+  //             orderResponse.hashCode,
+  //             "Bạn đã đặt đơn hàng thành công",
+  //             "Bạn đã đặt thành công",
+  //             'high_importance_channel',
+  //             'High Importance Notifications', // title
+  //             'This channel is used for important notifications.',
+  //             dismissNotification: false,
+  //           );
+  //           break;
+  //         case DELIVERING:
+  //           break;
+  //         case CANCEL:
+  //           break;
+  //         case DONE:
+  //           break;
+  //         default:
+  //       }
+  //     }
+  //   }
+  // });
   // Set Device Orientation.
   setOrientation();
   if (Platform.isAndroid) {

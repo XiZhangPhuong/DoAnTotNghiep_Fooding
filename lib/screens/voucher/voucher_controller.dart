@@ -13,6 +13,7 @@ class VoucherController extends GetxController {
   List<Voucher> listVouchers = [];
   TextEditingController textvoucher = TextEditingController();
   double? price;
+  String? idStore;
   int index = -1;
   RefreshController refreshController = RefreshController();
   @override
@@ -27,9 +28,10 @@ class VoucherController extends GetxController {
     super.onInit();
 
     if (!IZIValidate.nullOrEmpty(Get.arguments)) {
-      price = Get.arguments as double;
+      price = Get.arguments[0] as double;
+      idStore = Get.arguments[1] as String;
+      getAllVoucher();
     }
-    getAllVoucher();
   }
 
   ///
@@ -37,7 +39,8 @@ class VoucherController extends GetxController {
   ///
   Future<void> getAllVoucher() async {
     listVouchers.clear();
-    await _voucherRepository.getAllVoucher(
+    await _voucherRepository.getAllVoucherStoreAndApp(
+      idStore: idStore!,
       onSuccess: (onSuccess) {
         listVouchers = onSuccess;
         isLoading = false;
@@ -56,8 +59,12 @@ class VoucherController extends GetxController {
   Future<void> findcodeVoucher() async {
     await _voucherRepository.findCodeVoucher(
         onSuccess: (onSuccess) {
-          IZIAlert().success(message: "Áp dụng voucher thành công");
-          Get.back(result: onSuccess);
+          if (onSuccess.idStore == idStore) {
+            IZIAlert().success(message: "Áp dụng voucher thành công");
+            Get.back(result: onSuccess);
+          } else {
+            IZIAlert().error(message: "Không áp dụng được voucher này");
+          }
         },
         error: (e) {
           IZIAlert().error(message: e.toString());
@@ -80,5 +87,13 @@ class VoucherController extends GetxController {
       Get.back(result: listVouchers[index]);
       IZIAlert().success(message: "Bạn sử dụng mã giảm giá thành công");
     }
+  }
+
+  ///
+  /// See more.
+  ///
+  void seeMore(int index) {
+    Get.defaultDialog(
+        content: Text(listVouchers[index].description!), title: "Voucher");
   }
 }
