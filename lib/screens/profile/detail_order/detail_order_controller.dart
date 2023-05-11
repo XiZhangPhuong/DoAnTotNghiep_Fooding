@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/order/order.dart';
@@ -48,17 +50,18 @@ class DetailOrderController extends GetxController {
   /// check Comment
   ///
   bool checkCommentProduct({required String idProduct}){
-    _commentRepository.checkComment(idUser: sl.get<SharedPreferenceHelper>().getIdUser,
+    bool hasComment = false;
+    _commentRepository.checkComment(idUser: sl<SharedPreferenceHelper>().getIdUser,
      idProduct: idProduct, 
      onSuccess: (check) {
       print(check);
        update();
-       return check;
+       hasComment = check;
      }, onError:
       (e) {
         print(e);
       },);
-      return false;
+      return hasComment;
   }
   
   ///

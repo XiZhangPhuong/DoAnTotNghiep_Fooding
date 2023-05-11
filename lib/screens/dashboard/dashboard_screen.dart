@@ -1,8 +1,10 @@
 import 'package:badges/badges.dart ' as badge;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -107,7 +109,8 @@ class BottomBarPage extends GetView<BottomBarController> {
 /// floatting button cart
 ///
 Widget _floattingButton(BottomBarController controller) {
-  return controller.countCart == 0
+  return 
+  controller.countCart == 0
       ? Container()
       : FloatingActionButton(
           backgroundColor: ColorResources.WHITE,
@@ -136,6 +139,59 @@ Widget _floattingButton(BottomBarController controller) {
           ),
         );
 }
+
+///
+///
+///
+Widget _floatingButton1(BottomBarController controller) {
+  return  Visibility(
+    visible: controller.countCart!=0,
+     child: FloatingActionButton(
+            backgroundColor: ColorResources.WHITE,
+            onPressed: () {
+              controller.gotoCart();
+            },
+            child: badge.Badge(
+              badgeContent: controller.isLoading == false
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance.collection('carts').snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final data = snapshot.data!;
+                          final cartCount = data.docs.fold<int>(
+                            0,
+                            (previousValue, doc) {
+                              final cartRequest = CartRquest.fromMap(doc.data() as Map<String, dynamic>);
+                              return previousValue + (cartRequest.listProduct?.length ?? 0);
+                            },
+                          );
+                          return Text(
+                            cartCount.toString(),
+                            style: TextStyle(
+                              color: ColorResources.WHITE,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w600,
+                              fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                    ),
+              child: Icon(
+                Icons.shopping_cart,
+                size: IZIDimensions.ONE_UNIT_SIZE * 40,
+                color: ColorResources.RED,
+              ),
+            ),
+          ),
+   );
+}
+
 
 ///
 ///  bottom sheet status order

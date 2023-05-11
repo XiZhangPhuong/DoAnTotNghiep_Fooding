@@ -4,6 +4,7 @@ import 'package:fooding_project/helper/izi_validate.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class CommentRequets {
+  String? id;
   String? idUser;
   String? idStore;
   String? idOrder;
@@ -14,6 +15,7 @@ class CommentRequets {
   String? content;
   List<String>? listImage;
   CommentRequets({
+    this.id,
     this.idUser,
     this.idStore,
     this.idOrder,
@@ -27,6 +29,7 @@ class CommentRequets {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+       if (!IZIValidate.nullOrEmpty(idUser)) 'id': id,
       if (!IZIValidate.nullOrEmpty(idUser)) 'idUser': idUser,
       if (!IZIValidate.nullOrEmpty(idStore)) 'idStore': idStore,
       if (!IZIValidate.nullOrEmpty(idOrder)) 'idOrder': idOrder,
@@ -41,6 +44,7 @@ class CommentRequets {
 
   factory CommentRequets.fromMap(Map<String, dynamic> map) {
     return CommentRequets(
+      id: map['id'] != null ? map['id'] as String : null,
       idUser: map['idUser'] != null ? map['idUser'] as String : null,
       idStore: map['idStore'] != null ? map['idStore'] as String : null,
       idOrder: map['idOrder'] != null ? map['idOrder'] as String : null,

@@ -115,18 +115,19 @@ class BottomBarController extends GetxController {
   ///
   /// count cart by idStore
   ///
-  void countCartByIDStore() {
-    _cartRepository.counCartByIDUser(
-      idUser: idUser,
-      onSucess: (data) {
-        countCart = data;
-        isLoading = true;
-        listenData();
-      },
-      onError: (error) {
-        print(error.toString());
-      },
-    );
+    Future<void> countCartByIDStore() async {
+      _cartRepository.counCartByIDUser(
+        idUser: idUser,
+        onSucess: (data) {
+          countCart = data;
+          print(countCart);
+          isLoading = true;
+          listenData();
+        },
+        onError: (error) {  
+          print(error.toString());
+        },
+      );
   }
 
   ///
@@ -216,7 +217,7 @@ void showLoginDialog() {
                       style: TextStyle(
                         fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                         color: ColorResources.BLACK,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w700,  
                       ),
                     ),
                     Row(

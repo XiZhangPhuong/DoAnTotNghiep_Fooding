@@ -260,6 +260,7 @@ class StoreController extends GetxController {
       return;
     }
     addCartToFireStore(products);
+    EasyLoading.dismiss();
   }
 
   ///
@@ -274,10 +275,8 @@ class StoreController extends GetxController {
       idUser: idUser,
       data: cartRquest,
       onSucces: () {
-        EasyLoading.show(status: "Đang cập nhật");
         IZIAlert().success(message: 'Thêm món ăn thành công');
         countCartByIDStore();
-        EasyLoading.dismiss();
         update();
       },
       onError: (error) {
@@ -301,7 +300,6 @@ class StoreController extends GetxController {
         listProductsCart.clear();
         listProductsCart.add(products);
         addCartToFireStore(products);
-        //  pushProductToFireStore(idUser, listProductsCart);
         Get.find<BottomBarController>().update();
         update();
       },

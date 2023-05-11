@@ -16,6 +16,7 @@ import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class EvaluateController extends GetxController {
   OrderResponse? orderResponse;
@@ -44,7 +45,6 @@ class EvaluateController extends GetxController {
   ///
   void clickSatisField() {
     satisFied = !satisFied;
-    print(satisFied);
     update();
   }
 
@@ -122,8 +122,10 @@ class EvaluateController extends GetxController {
       IZIAlert().error(message: 'Bạn chưa chọn số sao');
       return;
     }
+    String idComment =  const Uuid().v1();
     EasyLoading.show(status: 'Đang cập nhập');
     final CommentRequets _commentRequest = CommentRequets();
+    _commentRequest.id = idComment;
     _commentRequest.idUser = sl<SharedPreferenceHelper>().getIdUser;
     _commentRequest.idStore = orderResponse!.listProduct![0].idUser!;
     _commentRequest.idOrder = orderResponse!.id;
@@ -137,6 +139,7 @@ class EvaluateController extends GetxController {
       _commentRequest.listImage =  await uploadImagesToStorage(listImageFile);
     }
     await _commentRepository.addComment(
+      id: idComment,
       request: _commentRequest,
       onSucces: () {
         EasyLoading.dismiss();

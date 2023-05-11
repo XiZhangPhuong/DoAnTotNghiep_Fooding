@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/base_widget/p45_button.dart';
@@ -473,6 +474,7 @@ class DetailOrderPage extends GetView {
                                 GestureDetector(
                                   onTap: () {
                                     if(controller.checkCommentProduct(idProduct: itemProduct.id!)){
+                                      IZIAlert().error(message: 'Bạn đã đánh giá rồi');
                                       return;
                                     }
                                     controller.gotoEvaluate(controller.idOrder, itemProduct.id!);
