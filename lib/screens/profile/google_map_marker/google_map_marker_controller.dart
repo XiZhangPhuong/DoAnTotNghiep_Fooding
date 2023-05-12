@@ -1,9 +1,15 @@
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:fooding_project/utils/images_path.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -64,7 +70,14 @@ class GoogleMapMarkerController extends GetxController {
             await userResponsitory.findbyId(idUser: listIdUser[0].toString());
         markerStore = Marker(
           markerId: MarkerId(userStore.id!),
-          position: const LatLng(16.074729, 108.220205),
+          position: !IZIValidate.nullOrEmpty(userStore.latLong)
+              ? LatLng(
+                  double.parse(userStore.latLong!.split(';')[0]),
+                  double.parse(
+                    userStore.latLong!.split(';')[1],
+                  ))
+              : const LatLng(16.074729, 108.220205),
+          icon: await _getAssetIcon(Get.context!, ImagesPath.store_googlemap),
           //icon: IZIValidate.nullOrEmpty(userStore.avatar)?
           infoWindow: InfoWindow(
             title: userStore.fullName,
@@ -79,6 +92,8 @@ class GoogleMapMarkerController extends GetxController {
         double lng = double.parse(loctions.latlong!.split(';')[1]);
         markerCustomer = Marker(
           markerId: MarkerId(userCustomer.id!),
+          icon: await _getAssetIcon(Get.context!, ImagesPath.user_googleMap),
+
           //icon: IZIValidate.nullOrEmpty(userStore.avatar)?
           position: LatLng(lat, lng),
           infoWindow: InfoWindow(
@@ -93,7 +108,7 @@ class GoogleMapMarkerController extends GetxController {
             .collection('users')
             .doc(listIdUser[1])
             .snapshots()
-            .listen((querySnapshot) {
+            .listen((querySnapshot) async {
           User userShiper =
               User.fromMap(querySnapshot.data() as Map<String, dynamic>);
           markerShiper = Marker(
@@ -106,6 +121,8 @@ class GoogleMapMarkerController extends GetxController {
                 userShiper.latLong!.split(';')[1],
               ),
             ),
+            icon: await _getAssetIcon(
+                Get.context!, ImagesPath.delivery_gggolemap),
             infoWindow: InfoWindow(
               title: userShiper.fullName,
               snippet: userShiper.phone,
@@ -121,5 +138,25 @@ class GoogleMapMarkerController extends GetxController {
         print(error.toString());
       },
     );
+  }
+
+  Future<BitmapDescriptor> _getAssetIcon(
+      BuildContext context, String icon) async {
+    final Completer<BitmapDescriptor> bitmapIcon =
+        Completer<BitmapDescriptor>();
+    final ImageConfiguration config =
+        createLocalImageConfiguration(context, size: Size(10, 10));
+
+    AssetImage(icon)
+        .resolve(config)
+        .addListener(ImageStreamListener((ImageInfo image, bool sync) async {
+      final ByteData? bytes =
+          await image.image.toByteData(format: ImageByteFormat.png);
+      final BitmapDescriptor bitmap =
+          BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
+      bitmapIcon.complete(bitmap);
+    }));
+
+    return await bitmapIcon.future;
   }
 }

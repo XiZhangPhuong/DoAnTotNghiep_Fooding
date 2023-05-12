@@ -35,20 +35,23 @@ class DetailOrderController extends GetxController {
   /// find order detail.
   ///
   void findOrderDetail() {
-    _orderRepository.getOrder(
-      idOrder: idOrder,
-      onSuccess: (onSuccess) async {
+    FirebaseFirestore.instance
+        .collection("orders")
+        .doc(idOrder)
+        .snapshots()
+        .listen((event) async {
+      if (event.exists) {
+        orderResponse =
+            OrderResponse.fromMap(event.data() as Map<String, dynamic>);
         isLoading = false;
-        orderResponse = onSuccess.first;
         await findDeliveryMan();
         await findStore(orderResponse.listProduct!.first.idUser!);
         update();
-      },
-      onError: (erorr) {
-        print(erorr.toString());
-      },
-      statusOrder: '',
-    );
+      } else {
+        isLoading = false;
+        update();
+      }
+    });
   }
 
   ///

@@ -86,12 +86,8 @@ class StatusOrderController extends GetxController {
       ProfileRoutes.DETAIL_ORDER,
       arguments: listOrder[index].id,
     )?.then((value) async {
-      if (!IZIValidate.nullOrEmpty(value)) {
-        if (value.toString() == SUCCESS) {
-          await getAllOrder();
-        }
-      }
-
+      print("Quyen test 123");
+      await getAllOrder();
     });
   }
 
