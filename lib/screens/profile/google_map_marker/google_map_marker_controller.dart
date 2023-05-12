@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/user.dart';
@@ -93,7 +98,7 @@ class GoogleMapMarkerController extends GetxController {
             .collection('users')
             .doc(listIdUser[1])
             .snapshots()
-            .listen((querySnapshot) {
+            .listen((querySnapshot) async {
           User userShiper =
               User.fromMap(querySnapshot.data() as Map<String, dynamic>);
           markerShiper = Marker(
@@ -109,6 +114,7 @@ class GoogleMapMarkerController extends GetxController {
             infoWindow: InfoWindow(
               title: userShiper.fullName,
               snippet: userShiper.phone,
+              
             ),
           );
           print(userShiper.toJson());
@@ -122,4 +128,5 @@ class GoogleMapMarkerController extends GetxController {
       },
     );
   }
+
 }
