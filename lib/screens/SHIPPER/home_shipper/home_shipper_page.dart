@@ -6,6 +6,8 @@ import 'package:fooding_project/base_widget/p45_button.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/routes/routes_path/auth_routes.dart';
+import 'package:fooding_project/screens/SHIPPER/home_shipper/drawer.dart';
 import 'package:fooding_project/screens/SHIPPER/home_shipper/home_shipper_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -19,16 +21,24 @@ class HomeShipperPage extends GetView<HomeShipperController> {
     return GetBuilder(
       init: HomeShipperController(),
       builder: (HomeShipperController controller) {
-        return Scaffold(
-          backgroundColor: ColorResources.BACK_GROUND,
-          floatingActionButton: _checkOline(controller),
-          body: controller.isLoadingOrder == false
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Container(
-                  child: _viewInforOrder(controller),
-                ),
+        return SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              title: const Text("Fooding"),
+              centerTitle: true,
+            ),
+            backgroundColor: ColorResources.BACK_GROUND,
+            floatingActionButton: _checkOline(controller),
+            body: controller.isLoadingOrder == false
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(
+                    child: _viewInforOrder(controller),
+                  ),
+            drawer: const MainDrawer(),
+          ),
         );
       },
     );
@@ -133,7 +143,8 @@ Widget _listviewProducts(HomeShipperController controller) {
 Widget _checkOline(HomeShipperController controller) {
   return GestureDetector(
     onTap: () {
-      controller.clickTickOline();
+      Get.offAllNamed(AuthRoutes.LOGIN);
+      //controller.clickTickOline();
     },
     child: Container(
       height: IZIDimensions.ONE_UNIT_SIZE * 150,
@@ -180,7 +191,7 @@ Widget _viewConfirm(HomeShipperController controller) {
 /// view inforOrder
 ///
 Widget _viewInforOrder(HomeShipperController controller) {
-  if (controller.listOrder.isEmpty) {
+  if (controller.orderResponse == null) {
     return Center(
       child: Text(
         "Chưa có đơn hàng",
@@ -216,7 +227,7 @@ Widget _viewInforOrder(HomeShipperController controller) {
                     ),
                   ),
                   Text(
-                    "${controller.orderResponse!.listProduct!.length}sản phẩm",
+                    "${controller.orderResponse!.listProduct!.length} sản phẩm",
                     style: TextStyle(
                       color: ColorResources.colorMain,
                       fontWeight: FontWeight.w600,
@@ -270,7 +281,7 @@ Widget _viewInforOrder(HomeShipperController controller) {
                               Text(
                                 IZIValidate.nullOrEmpty(
                                         controller.orderResponse!.name)
-                                    ? 'Lê Thị Thu Phượng'
+                                    ? 'Không xấc định'
                                     : controller.orderResponse!.name!,
                                 style: TextStyle(
                                   color: ColorResources.BLACK,
@@ -452,12 +463,12 @@ Widget _viewInforOrder(HomeShipperController controller) {
                     onPressed: () {},
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: IZIDimensions.iziSize.width * 0.5,
                   child: P45Button(
-                    title: 'Chấp nhận',
+                    title: controller.statusOrder,
                     onPressed: () {
-                      controller.clickConfirm(orderResponse: controller.orderResponse!);
+                      controller.clickConfirm();
                     },
                   ),
                 )

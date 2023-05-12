@@ -26,6 +26,7 @@ class OrderResponse {
   String? timeDelivery;
   String? idVoucher;
   String? name;
+  List<String>? listImage;
   OrderResponse({
     this.id,
     this.idCustomer,
@@ -48,6 +49,7 @@ class OrderResponse {
     this.timeDone,
     this.timeConfirm,
     this.name,
+    this.listImage,
   });
 
   Map<String, dynamic> toMap() {
@@ -59,7 +61,11 @@ class OrderResponse {
       if (!IZIValidate.nullOrEmpty(totalPrice)) 'totalPrice': totalPrice,
       if (!IZIValidate.nullOrEmpty(discount)) 'discount': discount,
       if (!IZIValidate.nullOrEmpty(typePayment)) 'typePayment': typePayment,
+      if (!IZIValidate.nullOrEmpty(timeDelivering)) 'timeDelivering': timeDelivering,
+      if (!IZIValidate.nullOrEmpty(timeConfirm)) 'timeConfirm': timeConfirm,
+      if (!IZIValidate.nullOrEmpty(timeDone)) 'timeDone': timeDone,
       if (!IZIValidate.nullOrEmpty(timePeding)) 'timePeding': timePeding,
+      if (!IZIValidate.nullOrEmpty(timeCancel)) 'timeCancel': timeCancel,
       if (!IZIValidate.nullOrEmpty(statusOrder)) 'statusOrder': statusOrder,
       if (!IZIValidate.nullOrEmpty(latLong)) 'latLong': latLong,
       if (!IZIValidate.nullOrEmpty(address)) 'address': address,
@@ -70,6 +76,8 @@ class OrderResponse {
       if (!IZIValidate.nullOrEmpty(name)) 'name': name,
       if (!IZIValidate.nullOrEmpty(listProduct))
         'listProduct': listProduct?.map((x) => x.toMap()).toList(),
+      if (!IZIValidate.nullOrEmpty(listImage))
+        'listProduct': listImage?.map((x) => x.toString()).toList(),
     };
   }
 
@@ -88,9 +96,11 @@ class OrderResponse {
           map['typePayment'] != null ? map['typePayment'] as String : null,
       timePeding:
           map['timePeding'] != null ? map['timePeding'] as String : null,
-      timeDelivering:
-          map['timeDelivering'] != null ? map['timeDelivering'] as String : null,
-      timeCancel: map['timeCancel'] != null ? map['timeCancel'] as String : null,
+      timeDelivering: map['timeDelivering'] != null
+          ? map['timeDelivering'] as String
+          : null,
+      timeCancel:
+          map['timeCancel'] != null ? map['timeCancel'] as String : null,
       timeDone: map['timeDone'] != null ? map['timeDone'] as String : null,
       timeConfirm:
           map['timeConfirm'] != null ? map['timeConfirm'] as String : null,

@@ -49,14 +49,8 @@ class OTPController extends GetxController {
         // Verify OTP.
         final credential = await _authRepository.verifyOTP(otpCode);
         if (result[0] == "create") {
-          //
-          // Add data to FireStore.
-          await _userRepository.addUser(
-            result[1],
-            result[2],
-            credential.user!.uid,
-          );
-          IZIAlert().success(message: "Đăng kí tài khoản thành công");
+
+          IZIAlert().error(message: "erorr");
           Get.close(2);
         } else {
           //
