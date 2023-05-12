@@ -177,21 +177,23 @@ class DetailOrderPage extends GetView {
           init: DetailOrderController(),
           builder: (DetailOrderController controller) {
             return controller.orderResponse.statusOrder == PENDING ||
-                    controller.orderResponse.statusOrder == DONE ||
                     controller.orderResponse.statusOrder == DELIVERING
                 ? Container(
                     margin: EdgeInsets.only(
                       bottom: IZIDimensions.SPACE_SIZE_2X,
                     ),
                     child: Visibility(
-                      visible: false,
+                      visible: true,
                       child: P45Button(
                         title: controller.orderResponse.statusOrder == PENDING
-                            ? "Hủy đơn hàng"
-                            : "Đánh giá",
-                        onPressed: () {
-                
-                        },
+                          ? "Hủy đơn hàng"
+                          : controller.orderResponse.statusOrder == DELIVERING
+                              ? "Trạng thái giao hàng"
+                              : "Đánh giá",
+                      onPressed: () {
+                        controller.handleTypeOrder();
+                      },
+
                       ),
                     ))
                 : const SizedBox();
@@ -479,25 +481,28 @@ class DetailOrderPage extends GetView {
                                     }
                                     controller.gotoEvaluate(controller.idOrder, itemProduct.id!);
                                   },
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: IZIDimensions.SPACE_SIZE_1X,                                   
-                                    ),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(width: 1,color: ColorResources.colorMain)
-                                    ),
-                                    child: Text(
-                                      'Đánh giá',
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        color: ColorResources.colorMain,
-                                        fontFamily: NUNITO,
-                                        fontWeight: FontWeight.w600,
-                                        decoration: controller.checkCommentProduct(idProduct: itemProduct.id!) ?
-                                        TextDecoration.lineThrough : TextDecoration.none
-                                         ,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                                  child: Visibility(
+                                    visible: true,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: IZIDimensions.SPACE_SIZE_1X,                                   
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(width: 1,color: ColorResources.colorMain)
+                                      ),
+                                      child: Text(
+                                        'Đánh giá',
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          color: ColorResources.colorMain,
+                                          fontFamily: NUNITO,
+                                          fontWeight: FontWeight.w600,
+                                          decoration: controller.checkCommentProduct(idProduct: itemProduct.id!) ?
+                                          TextDecoration.lineThrough : TextDecoration.none
+                                           ,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontSize: IZIDimensions.FONT_SIZE_H6,
+                                        ),
                                       ),
                                     ),
                                   ),
