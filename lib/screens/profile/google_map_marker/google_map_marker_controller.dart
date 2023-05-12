@@ -70,7 +70,13 @@ class GoogleMapMarkerController extends GetxController {
             await userResponsitory.findbyId(idUser: listIdUser[0].toString());
         markerStore = Marker(
           markerId: MarkerId(userStore.id!),
-          position: const LatLng(16.074729, 108.220205),
+          position: !IZIValidate.nullOrEmpty(userStore.latLong)
+              ? LatLng(
+                  double.parse(userStore.latLong!.split(';')[0]),
+                  double.parse(
+                    userStore.latLong!.split(';')[1],
+                  ))
+              : const LatLng(16.074729, 108.220205),
           icon: await _getAssetIcon(Get.context!, ImagesPath.store_googlemap),
           //icon: IZIValidate.nullOrEmpty(userStore.avatar)?
           infoWindow: InfoWindow(
@@ -86,7 +92,7 @@ class GoogleMapMarkerController extends GetxController {
         double lng = double.parse(loctions.latlong!.split(';')[1]);
         markerCustomer = Marker(
           markerId: MarkerId(userCustomer.id!),
-            icon: await _getAssetIcon(Get.context!, ImagesPath.user_googleMap),
+          icon: await _getAssetIcon(Get.context!, ImagesPath.user_googleMap),
 
           //icon: IZIValidate.nullOrEmpty(userStore.avatar)?
           position: LatLng(lat, lng),
@@ -115,11 +121,11 @@ class GoogleMapMarkerController extends GetxController {
                 userShiper.latLong!.split(';')[1],
               ),
             ),
-            icon: await _getAssetIcon(Get.context!, ImagesPath.delivery_gggolemap),
+            icon: await _getAssetIcon(
+                Get.context!, ImagesPath.delivery_gggolemap),
             infoWindow: InfoWindow(
               title: userShiper.fullName,
               snippet: userShiper.phone,
-              
             ),
           );
           print(userShiper.toJson());
@@ -133,18 +139,23 @@ class GoogleMapMarkerController extends GetxController {
       },
     );
   }
-    Future<BitmapDescriptor> _getAssetIcon(BuildContext context, String icon) async {
-    final Completer<BitmapDescriptor> bitmapIcon = Completer<BitmapDescriptor>();
-    final ImageConfiguration config = createLocalImageConfiguration(context, size: Size(5, 5));
+
+  Future<BitmapDescriptor> _getAssetIcon(
+      BuildContext context, String icon) async {
+    final Completer<BitmapDescriptor> bitmapIcon =
+        Completer<BitmapDescriptor>();
+    final ImageConfiguration config =
+        createLocalImageConfiguration(context, size: Size(10, 10));
 
     AssetImage(icon)
-      .resolve(config)
-      .addListener(ImageStreamListener((ImageInfo image, bool sync) async {
-        final ByteData? bytes = await image.image.toByteData(format: ImageByteFormat.png);
-        final BitmapDescriptor bitmap = BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
-        bitmapIcon.complete(bitmap);
-      })
-    );
+        .resolve(config)
+        .addListener(ImageStreamListener((ImageInfo image, bool sync) async {
+      final ByteData? bytes =
+          await image.image.toByteData(format: ImageByteFormat.png);
+      final BitmapDescriptor bitmap =
+          BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
+      bitmapIcon.complete(bitmap);
+    }));
 
     return await bitmapIcon.future;
   }

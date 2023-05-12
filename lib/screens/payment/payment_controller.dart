@@ -44,6 +44,7 @@ class PaymentController extends GetxController {
 
   CartRquest cartResponse = CartRquest();
   model.User userResponse = model.User();
+  model.User storeResponse = model.User();
   LocationResponse location = LocationResponse();
   double? distance;
   double priceShip = 0;
@@ -301,6 +302,8 @@ class PaymentController extends GetxController {
         idLocation: userResponse.idLocation!,
         onSucces: (data) async {
           if (!IZIValidate.nullOrEmpty(data)) {
+            await findStore(cartResponse.listProduct!.first.idUser!);
+            List<String> listLatLongStore = IZIValidate.nullOrEmpty(storeResponse.latLong)? ["16.0718593","108.2206474"] : storeResponse.latLong!.split(";");
             location = data;
             List<String> listLatLong = location.latlong!.split(";");
             // distance = (Geolocator.distanceBetween(
@@ -312,7 +315,7 @@ class PaymentController extends GetxController {
             //         1000)
             //     .toPrecision(2);
             var response = await Dio().get(
-                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=16.0718593,108.2206474&key=$APIGG');
+                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=${listLatLongStore[0]},${listLatLongStore[1]}&key=$APIGG');
             DistanceResponse distanceResponse = DistanceResponse.fromJson(
                 response.data as Map<String, dynamic>);
             print(response);
@@ -468,5 +471,20 @@ class PaymentController extends GetxController {
     return priceShip + tamtinh - discount <= 0
         ? 0
         : priceShip + tamtinh - discount;
+  }
+
+  ///
+  /// Find Store.
+  ///
+  Future<void> findStore(String idStore) async {
+    await _userRepository.findStoreByID(
+      idStore: idStore,
+      onSucces: (store) {
+        storeResponse = store;
+      },
+      onError: (error) {
+        print(error.toString());
+      },
+    );
   }
 }
