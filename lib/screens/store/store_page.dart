@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/izi_loading_card.dart';
-import 'package:fooding_project/base_widget/izi_smart_refresher.dart';
 import 'package:fooding_project/base_widget/izi_tabbar.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
@@ -11,6 +9,7 @@ import 'package:fooding_project/screens/store/store_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
+import 'package:badges/badges.dart ' as badge;
 
 class StorePage extends GetView<StoreController> {
   const StorePage({super.key});
@@ -22,6 +21,8 @@ class StorePage extends GetView<StoreController> {
       builder: (StoreController controller) {
         return Scaffold(
           backgroundColor: ColorResources.BACK_GROUND,
+           floatingActionButton: _floattingButton(controller),
+          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
           body: controller.isLoadDingStore == false
               ? const Center(
                   child: CircularProgressIndicator(),
@@ -346,7 +347,9 @@ Widget _listviewProducts(StoreController controller) {
                               ),
                               // click add to cart
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                    controller.addCart(controller.listProducts[index]);
+                                },
                                 child: Container(
                                   padding: EdgeInsets.all(
                                       IZIDimensions.SPACE_SIZE_1X * 0.5),
@@ -379,4 +382,40 @@ Widget _listviewProducts(StoreController controller) {
       ),
     ),
   );
+}
+
+
+
+///
+/// floatting button cart
+///
+Widget _floattingButton(StoreController controller) {
+  return controller.countCart == 0
+      ? Container()
+      : FloatingActionButton(
+          backgroundColor: ColorResources.WHITE,
+          onPressed: () {
+            controller.gotoCart();
+          },
+          child: badge.Badge(
+            badgeContent: controller.isLoadingCountCart == false
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Text(
+                    controller.countCart.toString(),
+                    style: TextStyle(
+                      color: ColorResources.WHITE,
+                      fontFamily: NUNITO,
+                      fontWeight: FontWeight.w600,
+                      fontSize: IZIDimensions.FONT_SIZE_H6 * 0.8,
+                    ),
+                  ),
+            child: Icon(
+              Icons.shopping_cart,
+              size: IZIDimensions.ONE_UNIT_SIZE * 40,
+              color: ColorResources.RED,
+            ),
+          ),
+        );
 }

@@ -76,7 +76,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                           // add cart
                                           GestureDetector(
                                             onTap: () {
-                                              controller.clickFavorite();
+                                              controller.addFavoriteToFireStore(product: controller.productsModel!);
                                             },
                                             child: Icon(Icons.favorite_border,
                                                 size: IZIDimensions
@@ -130,6 +130,25 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                               fontWeight: FontWeight.w400,
                                               fontSize: IZIDimensions
                                                   .FONT_SIZE_SPAN_SMALL,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          Visibility(
+                                            visible: controller.productsModel!
+                                                    .priceDiscount !=
+                                                0,
+                                            child: Text(
+                                              '${IZIPrice.currencyConverterVND(controller.productsModel!.price!.toDouble())}đ',
+                                              style: TextStyle(
+                                                color: ColorResources.BLACK,
+                                                fontFamily: NUNITO,
+                                                overflow: TextOverflow.ellipsis,
+                                                fontWeight: FontWeight.w400,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                fontSize:
+                                                    IZIDimensions.FONT_SIZE_H6,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -406,54 +425,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                             ),
                                                           ],
                                                         ),
-                                                        Row(
-                                                          children: [
-                                                            GestureDetector(
-                                                              onTap: () {},
-                                                              child: Text(
-                                                                'Thích',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color:
-                                                                      ColorResources
-                                                                          .BLACK,
-                                                                  fontFamily:
-                                                                      NUNITO,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize:
-                                                                      IZIDimensions
-                                                                          .FONT_SIZE_SPAN_SMALL,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: IZIDimensions
-                                                                  .SPACE_SIZE_2X,
-                                                            ),
-                                                            GestureDetector(
-                                                              onTap: () {},
-                                                              child: Text(
-                                                                'Bình luận',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color:
-                                                                      ColorResources
-                                                                          .BLACK,
-                                                                  fontFamily:
-                                                                      NUNITO,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize:
-                                                                      IZIDimensions
-                                                                          .FONT_SIZE_SPAN_SMALL,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
+                                                       
                                                       ],
                                                     ),
                                                     const Spacer(),
@@ -613,17 +585,38 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
-                    child: Text(
-                      controller.listProducts[index].priceDiscount == 0
-                          ? '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ'
-                          : '${IZIPrice.currencyConverterVND((controller.listProducts[index].priceDiscount!.toDouble()))}đ',
-                      style: TextStyle(
-                        color: ColorResources.colorMain,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          controller.listProducts[index].priceDiscount != 0
+                              ? '${IZIPrice.currencyConverterVND(controller.listProducts[index].price!.toDouble())}đ'
+                              : controller.formatSold(
+                                  controller.listProducts[index].sold!),
+                          style: TextStyle(
+                            color: ColorResources.GREY,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            decoration: 
+                              controller.listProducts[index].priceDiscount != 0 ? 
+                            TextDecoration.lineThrough : TextDecoration.none,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                          ),
+                        ),
+                        Text(
+                          controller.listProducts[index].priceDiscount == 0
+                              ? '${IZIPrice.currencyConverterVND((controller.listProducts[index].price!.toDouble()))}đ'
+                              : '${IZIPrice.currencyConverterVND((controller.listProducts[index].priceDiscount!.toDouble()))}đ',
+                          style: TextStyle(
+                            color: ColorResources.colorMain,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -900,7 +893,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Color.fromRGBO(0, 0, 0, 0.3)),
               child: Center(
-                child: Icon(
+                child: Icon(  
                   Icons.arrow_back,
                   color: ColorResources.WHITE,
                   size: IZIDimensions.ONE_UNIT_SIZE * 40,
@@ -1010,10 +1003,10 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                         fontSize: IZIDimensions.FONT_SIZE_H6,
                       ),
                     ),
-                  ),
+                  )
                 ),
               ),
-            ),
+            ),  
           ],
         ),
       ),

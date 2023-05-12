@@ -1,11 +1,20 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
+import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
+import 'package:fooding_project/repository/cart_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/store_routes.dart';
+import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -14,17 +23,24 @@ class StoreController extends GetxController {
   bool isLoadDingStore = false;
   bool isLoadingProduct = false;
   bool isLoadingNameCategory = false;
+  bool isLoadingCountCart = false;
   String idStore = Get.arguments as String;
+  final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   Store storeResponse = Store();
+  String idUser = sl<SharedPreferenceHelper>().getIdUser;
   List<Products> listProducts = [];
   List<dynamic> listNameCategory = [];
   int curenIndex = 0;
   int limit = 10;
   int countSold = 0;
+  int countCart = 0;
   RefreshController refreshController = RefreshController();
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
+
+  List<Products> listProductsCart = [];
+
   @override
   void onInit() {
     super.onInit();
@@ -43,6 +59,13 @@ class StoreController extends GetxController {
   }
 
   ///
+  /// gotoCart
+  ///
+  void gotoCart() {
+    Get.toNamed(StoreRoutes.PAYMENT);
+  }
+
+  ///
   /// find store by id
   ///
   Future<void> findStoreByID() async {
@@ -51,6 +74,7 @@ class StoreController extends GetxController {
       onSucces: (store) {
         storeResponse = store;
         countSoldIDStore();
+        countCartByIDStore();
         isLoadDingStore = true;
         update();
       },
@@ -68,6 +92,7 @@ class StoreController extends GetxController {
       idStore: idStore,
       onSucess: (data) {
         countSold = data;
+        print(data);
         update();
       },
       onError: (error) {
@@ -77,11 +102,30 @@ class StoreController extends GetxController {
   }
 
   ///
+  /// count cart by idStore
+  ///
+  void countCartByIDStore() {
+    _cartRepository.counCartByIDUser(
+      idUser: idUser,
+      onSucess: (data) {
+        countCart = data;
+        print(data);
+        isLoadingCountCart = true;
+        update();
+      },
+      onError: (error) {
+        print(error.toString());
+      },
+    );
+  }
+
+  ///
   /// go to evualate
   ///
-  void gotoEvualate(){
+  void gotoEvualate() {
     Get.toNamed(StoreRoutes.EVALUATE);
   }
+
   ///
   /// paginate product by name Category
   ///
@@ -175,11 +219,93 @@ class StoreController extends GetxController {
   }
 
   ///
+  /// check id product add cart
   ///
-  ///
-  void test() {
-    for (int i = 0; i < listNameCategory.length; i++) {
-      print(listNameCategory[i]);
+  bool checkIdProduct(String idProduct) {
+    for (var i in listProductsCart) {
+      if (i.id == idProduct) {
+        return true;
+      }
     }
+    return false;
+  }
+
+  ///
+  /// check idStore add cart
+  ///
+  bool checkIdStore(String idStore) {
+    for (int i = 0; i < listProductsCart.length; i++) {
+      if (idStore != listProductsCart[i].idUser!) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  ///
+  /// add cart
+  ///
+  Future<void> addCart(Products products) async {
+    if (IZIValidate.nullOrEmpty(idUser)) {
+      Get.find<BottomBarController>().showLoginDialog();
+      return;
+    }
+    if (checkIdProduct(products.id!)) {
+      IZIAlert().error(message: 'Đã có trong giỏ hàng');
+      return;
+    }
+    // trung id
+    if (checkIdStore(products.idUser!)) {
+      Get.dialog(showDialog(idUser, products));
+      return;
+    }
+    addCartToFireStore(products);
+    EasyLoading.dismiss();
+  }
+
+  ///
+  /// add cart
+  ///
+  void addCartToFireStore(Products products) {
+    final CartRquest cartRquest = CartRquest();
+    cartRquest.idUser = idUser;
+    listProductsCart.add(products);
+    cartRquest.listProduct = listProductsCart;
+    _cartRepository.addCart(
+      idUser: idUser,
+      data: cartRquest,
+      onSucces: () {
+        IZIAlert().success(message: 'Thêm món ăn thành công');
+        countCartByIDStore();
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+  ///
+  /// showDialog if !idStore
+  ///
+  Widget showDialog(String id, Products products) {
+    return DialogCustom(
+      description: 'Món ăn không cùng cửa hàng.Bạn có muốn thay thế không ?',
+      agree: 'Có',
+      cancel1: 'Không',
+      onTapConfirm: () {
+        _productsRepository.deleteCartByUserId(id);
+        IZIAlert().success(message: 'Thay thế cửa hàng thành công');
+        Get.back();
+        listProductsCart.clear();
+        listProductsCart.add(products);
+        addCartToFireStore(products);
+        Get.find<BottomBarController>().update();
+        update();
+      },
+      onTapCancle: () {
+        Get.back();
+      },
+    );
   }
 }
