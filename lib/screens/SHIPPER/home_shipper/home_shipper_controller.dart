@@ -126,6 +126,7 @@ class HomeShipperController extends GetxController {
           body: "Đơn hàng của bạn đã được nhận bởi tài xế",
           title: "Đơn hàng bạn đã được nhận");
       statusOrder = "xác nhân đến quán";
+      update();
     } else if (orderResponse!.statusOrder == DELIVERING) {
       if (IZIValidate.nullOrEmpty(orderResponse!.timeConfirm)) {
         orderResponse!.timeConfirm =
@@ -137,6 +138,7 @@ class HomeShipperController extends GetxController {
                 "Tài xế đã tới quán của bạn để xem thông tin chi tiết vào trạng thái đơn hàng ",
             title: "Tài xế đã đến quán ăn");
         statusOrder = "Giao hàng";
+        update();
       } else if (IZIValidate.nullOrEmpty(orderResponse!.timeDelivering)) {
         // đang giao
         orderResponse!.timeDelivering =
@@ -148,8 +150,11 @@ class HomeShipperController extends GetxController {
             body: "Tài xế nhận được món ăn và đang vận chuyển",
             title: "Tài xế đã nhận đơn hàng");
         statusOrder = "Thành công";
+        update();
       } else if (IZIValidate.nullOrEmpty(orderResponse!.timeDone)) {
-        _timer!.cancel();
+        if (_timer != null) {
+          _timer!.cancel();
+        }
         orderResponse!.statusOrder = DONE;
         orderResponse!.timeDone =
             DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
@@ -166,7 +171,7 @@ class HomeShipperController extends GetxController {
         update();
       }
     }
-    update();
+
     EasyLoading.dismiss();
   }
 
