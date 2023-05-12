@@ -516,7 +516,7 @@ class HomeScreenPage extends GetView<HomeController> {
                           width: IZIDimensions.SPACE_SIZE_1X * 0.5,
                         ),
                         Text(
-                          controller.calculateDistance(controller.listProducts[index].idUser!).toString(),
+                          '${controller.listKm[index].toStringAsFixed(2)}km',
                           style: TextStyle(
                             color: ColorResources.GREY,
                             fontFamily: NUNITO,

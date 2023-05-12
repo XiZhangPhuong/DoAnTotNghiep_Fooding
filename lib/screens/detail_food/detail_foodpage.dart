@@ -893,7 +893,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Color.fromRGBO(0, 0, 0, 0.3)),
               child: Center(
-                child: Icon(
+                child: Icon(  
                   Icons.arrow_back,
                   color: ColorResources.WHITE,
                   size: IZIDimensions.ONE_UNIT_SIZE * 40,
@@ -1003,10 +1003,10 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                         fontSize: IZIDimensions.FONT_SIZE_H6,
                       ),
                     ),
-                  ),
+                  )
                 ),
               ),
-            ),
+            ),  
           ],
         ),
       ),

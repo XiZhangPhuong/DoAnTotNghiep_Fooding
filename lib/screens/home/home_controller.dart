@@ -53,6 +53,7 @@ class HomeController extends GetxController {
   double lat2 = 0;
   double lon1 = 0;
   double lon2 = 0;
+  List<double> listKm = [];
   // list string imageslidershow
   List<String> listImageSlider = [
     'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
@@ -102,15 +103,8 @@ class HomeController extends GetxController {
   ///
   /// find store
   ///
-  Future<void> findStore(String idStore) async {
-    storeResponse = await _userRepository.findbyId(idUser: idStore);
-    if (!IZIValidate.nullOrEmpty(storeResponse.latLong)) {
-      List<String> list = storeResponse.latLong!.split(';');
-      lat2 = double.parse(list[0]);
-      lon2 = double.parse(list[1]);
-      isLoadingStore = true;
-      update();
-    }
+  Future<User> findStore(String idStore) async {
+    return await _userRepository.findbyId(idUser: idStore);
   }
 
   ///
@@ -136,7 +130,7 @@ class HomeController extends GetxController {
     getCategoryList();
     paginateProductsRecommnend();
     _getCurrentLocation();
-    findUser();
+
     ;
   }
 
@@ -212,9 +206,22 @@ class HomeController extends GetxController {
     listProductRecommend.clear();
     _productsRepository.paginateRecommendProducts(
       limit: 10,
-      onSucess: (listProduct) {
+      onSucess: (listProduct) async {
         listProductRecommend = listProduct;
-
+        
+        for(final item in listProduct){
+          storeResponse = await findStore(item.idUser!);
+          if(currentLocation == null){
+            currentLocation = await  Geolocator.getLastKnownPosition();
+          }
+          lat1  = currentLocation!.latitude;
+          lon1 = currentLocation!.longitude;
+          List<String> list = storeResponse.latLong!.split(';');
+          lat2 = double.parse(list[0]);
+          lon2 = double.parse(list[1]);
+          listKm.add(Geolocator.distanceBetween(lat1, lon1, lat2, lon2)/1000);
+          print(Geolocator.distanceBetween(lat1, lon1, lat2, lon2));
+        }
         isLoadingProductRecomment = false;
         update();
       },
@@ -336,13 +343,16 @@ class HomeController extends GetxController {
   ///
   ///
   ///
-  String calculateDistance(String idStore) {
-    findStore(idStore);
-    var p = 0.017453292519943295;
-    var c = cos;
-    var a = 0.5 -
-        c((lat2 - lat1) * p) / 2 +
-        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
-    return (12742 * asin(sqrt(a))).toStringAsFixed(1);
-  }
+  // String calculateDistance(String idStore) {
+  //     findStore(idStore);
+  //     lat1 = currentLocation!.latitude;
+  //   lon1 = currentLocation!.longitude;
+  //   var p = 0.017453292519943295;
+  //   var c = cos;
+  //   var a = 0.5 -
+  //       c((lat2 - lat1) * p) / 2 +
+  //       c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+  //   km =  (12742 * asin(sqrt(a)));
+  //   return km.toStringAsFixed(1);
+  // }
 }
