@@ -147,7 +147,7 @@ class DetailOrderPage extends GetView {
                                   _itemTime(
                                     title: "Lấy thành công, đang giao",
                                     content:
-                                        controller.orderResponse.timeConfirm!,
+                                        controller.orderResponse.timeDelivering!,
                                   ),
                                 if (!IZIValidate.nullOrEmpty(
                                     controller.orderResponse.timeDone))
