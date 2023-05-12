@@ -224,6 +224,16 @@ class HomeShipperController extends GetxController {
                     break;
                   }
                 }
+                if (orderResponse!.idEmployee !=
+                        sl<SharedPreferenceHelper>().getIdUser &&
+                    orderResponse!.statusOrder == DELIVERING) {
+                  isLoadingUser = false;
+                  isLoadingOrder = false;
+                  isLoadingCustommer = false;
+                  orderResponse = null;
+                  update();
+                  continue;
+                }
                 if (IZIValidate.nullOrEmpty(orderResponse!.idEmployee) &&
                     orderResponse!.statusOrder == PENDING) {
                   print(orderResponse!.toJson());

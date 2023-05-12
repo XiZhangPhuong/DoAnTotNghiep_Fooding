@@ -12,6 +12,7 @@ import 'package:fooding_project/screens/SHIPPER/home_shipper/home_shipper_contro
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 class HomeShipperPage extends GetView<HomeShipperController> {
   const HomeShipperPage({super.key});
@@ -192,16 +193,19 @@ Widget _viewConfirm(HomeShipperController controller) {
 ///
 Widget _viewInforOrder(HomeShipperController controller) {
   if (controller.orderResponse == null) {
-    return Center(
-      child: Text(
-        "Chưa có đơn hàng",
-        style: TextStyle(
-          color: ColorResources.WHITE,
-          fontWeight: FontWeight.w600,
-          fontSize: IZIDimensions.FONT_SIZE_H6,
-          fontFamily: NUNITO,
+    return Column(
+      children: [
+        LottieBuilder.network(
+            "https://assets7.lottiefiles.com/packages/lf20_jmejybvu.json"),
+        Text(
+          "Đang đợi đơn hàng",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: IZIDimensions.FONT_SIZE_H6,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-      ),
+      ],
     );
   } else {
     return SafeArea(
