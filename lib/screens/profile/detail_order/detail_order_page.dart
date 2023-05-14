@@ -134,14 +134,14 @@ class DetailOrderPage extends GetView {
                                       : controller.orderResponse.timePeding!,
                                 ),
                                 if (!IZIValidate.nullOrEmpty(
-                                    controller.orderResponse.timeConfirm))
+                                    controller.orderResponse.timeDelivering))
                                   _itemTime(
                                     title: "Thời gian xác nhận",
-                                    content:
-                                        controller.orderResponse.timeConfirm!,
+                                    content: controller
+                                        .orderResponse.timeDelivering!,
                                   ),
                                 if (!IZIValidate.nullOrEmpty(
-                                    controller.orderResponse.timeDelivering))
+                                    controller.orderResponse.timeConfirm))
                                   _itemTime(
                                     title: "Lấy thành công, đang giao",
                                     content:
