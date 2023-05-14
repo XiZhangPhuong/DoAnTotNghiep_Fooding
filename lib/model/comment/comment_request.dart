@@ -14,6 +14,7 @@ class CommentRequets {
   String? satisFied;
   String? content;
   List<String>? listImage;
+  String? timeComment;
   CommentRequets({
     this.id,
     this.idUser,
@@ -25,6 +26,7 @@ class CommentRequets {
     this.satisFied,
     this.content,
     this.listImage,
+    this.timeComment,
   });
 
   Map<String, dynamic> toMap() {
@@ -39,6 +41,7 @@ class CommentRequets {
       if (!IZIValidate.nullOrEmpty(satisFied)) 'satisFied': satisFied,
       if (!IZIValidate.nullOrEmpty(content)) 'content': content,
       if (!IZIValidate.nullOrEmpty(listImage)) 'listImage': listImage,
+       if (!IZIValidate.nullOrEmpty(timeComment)) 'timeComment': timeComment,
     };
   }
 
@@ -56,6 +59,7 @@ class CommentRequets {
       listImage: map['listImage'] != null
           ? List<String>.from((map['listImage'] as List<dynamic>))
           : null,
+      timeComment: map['timeComment'] != null ? map['timeComment'] as String : null,     
     );
   }
 

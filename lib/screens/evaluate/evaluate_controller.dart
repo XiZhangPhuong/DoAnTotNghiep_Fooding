@@ -92,7 +92,7 @@ class EvaluateController extends GetxController {
   /// click rating bar
   ///
   void clickRatingBar(double value) {
-    countRating = value;
+    countRating = value.toDouble();
     update();
   }
 
@@ -134,7 +134,7 @@ class EvaluateController extends GetxController {
     IZIValidate.nullOrEmpty(editingController.text)
         ? ''
         : _commentRequest.content = editingController.text;
-    _commentRequest.rating = countRating;
+    _commentRequest.rating = countRating.toDouble();
     if (listImageFile.isNotEmpty) {
       _commentRequest.listImage =  await uploadImagesToStorage(listImageFile);
     }

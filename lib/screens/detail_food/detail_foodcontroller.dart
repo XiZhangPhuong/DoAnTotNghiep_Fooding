@@ -8,10 +8,12 @@ import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
-import 'package:fooding_project/model/favorite/favorite.dart';
+import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
+import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
+import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/favorite_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
@@ -27,6 +29,8 @@ class DetailFoodController extends GetxController {
   bool isLoading = false;
   bool isLoadingStore = false;
   bool isLoadingProduct = false;
+  bool isLoadingListComment = false;
+  bool isLoadingUser = false;
   int currentIndex = 0;
   String idProduct = "";
   String idStore = "";
@@ -38,13 +42,16 @@ class DetailFoodController extends GetxController {
   List<Products> listProducts = [];
   List<Products> listProductsCart = [];
   List<Products> listProductFavorite = [];
-
+  List<CommentRequets> listComment = [];
+  List<User> listUser = [];
+  User userReponse = User();
   int quantity = 0;
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
+  final CommentRepository _commentRepository = GetIt.I.get<CommentRepository>();
   final FavoriteRepository _favoriteRepository =
       GetIt.I.get<FavoriteRepository>();
 
@@ -60,6 +67,22 @@ class DetailFoodController extends GetxController {
     }
   }
 
+  ///
+  /// get all comment by id product
+  ///
+   Future<void> getAllComment() async {
+     _commentRepository.getAllComment(idProduct: idProduct, onSuccess: (data) async {
+      listComment = data;
+      for(final i in listComment){
+        userReponse =  await findUserByID(i.idUser!);
+        listUser.add(userReponse);
+      }
+      isLoadingListComment = true;
+      update();
+     }, onError: (e) {
+       print(e);
+     },);
+   }
   ///
   /// count product by idStore
   ///
@@ -96,6 +119,7 @@ class DetailFoodController extends GetxController {
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
     checkLikeProduct();
+    getAllComment();
   }
 
   ///
@@ -116,6 +140,16 @@ class DetailFoodController extends GetxController {
       onError: (error) {},
     );
   }
+
+
+   ///
+  /// fint user by id
+  ///
+  Future<User> findUserByID(String idUser) async {
+   return   _userRepository.findbyId(idUser: idUser);
+
+  }
+
 
   ///
   /// fint store by id
@@ -255,6 +289,7 @@ class DetailFoodController extends GetxController {
       idCategory: productsModel!.nameCategory!,
       onSucess: (listProduct) {
         listProducts = listProduct;
+        listProducts.removeWhere((element) => element.id == idProduct);
         listProducts.shuffle();
         isLoadingProduct = false;
         update();

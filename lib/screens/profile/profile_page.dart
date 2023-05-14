@@ -6,6 +6,7 @@ import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/routes/routes_path/location_routes.dart';
+import 'package:fooding_project/routes/routes_path/profile_routes.dart';
 import 'package:fooding_project/screens/profile/profile_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/images_path.dart';
@@ -59,8 +60,7 @@ class ProfilePage extends GetView {
                         ),
                         _itemFuction(
                           ontap: () {
-                            //Get.toNamed(LocationRoutes.LOCATION);
-                            IZIAlert().error(message: "Phương");
+                            Get.toNamed(ProfileRoutes.FEEL_RATING);
                           },
                           image: Icons.reviews,
                           text: 'Đánh giá cảm nhận',

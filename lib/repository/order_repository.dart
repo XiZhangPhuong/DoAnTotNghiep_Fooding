@@ -170,4 +170,24 @@ class OrderResponsitory {
       onError(e);
     }
   }
+
+
+  ///
+  /// get all order
+  ///
+  Future<void> getAllOrderByStatus({
+    required Function(List<OrderResponse> onSuccess) onSuccess,
+    required Function(dynamic erorr) onError,
+  }) async {
+    try {
+      final res =  await FirebaseFirestore.instance.collection('orders')
+      .where('statusOrder',isEqualTo: 'DONE')
+      .where('idCustomer' ,isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
+      .get();
+      
+      onSuccess(res.docs.map((e) => OrderResponse.fromMap(e.data())).toList());
+    } catch (e) {
+      onError(e);
+    }
+  }
 }

@@ -56,7 +56,7 @@ class EvaluatePage extends GetView<EvaluateController> {
                               height: IZIDimensions.SPACE_SIZE_2X,
                             ),
                             RatingStars(
-                              value: controller.countRating,
+                              value: controller.countRating.toDouble(),
                               starCount: 5,
                               starSpacing: 4,
                               starSize: IZIDimensions.ONE_UNIT_SIZE * 50,
