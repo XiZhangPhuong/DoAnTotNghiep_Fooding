@@ -1,6 +1,8 @@
 import 'package:fooding_project/repository/auth_repository.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
 import 'package:fooding_project/repository/category_repository.dart';
+import 'package:fooding_project/repository/comment_repository.dart';
+import 'package:fooding_project/repository/favorite_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
@@ -38,4 +40,10 @@ Future<void> init() async {
 
   // cart repository
   sl.registerLazySingleton<CartRepository>(() => CartRepository());
+
+  // comment repository
+  sl.registerLazySingleton<CommentRepository>(() => CommentRepository());
+
+  // favorite repository
+  sl.registerLazySingleton<FavoriteRepository>(() => FavoriteRepository());
 }

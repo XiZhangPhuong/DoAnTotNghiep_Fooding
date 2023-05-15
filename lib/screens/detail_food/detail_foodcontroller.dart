@@ -6,10 +6,13 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
+import 'package:fooding_project/model/favorite/favorite.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
+import 'package:fooding_project/repository/favorite_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
@@ -33,22 +36,17 @@ class DetailFoodController extends GetxController {
   int limit = 10;
   int countProduct = 0;
   List<Products> listProducts = [];
-  List<Products> listProductsCart =
-      Get.find<BottomBarController>().listProductsCard;
+  List<Products> listProductsCart = [];
+  List<Products> listProductFavorite = [];
+
   int quantity = 0;
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
-
-  ///
-  /// click favorite
-  ///
-  void clickFavorite() {
-    isCheckFavorite = !isCheckFavorite;
-    update();
-  }
+  final FavoriteRepository _favoriteRepository =
+      GetIt.I.get<FavoriteRepository>();
 
   ///
   /// format  sold product
@@ -97,6 +95,7 @@ class DetailFoodController extends GetxController {
     super.onInit();
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
+    checkLikeProduct();
   }
 
   ///
@@ -139,6 +138,10 @@ class DetailFoodController extends GetxController {
   /// add cart
   ///
   Future<void> addCart(Products products) async {
+    if (IZIValidate.nullOrEmpty(idUser)) {
+      Get.find<BottomBarController>().showLoginDialog();
+      return;
+    }
     if (checkIdProduct(products.id!)) {
       IZIAlert().error(message: 'Đã có trong giỏ hàng');
       return;
@@ -164,8 +167,6 @@ class DetailFoodController extends GetxController {
       onSucces: () {
         EasyLoading.show(status: "Đang cập nhật");
         IZIAlert().success(message: 'Thêm món ăn thành công');
-        Get.find<BottomBarController>().countCartByIDStore();
-        //Get.find<BottomBarController>().update();
         EasyLoading.dismiss();
         update();
       },
@@ -379,5 +380,59 @@ class DetailFoodController extends GetxController {
     } else {
       return 'Đã đóng cửa $opentime - $closetime';
     }
+  }
+
+  ///
+  /// add favorite
+  ///
+  Future<void> addFavoriteToFireStore({required Products product}) async {
+    clickFavorite();
+    List<String> listUser = [];
+    if(listUser.contains(idUser)){
+      listUser.remove(idUser);
+    }else{
+       listUser.add(idUser);
+    }  
+    product.id = product.id;
+    product.favorites  =  listUser;
+
+    _productsRepository.updateProduct(
+      idProduct: idProduct,
+      product: product,
+      onSucess: () {
+        print('Yêu thích thành công');
+        print(product.id);
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+  ///
+  /// click favorite
+  ///
+  void clickFavorite() {
+    if (IZIValidate.nullOrEmpty(idUser)) {
+      Get.find<BottomBarController>().showLoginDialog();
+      return;
+    }
+    isCheckFavorite = !isCheckFavorite;
+    update();
+  }
+
+  ///
+  /// check like product
+  ///
+  Future<void> checkLikeProduct() async {
+    _productsRepository.checkUserLikeProduct(idUser: idUser, 
+    idProduct: idProduct, 
+    onSucess: (data) {
+      isCheckFavorite = data;
+      print(isCheckFavorite);
+    }, 
+    onError: (error) {
+      print(error);
+    },);
   }
 }

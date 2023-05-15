@@ -1,13 +1,21 @@
+// ignore_for_file: avoid_print
+
+import 'package:flutter/material.dart';
+import 'package:fooding_project/di_container.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/order/order.dart';
 import 'package:fooding_project/model/user.dart';
+import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
+import 'package:fooding_project/routes/routes_path/detail_order_routes.dart';
+import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/routes/routes_path/profile_routes.dart';
 import 'package:fooding_project/screens/profile/google_map_marker/google_map_marker_page.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -18,7 +26,9 @@ class DetailOrderController extends GetxController {
 
   final _orderRepository = GetIt.I.get<OrderResponsitory>();
   final _userResponsitory = GetIt.I.get<UserRepository>();
+  final _commentRepository = GetIt.I.get<CommentRepository>();
   bool isLoading = true;
+  bool checkComment = false;
   OrderResponse orderResponse = OrderResponse();
 
   // Create user.
@@ -31,24 +41,58 @@ class DetailOrderController extends GetxController {
     findOrderDetail();
   }
 
+   ///
+  /// gotoDetailFood
+  ///
+  void gotoDetailFood(String id) {
+    Get.find<HomeController>().gotoDetailFood(id);
+  }
+
+  ///
+  /// check Comment
+  ///
+  bool checkCommentProduct({required String idProduct}){
+    bool hasComment = false;
+    _commentRepository.checkComment(idUser: sl<SharedPreferenceHelper>().getIdUser,
+     idProduct: idProduct, 
+     onSuccess: (check) {
+      print(check);
+       update();
+       hasComment = check;
+     }, onError:
+      (e) {
+        print(e);
+      },);
+      return hasComment;
+  }
+  
+  ///
+  /// go to evualate
+  ///
+  void gotoEvaluate(String idOrder,String idProduct ){
+    Get.toNamed(DetailOrderRoutes.EVALUATE,arguments: [idOrder,idProduct]);
+  }
   ///
   /// find order detail.
   ///
   void findOrderDetail() {
-    _orderRepository.getOrder(
-      idOrder: idOrder,
-      onSuccess: (onSuccess) async {
+    FirebaseFirestore.instance
+        .collection("orders")
+        .doc(idOrder)
+        .snapshots()
+        .listen((event) async {
+      if (event.exists) {
+        orderResponse =
+            OrderResponse.fromMap(event.data() as Map<String, dynamic>);
         isLoading = false;
-        orderResponse = onSuccess.first;
         await findDeliveryMan();
         await findStore(orderResponse.listProduct!.first.idUser!);
         update();
-      },
-      onError: (erorr) {
-        print(erorr.toString());
-      },
-      statusOrder: '',
-    );
+      } else {
+        isLoading = false;
+        update();
+      }
+    });
   }
 
   ///

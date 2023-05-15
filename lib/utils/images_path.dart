@@ -60,4 +60,7 @@ class ImagesPath {
 
   // Empty Card.
   static String emptyCart = 'assets/images/empty-cart.png';
+  static String store_googlemap = 'assets/icons/store_googlemap.png';
+  static String user_googleMap = 'assets/icons/user_googleMap.png';
+  static String delivery_gggolemap = 'assets/icons/delivery_gggolemap.png';
 }

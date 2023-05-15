@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 
 class Products {
@@ -15,10 +16,13 @@ class Products {
   int? price;
   int? priceDiscount;
   int? sold;
-  
-  Products({
-    this.id,
-    this.idUser,
+  bool? isShow;
+  double? km;
+  List<dynamic>? favorites;
+
+  Products(
+      {this.id,
+      this.idUser,
       this.name,
       this.image,
       this.idCategory,
@@ -27,10 +31,10 @@ class Products {
       this.quantity = 1,
       this.price,
       this.priceDiscount,
-      this.sold
-    });
-
-  
+      this.sold,
+      this.isShow,
+      this.favorites,
+      this.km});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -43,8 +47,11 @@ class Products {
       if (!IZIValidate.nullOrEmpty(description)) 'description': description,
       if (!IZIValidate.nullOrEmpty(quantity)) 'quantity': quantity,
       if (!IZIValidate.nullOrEmpty(price)) 'price': price,
-       if (!IZIValidate.nullOrEmpty(price)) 'priceDiscount': priceDiscount,
+      if (!IZIValidate.nullOrEmpty(price)) 'priceDiscount': priceDiscount,
       if (!IZIValidate.nullOrEmpty(sold)) 'sold': sold,
+      if (!IZIValidate.nullOrEmpty(sold)) 'isShow': isShow,
+      if (!IZIValidate.nullOrEmpty(sold)) 'favorites': favorites,
+      if (!IZIValidate.nullOrEmpty(sold)) 'km': km,
     };
   }
 
@@ -56,14 +63,21 @@ class Products {
       image: map['image'] != null
           ? List<dynamic>.from((map['image'] as List<dynamic>))
           : null,
-      idCategory: map['idCategory'] != null ? map['idCategory'] as String : null,
-      nameCategory: map['nameCategory'] != null ? map['nameCategory'] as String : null,
+      idCategory:
+          map['idCategory'] != null ? map['idCategory'] as String : null,
+      nameCategory:
+          map['nameCategory'] != null ? map['nameCategory'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
-          quantity :  map['quantity'] != null ? map['quantity'] as int : null,
+      quantity: map['quantity'] != null ? map['quantity'] as int : null,
       price: map['price'] != null ? map['price'] as int : null,
-      priceDiscount: map['priceDiscount'] != null ? map['priceDiscount'] as int : null,
+      priceDiscount:
+          map['priceDiscount'] != null ? map['priceDiscount'] as int : null,
       sold: map['sold'] != null ? map['sold'] as int : null,
+      isShow: map['isShow'] != null ? map['isShow'] as bool : null,
+      favorites:
+          map['favorites'] != null ? map['favorites'] as List<dynamic> : null,
+      km: map['km'] != null ? map['km'] as double : null,
     );
   }
 

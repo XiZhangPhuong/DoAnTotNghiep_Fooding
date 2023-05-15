@@ -22,7 +22,7 @@ class User {
   String? deviceId;
   User({
     this.id,
-    this.fullName,
+    this.fullName,  
     this.phone,
     this.email,
     this.passWord,

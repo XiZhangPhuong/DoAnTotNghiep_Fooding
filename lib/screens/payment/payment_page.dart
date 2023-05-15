@@ -757,7 +757,10 @@ Widget _address(PaymentController controller) {
                           IZIValidate.nullOrEmpty(
                                   controller.userResponse.idLocation)
                               ? "Bạn chưa chọn địa chỉ giao hàng"
-                              : controller.location.address!,
+                              : IZIValidate.nullOrEmpty(
+                                      controller.location.address)
+                                  ? ""
+                                  : controller.location.address!,
                           maxLines: 2,
                           style: TextStyle(
                             color: ColorResources.GREY,
