@@ -8,10 +8,12 @@ import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
-import 'package:fooding_project/model/favorite/favorite.dart';
+import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
+import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
+import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/favorite_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
@@ -27,6 +29,8 @@ class DetailFoodController extends GetxController {
   bool isLoading = false;
   bool isLoadingStore = false;
   bool isLoadingProduct = false;
+  bool isLoadingListComment = false;
+  bool isLoadingUser = false;
   int currentIndex = 0;
   String idProduct = "";
   String idStore = "";
@@ -38,13 +42,16 @@ class DetailFoodController extends GetxController {
   List<Products> listProducts = [];
   List<Products> listProductsCart = [];
   List<Products> listProductFavorite = [];
-
+  List<CommentRequets> listComment = [];
+  List<User> listUser = [];
+  User userReponse = User();
   int quantity = 0;
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
+  final CommentRepository _commentRepository = GetIt.I.get<CommentRepository>();
   final FavoriteRepository _favoriteRepository =
       GetIt.I.get<FavoriteRepository>();
 
@@ -58,6 +65,43 @@ class DetailFoodController extends GetxController {
     } else {
       return '$sales đã bán';
     }
+  }
+
+  ///
+  /// get list product cart by idUser
+  ///
+  void getListProductCartByIdUser() {
+    _cartRepository.getListProduct(
+      idUser: idUser,
+      onSuccess: (data) {
+        listProductsCart = data;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+  ///
+  /// get all comment by id product
+  ///
+  Future<void> getAllComment() async {
+    _commentRepository.getAllComment(
+      idProduct: idProduct,
+      onSuccess: (data) async {
+        listComment = data;
+        for (final i in listComment) {
+          userReponse = await findUserByID(i.idUser!);
+          listUser.add(userReponse);
+        }
+        isLoadingListComment = true;
+        update();
+      },
+      onError: (e) {
+        print(e);
+      },
+    );
   }
 
   ///
@@ -95,7 +139,9 @@ class DetailFoodController extends GetxController {
     super.onInit();
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
+    getListProductCartByIdUser();
     checkLikeProduct();
+    getAllComment();
   }
 
   ///
@@ -115,6 +161,13 @@ class DetailFoodController extends GetxController {
       },
       onError: (error) {},
     );
+  }
+
+  ///
+  /// fint user by id
+  ///
+  Future<User> findUserByID(String idUser) async {
+    return _userRepository.findbyId(idUser: idUser);
   }
 
   ///
@@ -157,6 +210,7 @@ class DetailFoodController extends GetxController {
   /// add cart
   ///
   void addCartToFireStore() {
+    EasyLoading.show(status: "Đang cập nhật");
     final CartRquest cartRquest = CartRquest();
     cartRquest.idUser = idUser;
     listProductsCart.add(productsModel!);
@@ -164,14 +218,14 @@ class DetailFoodController extends GetxController {
     _cartRepository.addCart(
       idUser: idUser,
       data: cartRquest,
-      onSucces: () {
-        EasyLoading.show(status: "Đang cập nhật");
+      onError: (error) {
+        EasyLoading.dismiss();
+        print(error);
+      },
+      onSuccess: () {
         IZIAlert().success(message: 'Thêm món ăn thành công');
         EasyLoading.dismiss();
         update();
-      },
-      onError: (error) {
-        print(error);
       },
     );
   }
@@ -190,7 +244,6 @@ class DetailFoodController extends GetxController {
         Get.back();
         listProductsCart.clear();
         listProductsCart.add(products);
-        pushProductToFireStore(idUser, listProductsCart);
         Get.find<BottomBarController>().update();
         update();
       },
@@ -255,6 +308,7 @@ class DetailFoodController extends GetxController {
       idCategory: productsModel!.nameCategory!,
       onSucess: (listProduct) {
         listProducts = listProduct;
+        listProducts.removeWhere((element) => element.id == idProduct);
         listProducts.shuffle();
         isLoadingProduct = false;
         update();
@@ -285,29 +339,6 @@ class DetailFoodController extends GetxController {
       countProductByIdStore();
       isLoading = true;
       print(productsModel!.toMap());
-      update();
-    }
-  }
-
-  ///
-  /// get data products : các món của cửa hàng
-  ///
-  Future<void> getProductList() async {
-    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('products')
-            .where('idUser', isEqualTo: idStore)
-            .get();
-    listProducts.clear();
-    if (querySnapshot.docs.isNotEmpty) {
-      for (var element in querySnapshot.docs) {
-        Products products = Products.fromMap(element.data());
-        if (products.id == idProduct) {
-          listProducts.insert(0, products);
-        } else {
-          listProducts.add(products);
-        }
-      }
       update();
     }
   }
@@ -348,7 +379,7 @@ class DetailFoodController extends GetxController {
   ///
   bool checkIdStore(String idStore) {
     for (int i = 0; i < listProductsCart.length; i++) {
-      if (idStore != listProductsCart[i].idUser!) {
+      if (idStore != listProductsCart[i].idUser) {
         return true;
       }
     }
@@ -388,13 +419,13 @@ class DetailFoodController extends GetxController {
   Future<void> addFavoriteToFireStore({required Products product}) async {
     clickFavorite();
     List<String> listUser = [];
-    if(listUser.contains(idUser)){
+    if (listUser.contains(idUser)) {
       listUser.remove(idUser);
-    }else{
-       listUser.add(idUser);
-    }  
+    } else {
+      listUser.add(idUser);
+    }
     product.id = product.id;
-    product.favorites  =  listUser;
+    product.favorites = listUser;
 
     _productsRepository.updateProduct(
       idProduct: idProduct,
@@ -425,14 +456,16 @@ class DetailFoodController extends GetxController {
   /// check like product
   ///
   Future<void> checkLikeProduct() async {
-    _productsRepository.checkUserLikeProduct(idUser: idUser, 
-    idProduct: idProduct, 
-    onSucess: (data) {
-      isCheckFavorite = data;
-      print(isCheckFavorite);
-    }, 
-    onError: (error) {
-      print(error);
-    },);
+    _productsRepository.checkUserLikeProduct(
+      idUser: idUser,
+      idProduct: idProduct,
+      onSucess: (data) {
+        isCheckFavorite = data;
+        print(isCheckFavorite);
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
 }

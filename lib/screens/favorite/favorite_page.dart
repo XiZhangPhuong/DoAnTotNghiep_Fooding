@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
+import 'package:fooding_project/base_widget/izi_loading_card.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/screens/favorite/favorite_controller.dart';
@@ -18,10 +19,9 @@ class FavoritePage extends GetView<FavoriteController> {
         return Scaffold(
           backgroundColor: ColorResources.BACK_GROUND,
           body: controller.isLoadingFavorites == false
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.builder(
+              ? const CardLoadingItem(count: 10,) 
+              : controller.listProductFavorite.isEmpty ? const DataEmpty() :
+               ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: controller.listProductFavorite.length,
@@ -126,6 +126,7 @@ class FavoritePage extends GetView<FavoriteController> {
                     );
                   },
                 ),
+       
         );
       },
     );

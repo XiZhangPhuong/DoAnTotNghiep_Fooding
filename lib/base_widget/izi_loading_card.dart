@@ -305,3 +305,90 @@ class CardLoadingText extends StatelessWidget {
     );
   }
 }
+
+class ShimmerCategory extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 4,
+      childAspectRatio: 1.0, // Tỷ lệ chiều rộng/chiều cao của mỗi item
+      padding: EdgeInsets.all(8.0), // Khoảng cách giữa các item
+      children: List.generate(8, (index) {
+        return Container(
+          padding: EdgeInsets.all(8.0), // Khoảng cách bên trong mỗi item
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 40,
+                  height: 40, 
+                  child: Container(color: Colors.white),
+                ),
+                SizedBox(height: 8.0),
+                Container(
+                  width: 60,
+                  height: 8,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class ShimmerListCart extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 250,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: 10, // Số lượng item
+        itemBuilder: (context, index) {
+          return Container(
+            margin: EdgeInsets.all(8.0), // Khoảng cách giữa các item
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.white, // Màu nền của hình ảnh
+                  ),
+                  SizedBox(height: 8.0),
+                  Container(
+                    width: 80,
+                    height: 16,
+                    color: Colors.white, // Màu nền của tiêu đề
+                  ),
+                  SizedBox(height: 8.0),
+                  Container(
+                    width: 120,
+                    height: 12,
+                    color: Colors.white, // Màu nền của văn bản dưới cùng
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
+
+
+  
+
