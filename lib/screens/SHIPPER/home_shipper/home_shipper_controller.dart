@@ -121,10 +121,10 @@ class HomeShipperController extends GetxController {
       orderResponse!.statusOrder = DELIVERING;
       orderResponse!.idEmployee = idUser;
       updateStatusOrder(orderResponse: orderResponse!);
-      FcmNotification.sendNotification(
-          token: custommerReponse!.deviceId!,
-          body: "Đơn hàng của bạn đã được nhận bởi tài xế",
-          title: "Đơn hàng bạn đã được nhận");
+      // FcmNotification.sendNotification(
+      //     token: custommerReponse!.deviceId!,
+      //     body: "Đơn hàng của bạn đã được nhận bởi tài xế",
+      //     title: "Đơn hàng bạn đã được nhận");
       statusOrder = "xác nhân đến quán";
       update();
     } else if (orderResponse!.statusOrder == DELIVERING) {
@@ -132,11 +132,11 @@ class HomeShipperController extends GetxController {
         orderResponse!.timeConfirm =
             DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
         updateStatusOrder(orderResponse: orderResponse!);
-        FcmNotification.sendNotification(
-            token: custommerReponse!.deviceId!,
-            body:
-                "Tài xế đã tới quán của bạn để xem thông tin chi tiết vào trạng thái đơn hàng ",
-            title: "Tài xế đã đến quán ăn");
+        // FcmNotification.sendNotification(
+        //     token: custommerReponse!.deviceId!,
+        //     body:
+        //         "Tài xế đã tới quán của bạn để xem thông tin chi tiết vào trạng thái đơn hàng ",
+        //     title: "Tài xế đã đến quán ăn");
         statusOrder = "Giao hàng";
         update();
       } else if (IZIValidate.nullOrEmpty(orderResponse!.timeDelivering)) {
@@ -145,10 +145,10 @@ class HomeShipperController extends GetxController {
             DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
 
         await updateStatusOrder(orderResponse: orderResponse!);
-        FcmNotification.sendNotification(
-            token: custommerReponse!.deviceId!,
-            body: "Tài xế nhận được món ăn và đang vận chuyển",
-            title: "Tài xế đã nhận đơn hàng");
+        // FcmNotification.sendNotification(
+        //     token: custommerReponse!.deviceId!,
+        //     body: "Tài xế nhận được món ăn và đang vận chuyển",
+        //     title: "Tài xế đã nhận đơn hàng");
         statusOrder = "Thành công";
         update();
       } else if (IZIValidate.nullOrEmpty(orderResponse!.timeDone)) {
@@ -159,10 +159,10 @@ class HomeShipperController extends GetxController {
         orderResponse!.timeDone =
             DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
         await updateStatusOrder(orderResponse: orderResponse!);
-        FcmNotification.sendNotification(
-            token: custommerReponse!.deviceId!,
-            body: "Tài xế đã giao hàng thành công",
-            title: "Giao hàng thành công");
+        // FcmNotification.sendNotification(
+        //     token: custommerReponse!.deviceId!,
+        //     body: "Tài xế đã giao hàng thành công",
+        //     title: "Giao hàng thành công");
         statusOrder = 'Nhận đơn';
         isLoadingUser = false;
         isLoadingOrder = false;
@@ -217,6 +217,13 @@ class HomeShipperController extends GetxController {
                   if (orderResponse!.idEmployee ==
                           sl<SharedPreferenceHelper>().getIdUser &&
                       orderResponse!.statusOrder == DELIVERING) {
+                    if(!IZIValidate.nullOrEmpty(orderResponse!.timeConfirm)){
+                      statusOrder = "Giao hàng";
+                    } else if(!IZIValidate.nullOrEmpty(orderResponse!.timeDelivering)){
+                      statusOrder = "Thành công";
+                    }else {
+                      statusOrder = "xác nhân đến quán";
+                    }
                     print(orderResponse!.toJson());
                     await findUserCustomer(orderResponse!.idCustomer!);
                     isLoadingOrder = true;
@@ -228,7 +235,7 @@ class HomeShipperController extends GetxController {
                         sl<SharedPreferenceHelper>().getIdUser &&
                     orderResponse!.statusOrder == DELIVERING) {
                   isLoadingUser = false;
-                  isLoadingOrder = false;
+                  isLoadingOrder = true;
                   isLoadingCustommer = false;
                   orderResponse = null;
                   update();
@@ -239,6 +246,7 @@ class HomeShipperController extends GetxController {
                   print(orderResponse!.toJson());
                   await findUserCustomer(orderResponse!.idCustomer!);
                   isLoadingOrder = true;
+                  statusOrder = "Nhận đơn";
                   update();
                   break;
                 }

@@ -144,8 +144,7 @@ Widget _listviewProducts(HomeShipperController controller) {
 Widget _checkOline(HomeShipperController controller) {
   return GestureDetector(
     onTap: () {
-      Get.offAllNamed(AuthRoutes.LOGIN);
-      //controller.clickTickOline();
+      controller.clickTickOline();
     },
     child: Container(
       height: IZIDimensions.ONE_UNIT_SIZE * 150,
@@ -209,277 +208,274 @@ Widget _viewInforOrder(HomeShipperController controller) {
     );
   } else {
     return SafeArea(
-      child: Container(
-        child: Column(
-          children: [
-            SizedBox(
-              height: IZIDimensions.SPACE_SIZE_5X,
-            ),
-            Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: IZIDimensions.SPACE_SIZE_5X),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Bạn có 1 đơn hàng mới".toUpperCase(),
-                    style: TextStyle(
-                      color: ColorResources.BLACK,
-                      fontWeight: FontWeight.w600,
-                      fontSize: IZIDimensions.FONT_SIZE_H6,
-                      fontFamily: NUNITO,
-                    ),
-                  ),
-                  Text(
-                    "${controller.orderResponse!.listProduct!.length} sản phẩm",
-                    style: TextStyle(
-                      color: ColorResources.colorMain,
-                      fontWeight: FontWeight.w600,
-                      fontSize: IZIDimensions.FONT_SIZE_H6,
-                      fontFamily: NUNITO,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: IZIDimensions.SPACE_SIZE_3X,
-            ),
-            _listviewProducts(controller),
-            SizedBox(
-              height: IZIDimensions.SPACE_SIZE_2X,
-            ),
-            // view infor user
-            Container(
-              width: IZIDimensions.iziSize.width,
-              margin: EdgeInsets.symmetric(
-                  horizontal: IZIDimensions.BLUR_RADIUS_5X),
-              padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
-              decoration: BoxDecoration(
-                  borderRadius:
-                      BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
-                  color: ColorResources.WHITE),
-              child: controller.isLoadingCustommer == false
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipOval(
-                          child: IZIImage(
-                              IZIValidate.nullOrEmpty(
-                                      controller.custommerReponse!.avatar)
-                                  ? 'https://media.baobinhphuoc.com.vn/upload/news/1_2023/manchesterunitedmancity1_07061115012023.jpeg'
-                                  : controller.custommerReponse!.avatar!,
-                              height: IZIDimensions.ONE_UNIT_SIZE * 100,
-                              width: IZIDimensions.ONE_UNIT_SIZE * 100),
-                        ),
-                        SizedBox(
-                          width: IZIDimensions.SPACE_SIZE_3X,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                IZIValidate.nullOrEmpty(
-                                        controller.orderResponse!.name)
-                                    ? 'Không xấc định'
-                                    : controller.orderResponse!.name!,
-                                style: TextStyle(
-                                  color: ColorResources.BLACK,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                                  fontFamily: NUNITO,
-                                ),
-                              ),
-                              SizedBox(
-                                height: IZIDimensions.SPACE_SIZE_1X,
-                              ),
-                              Text(
-                                IZIValidate.nullOrEmpty(
-                                        controller.orderResponse!.phone)
-                                    ? '05555555'
-                                    : controller.orderResponse!.phone!,
-                                style: TextStyle(
-                                  color: ColorResources.BLACK,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                                  fontFamily: NUNITO,
-                                ),
-                              ),
-                              SizedBox(
-                                height: IZIDimensions.SPACE_SIZE_1X,
-                              ),
-                              Text(
-                                IZIValidate.nullOrEmpty(
-                                        controller.orderResponse!.address)
-                                    ? '120 Hoài Xuân'
-                                    : controller.orderResponse!.address!,
-                                style: TextStyle(
-                                  color: ColorResources.BLACK,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontFamily: NUNITO,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-            ),
-
-            // infor price order
-            Container(
-              margin: EdgeInsets.only(
-                top: IZIDimensions.SPACE_SIZE_3X,
-                left: IZIDimensions.BLUR_RADIUS_3X,
-                right: IZIDimensions.BLUR_RADIUS_3X,
-              ),
-              padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
-              decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
-                color: ColorResources.WHITE,
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Tạm tính : ',
-                        style: TextStyle(
-                          color: ColorResources.BLACK,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: NUNITO,
-                        ),
-                      ),
-                      Text(
-                        '${IZIPrice.currencyConverterVND(controller.tamTinh(list: controller.orderResponse!.listProduct!), 'vnđ')}vnđ',
-                        style: TextStyle(
-                          color: ColorResources.colorMain,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: NUNITO,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: IZIDimensions.SPACE_SIZE_2X,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Tiền Ship : ',
-                        style: TextStyle(
-                          color: ColorResources.BLACK,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: NUNITO,
-                        ),
-                      ),
-                      Text(
-                        "${IZIPrice.currencyConverterVND(controller.orderResponse!.shipPrice!, 'đ')}vnđ",
-                        style: TextStyle(
-                          color: ColorResources.colorMain,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: NUNITO,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: IZIDimensions.SPACE_SIZE_2X,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Tổng tiền : ',
-                        style: TextStyle(
-                          color: ColorResources.BLACK,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: NUNITO,
-                        ),
-                      ),
-                      Text(
-                        '${IZIPrice.currencyConverterVND(controller.orderResponse!.totalPrice!, 'đ')}vnđ',
-                        style: TextStyle(
-                          color: ColorResources.colorMain,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: NUNITO,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: IZIDimensions.SPACE_SIZE_2X,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Phương thức thanh toán : ',
-                        style: TextStyle(
-                          color: ColorResources.BLACK,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: NUNITO,
-                        ),
-                      ),
-                      Text(
-                        controller.convertMethodPay(
-                            method: controller.orderResponse!.typePayment!),
-                        style: TextStyle(
-                          color: ColorResources.colorMain,
-                          fontWeight: FontWeight.w600,
-                          fontSize: IZIDimensions.FONT_SIZE_SPAN,
-                          fontFamily: NUNITO,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-
-            SizedBox(
-              height: IZIDimensions.SPACE_SIZE_4X,
-            ),
-            Row(
+      child: Column(
+        children: [
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_5X,
+          ),
+          Container(
+            padding:
+                EdgeInsets.symmetric(horizontal: IZIDimensions.SPACE_SIZE_5X),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: IZIDimensions.iziSize.width * 0.5,
-                  child: P45Button(
-                    title: 'Hủy',
-                    color: Colors.blue,
-                    onPressed: () {},
+                Text(
+                  "Bạn có 1 đơn hàng mới".toUpperCase(),
+                  style: TextStyle(
+                    color: ColorResources.BLACK,
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                    fontFamily: NUNITO,
                   ),
                 ),
-                SizedBox(
-                  width: IZIDimensions.iziSize.width * 0.5,
-                  child: P45Button(
-                    title: controller.statusOrder,
-                    onPressed: () {
-                      controller.clickConfirm();
-                    },
+                Text(
+                  "${controller.orderResponse!.listProduct!.length} sản phẩm",
+                  style: TextStyle(
+                    color: ColorResources.colorMain,
+                    fontWeight: FontWeight.w600,
+                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                    fontFamily: NUNITO,
                   ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_3X,
+          ),
+          _listviewProducts(controller),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_2X,
+          ),
+          // view infor user
+          Container(
+            width: IZIDimensions.iziSize.width,
+            margin:
+                EdgeInsets.symmetric(horizontal: IZIDimensions.BLUR_RADIUS_5X),
+            padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
+            decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+                color: ColorResources.WHITE),
+            child: controller.isLoadingCustommer == false
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipOval(
+                        child: IZIImage(
+                            IZIValidate.nullOrEmpty(
+                                    controller.custommerReponse!.avatar)
+                                ? 'https://media.baobinhphuoc.com.vn/upload/news/1_2023/manchesterunitedmancity1_07061115012023.jpeg'
+                                : controller.custommerReponse!.avatar!,
+                            height: IZIDimensions.ONE_UNIT_SIZE * 100,
+                            width: IZIDimensions.ONE_UNIT_SIZE * 100),
+                      ),
+                      SizedBox(
+                        width: IZIDimensions.SPACE_SIZE_3X,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              IZIValidate.nullOrEmpty(
+                                      controller.orderResponse!.name)
+                                  ? 'Không xấc định'
+                                  : controller.orderResponse!.name!,
+                              style: TextStyle(
+                                color: ColorResources.BLACK,
+                                fontWeight: FontWeight.w600,
+                                fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                fontFamily: NUNITO,
+                              ),
+                            ),
+                            SizedBox(
+                              height: IZIDimensions.SPACE_SIZE_1X,
+                            ),
+                            Text(
+                              IZIValidate.nullOrEmpty(
+                                      controller.orderResponse!.phone)
+                                  ? '05555555'
+                                  : controller.orderResponse!.phone!,
+                              style: TextStyle(
+                                color: ColorResources.BLACK,
+                                fontWeight: FontWeight.w600,
+                                fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                fontFamily: NUNITO,
+                              ),
+                            ),
+                            SizedBox(
+                              height: IZIDimensions.SPACE_SIZE_1X,
+                            ),
+                            Text(
+                              IZIValidate.nullOrEmpty(
+                                      controller.orderResponse!.address)
+                                  ? '120 Hoài Xuân'
+                                  : controller.orderResponse!.address!,
+                              style: TextStyle(
+                                color: ColorResources.BLACK,
+                                fontWeight: FontWeight.w600,
+                                fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                overflow: TextOverflow.ellipsis,
+                                fontFamily: NUNITO,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+          ),
+
+          // infor price order
+          Container(
+            margin: EdgeInsets.only(
+              top: IZIDimensions.SPACE_SIZE_3X,
+              left: IZIDimensions.BLUR_RADIUS_3X,
+              right: IZIDimensions.BLUR_RADIUS_3X,
+            ),
+            padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
+              color: ColorResources.WHITE,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Tạm tính : ',
+                      style: TextStyle(
+                        color: ColorResources.BLACK,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                        fontFamily: NUNITO,
+                      ),
+                    ),
+                    Text(
+                      '${IZIPrice.currencyConverterVND(controller.tamTinh(list: controller.orderResponse!.listProduct!), 'vnđ')}vnđ',
+                      style: TextStyle(
+                        color: ColorResources.colorMain,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                        fontFamily: NUNITO,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: IZIDimensions.SPACE_SIZE_2X,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Tiền Ship : ',
+                      style: TextStyle(
+                        color: ColorResources.BLACK,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                        fontFamily: NUNITO,
+                      ),
+                    ),
+                    Text(
+                      "${IZIPrice.currencyConverterVND(controller.orderResponse!.shipPrice!, 'đ')}vnđ",
+                      style: TextStyle(
+                        color: ColorResources.colorMain,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                        fontFamily: NUNITO,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: IZIDimensions.SPACE_SIZE_2X,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Tổng tiền : ',
+                      style: TextStyle(
+                        color: ColorResources.BLACK,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                        fontFamily: NUNITO,
+                      ),
+                    ),
+                    Text(
+                      '${IZIPrice.currencyConverterVND(controller.orderResponse!.totalPrice!, 'đ')}vnđ',
+                      style: TextStyle(
+                        color: ColorResources.colorMain,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                        fontFamily: NUNITO,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: IZIDimensions.SPACE_SIZE_2X,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Phương thức thanh toán : ',
+                      style: TextStyle(
+                        color: ColorResources.BLACK,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                        fontFamily: NUNITO,
+                      ),
+                    ),
+                    Text(
+                      controller.convertMethodPay(
+                          method: controller.orderResponse!.typePayment!),
+                      style: TextStyle(
+                        color: ColorResources.colorMain,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                        fontFamily: NUNITO,
+                      ),
+                    ),
+                  ],
                 )
               ],
-            )
-          ],
-        ),
+            ),
+          ),
+
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_4X,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: IZIDimensions.iziSize.width * 0.5,
+                child: P45Button(
+                  title: 'Hủy',
+                  color: Colors.blue,
+                  onPressed: () {},
+                ),
+              ),
+              SizedBox(
+                width: IZIDimensions.iziSize.width * 0.5,
+                child: P45Button(
+                  title: controller.statusOrder,
+                  onPressed: () {
+                    controller.clickConfirm();
+                  },
+                ),
+              )
+            ],
+          )
+        ],
       ),
     );
   }
