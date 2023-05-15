@@ -303,27 +303,30 @@ class PaymentController extends GetxController {
         onSucces: (data) async {
           if (!IZIValidate.nullOrEmpty(data)) {
             await findStore(cartResponse.listProduct!.first.idUser!);
-            List<String> listLatLongStore = IZIValidate.nullOrEmpty(storeResponse.latLong)? ["16.0718593","108.2206474"] : storeResponse.latLong!.split(";");
+            List<String> listLatLongStore =
+                IZIValidate.nullOrEmpty(storeResponse.latLong)
+                    ? ["16.0718593", "108.2206474"]
+                    : storeResponse.latLong!.split(";");
             location = data;
             List<String> listLatLong = location.latlong!.split(";");
-            // distance = (Geolocator.distanceBetween(
-            //           16.0718593,
-            //           108.2206474,
-            //           double.parse(listLatLong[0].toString()),
-            //           double.parse(listLatLong[1].toString()),
-            //         ) /
-            //         1000)
-            //     .toPrecision(2);
-            var response = await Dio().get(
-                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=${listLatLongStore[0]},${listLatLongStore[1]}&key=$APIGG');
-            DistanceResponse distanceResponse = DistanceResponse.fromJson(
-                response.data as Map<String, dynamic>);
-            print(response);
-            distance = double.parse(distanceResponse
-                .rows[0].elements[0].distance.text
-                .split(' ')[0]);
-            timeDelivery = distanceResponse.rows[0].elements[0].duration.text;
-            priceShip = distance! * 10000;
+            distance = (Geolocator.distanceBetween(
+                      double.parse(listLatLongStore[0]),
+                      double.parse(listLatLongStore[1]),
+                      double.parse(listLatLong[0].toString()),
+                      double.parse(listLatLong[1].toString()),
+                    ) /
+                    1000)
+                .toPrecision(2);
+            // var response = await Dio().get(
+            //     'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=${listLatLongStore[0]},${listLatLongStore[1]}&key=$APIGG');
+            // DistanceResponse distanceResponse = DistanceResponse.fromJson(
+            //     response.data as Map<String, dynamic>);
+            // print(response);
+            // distance = double.parse(distanceResponse
+            //     .rows[0].elements[0].distance.text
+            //     .split(' ')[0]);
+            // timeDelivery = distanceResponse.rows[0].elements[0].duration.text;
+            priceShip = distance! * 5000;
             update();
           }
         },
