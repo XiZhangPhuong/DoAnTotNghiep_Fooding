@@ -10,12 +10,15 @@ import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/order/order.dart';
+import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
+import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class EvaluateController extends GetxController {
@@ -23,23 +26,35 @@ class EvaluateController extends GetxController {
   List<String> listArgument = Get.arguments as List<String>;
   String idOrder = '';
   String idProduct = '';
+  String idShipper = '';
   final CommentRepository _commentRepository = GetIt.I.get<CommentRepository>();
   TextEditingController editingController = TextEditingController();
   final _orderRepository = GetIt.I.get<OrderResponsitory>();
+  final _userRepository = GetIt.I.get<UserRepository>();
   bool isLoadingOrder = false;
   bool satisFied = true;
   double countRating = 0;
+  User userResponse = User();
   File? imageFile;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   List<File> listImageFile = [];
   @override
   void onInit() {
     super.onInit();
-    idOrder = listArgument.first;
-    idProduct = listArgument.last;
+    idOrder = listArgument[0];
+    idProduct = listArgument[1];
+    idShipper = listArgument[2];
+
     findOrderDetail();
+    _findUser();
   }
 
+  ///
+  /// fint user
+  ///
+   Future<void> _findUser() async {
+    userResponse = await  _userRepository.findbyId(idUser: idShipper);
+   }
   ///
   /// click satisField
   ///
@@ -130,7 +145,15 @@ class EvaluateController extends GetxController {
     _commentRequest.idStore = orderResponse!.listProduct![0].idUser!;
     _commentRequest.idOrder = orderResponse!.id;
     _commentRequest.satisFied = convertsatisFied();
-    _commentRequest.idProduct = idProduct;
+    if(!IZIValidate.nullOrEmpty(idShipper)){  
+      _commentRequest.idShipper = idShipper;
+      _commentRequest.typeUser = 'SHIPPER';
+    }else{
+        _commentRequest.typeUser = 'PRODUCT';
+        _commentRequest.idProduct = idProduct;
+    }
+  
+    _commentRequest.timeComment = DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
     IZIValidate.nullOrEmpty(editingController.text)
         ? ''
         : _commentRequest.content = editingController.text;

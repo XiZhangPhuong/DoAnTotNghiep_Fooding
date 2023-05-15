@@ -4,6 +4,7 @@ import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/routes/routes_path/detail_order_routes.dart';
 import 'package:fooding_project/routes/routes_path/favorite_routes.dart';
+import 'package:fooding_project/routes/routes_path/fell_rating_routes.dart';
 import 'package:fooding_project/routes/routes_path/home_routes.dart';
 import 'package:fooding_project/routes/routes_path/location_routes.dart';
 import 'package:fooding_project/routes/routes_path/profile_routes.dart';
@@ -19,6 +20,7 @@ class AppPages {
     ...DetailtFoodRoutes.list,
     ...DashBoardRoutes.list,
     ...DetailOrderRoutes.list,
-    ...FavoriteRoutes.list
+    ...FavoriteRoutes.list,
+    ...FillRatingRoutes.list
   ];
 }

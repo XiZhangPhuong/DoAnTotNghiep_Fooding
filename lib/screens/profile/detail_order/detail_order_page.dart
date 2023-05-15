@@ -473,40 +473,7 @@ class DetailOrderPage extends GetView {
                                 SizedBox(
                                   width: IZIDimensions.SPACE_SIZE_1X,
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    if(controller.checkCommentProduct(idProduct: itemProduct.id!)){
-                                      IZIAlert().error(message: 'Bạn đã đánh giá rồi');
-                                      return;
-                                    }
-                                    controller.gotoEvaluate(controller.idOrder, itemProduct.id!);
-                                  },
-                                  child: Visibility(
-                                    visible: true,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: IZIDimensions.SPACE_SIZE_1X,                                   
-                                      ),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(width: 1,color: ColorResources.colorMain)
-                                      ),
-                                      child: Text(
-                                        'Đánh giá',
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          color: ColorResources.colorMain,
-                                          fontFamily: NUNITO,
-                                          fontWeight: FontWeight.w600,
-                                          decoration: controller.checkCommentProduct(idProduct: itemProduct.id!) ?
-                                          TextDecoration.lineThrough : TextDecoration.none
-                                           ,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontSize: IZIDimensions.FONT_SIZE_H6,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                               
                               ],
                             ),
                             Text(

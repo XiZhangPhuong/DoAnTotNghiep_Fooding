@@ -5,7 +5,9 @@ import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
+import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:get/get.dart';
 
 import '../model/order/order.dart';
 
@@ -149,7 +151,6 @@ class OrderResponsitory {
     }
   }
 
-
   ///
   /// update order.
   ///
@@ -171,23 +172,90 @@ class OrderResponsitory {
     }
   }
 
-
   ///
-  /// get all order
+  /// get all product by status  = done
   ///
   Future<void> getAllOrderByStatus({
-    required Function(List<OrderResponse> onSuccess) onSuccess,
-    required Function(dynamic erorr) onError,
+    required Function(List<Products> onSuccess) onSuccess,
+    required Function(dynamic error) onError,
   }) async {
     try {
-      final res =  await FirebaseFirestore.instance.collection('orders')
-      .where('statusOrder',isEqualTo: 'DONE')
-      .where('idCustomer' ,isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
-      .get();
-      
-      onSuccess(res.docs.map((e) => OrderResponse.fromMap(e.data())).toList());
+      final res = await FirebaseFirestore.instance
+          .collection('orders')
+          .where('statusOrder', isEqualTo: 'DONE')
+          .where('idCustomer',
+              isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
+          .get();
+
+      final Set<String> uniqueProductIds = Set();
+      final List<Products> productList = [];
+
+      for (final doc in res.docs) {
+        final List<dynamic> productsData = doc.data()['listProduct'];
+
+        for (final productData in productsData) {
+          final Products product = Products.fromMap(productData);
+          if (!uniqueProductIds.contains(product.id)) {
+            uniqueProductIds.add(product.id!);
+            productList.add(product);
+          }
+        }
+      }
+      onSuccess(productList);
     } catch (e) {
       onError(e);
     }
   }
+
+  ///
+  /// get list String idProduct by Collection Comment
+  ///
+  Future<void> getListIdProductByComment({
+    required Function(List<String> listIDProduct) onSuccess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      final querySnapshot =
+          await FirebaseFirestore.instance.collection('comments')
+          .where('idUser',isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
+          .get();
+      final List<String> idProductList = [];
+      for (final doc in querySnapshot.docs) {
+        final String idProduct = doc.data()['idProduct'];
+        idProductList.add(idProduct);
+      }
+
+      onSuccess(idProductList);
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+
+  ///
+  /// find order
+  ///
+  Future<void> findOrder({
+  required String idOrder,
+  required Function(OrderResponse orderResponse) onSuccess,
+  required Function(dynamic error) onError,
+}) async {
+  try {
+    final ref = FirebaseFirestore.instance.collection('orders').doc(idOrder);
+    final docSnapshot = await ref.get();
+    
+    if (docSnapshot.exists) {
+      final data = docSnapshot.data();
+      if (data != null) {
+        final orderResponse = OrderResponse.fromMap(data);
+        onSuccess(orderResponse);
+        return;
+      }
+    }  
+    onError('Order not found');
+  } catch (e) {
+    onError(e);
+  }
+}
+
 }

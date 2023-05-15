@@ -61,4 +61,23 @@ class CommentRepository{
        onError(e);
     }
   }
+
+  Future<void> get(
+    {
+      required String idOrder,
+      required String idUser,
+      required Function(List<CommentRequets> data) onSuccess,
+      required Function(dynamic e) onError,
+    }
+  ) async {
+    try{
+     final ref = await FirebaseFirestore.instance.collection('comments')
+     .where('idUser',isEqualTo: idUser)
+     .where('idOrder',isEqualTo: idOrder)
+     .get();
+     onSuccess(ref.docs.map((e) => CommentRequets.fromMap(e.data())).toList());
+    }catch(e){
+       onError(e);
+    }
+  }
 }

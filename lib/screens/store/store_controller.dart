@@ -47,6 +47,7 @@ class StoreController extends GetxController {
     findStoreByID();
     getNameCategoy();
   }
+  
 
   ///
   /// change tabbar
@@ -274,14 +275,14 @@ class StoreController extends GetxController {
     _cartRepository.addCart(
       idUser: idUser,
       data: cartRquest,
-      onSucces: () {
-        IZIAlert().success(message: 'Thêm món ăn thành công');
-        countCartByIDStore();
-        update();
-      },
+   
       onError: (error) {
         print(error);
-      },
+      }, onSuccess: () { 
+       IZIAlert().success(message: 'Thêm món ăn thành công');
+        countCartByIDStore();
+        update();
+       },
     );
   }
 
