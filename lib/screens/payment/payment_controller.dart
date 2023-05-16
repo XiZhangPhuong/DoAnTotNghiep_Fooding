@@ -309,23 +309,23 @@ class PaymentController extends GetxController {
                     : storeResponse.latLong!.split(";");
             location = data;
             List<String> listLatLong = location.latlong!.split(";");
-            distance = (Geolocator.distanceBetween(
-                      double.parse(listLatLongStore[0]),
-                      double.parse(listLatLongStore[1]),
-                      double.parse(listLatLong[0].toString()),
-                      double.parse(listLatLong[1].toString()),
-                    ) /
-                    1000)
-                .toPrecision(2);
-            // var response = await Dio().get(
-            //     'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=${listLatLongStore[0]},${listLatLongStore[1]}&key=$APIGG');
-            // DistanceResponse distanceResponse = DistanceResponse.fromJson(
-            //     response.data as Map<String, dynamic>);
-            // print(response);
-            // distance = double.parse(distanceResponse
-            //     .rows[0].elements[0].distance.text
-            //     .split(' ')[0]);
-            // timeDelivery = distanceResponse.rows[0].elements[0].duration.text;
+            // distance = (Geolocator.distanceBetween(
+            //           double.parse(listLatLongStore[0]),
+            //           double.parse(listLatLongStore[1]),
+            //           double.parse(listLatLong[0].toString()),
+            //           double.parse(listLatLong[1].toString()),
+            //         ) /
+            //         1000)
+            //     .toPrecision(2);
+            var response = await Dio().get(
+                'https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${listLatLong[0].toString()},${listLatLong[1].toString()}&origins=${listLatLongStore[0]},${listLatLongStore[1]}&key=$APIGG');
+            DistanceResponse distanceResponse = DistanceResponse.fromJson(
+                response.data as Map<String, dynamic>);
+            print(response);
+            distance = double.parse(distanceResponse
+                .rows[0].elements[0].distance.text
+                .split(' ')[0]);
+            timeDelivery = distanceResponse.rows[0].elements[0].duration.text;
             priceShip = distance! * 5000;
             update();
           }
