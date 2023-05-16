@@ -23,7 +23,9 @@ class EvaluatePage extends GetView<EvaluateController> {
       builder: (EvaluateController controller) {
         return Scaffold(
           backgroundColor: ColorResources.BACK_GROUND,
-          appBar: const P45AppBarP(title: 'Đánh giá sản phẩm'),
+          appBar:  P45AppBarP(
+            title:   IZIValidate.nullOrEmpty(controller.idShipper) ? 'Đánh giá sản phẩm' : 'Đánh giá tài xế',
+            ),
           floatingActionButton: P45Button(
             title: 'Gửi đánh giá',
             onPressed: () {
@@ -39,7 +41,9 @@ class EvaluatePage extends GetView<EvaluateController> {
               : Column(
                   children: [
                     // listview product order
-                    _listViewProductOrder(),
+                    // check
+                  IZIValidate.nullOrEmpty(controller.idShipper) ? 
+                    _listViewProductOrder() : _viewShipper(controller),
                     SizedBox(
                       height: IZIDimensions.SPACE_SIZE_3X,
                     ),
@@ -56,7 +60,7 @@ class EvaluatePage extends GetView<EvaluateController> {
                               height: IZIDimensions.SPACE_SIZE_2X,
                             ),
                             RatingStars(
-                              value: controller.countRating,
+                              value: controller.countRating.toDouble(),
                               starCount: 5,
                               starSpacing: 4,
                               starSize: IZIDimensions.ONE_UNIT_SIZE * 50,
@@ -229,15 +233,13 @@ class EvaluatePage extends GetView<EvaluateController> {
           bottom: 0,
           right: 5,
           child: Visibility(
-            visible: controller.listImageFile.length>1 ? true : false ,
+            visible: controller.listImageFile.length > 1 ? true : false,
             child: Text(
-              '+${controller.listImageFile.length-1}',
+              '+${controller.listImageFile.length - 1}',
               maxLines: 1,
-            
               style: TextStyle(
                 color: ColorResources.WHITE,
                 fontFamily: NUNITO,
-                
                 fontWeight: FontWeight.w600,
                 overflow: TextOverflow.ellipsis,
                 fontSize: IZIDimensions.FONT_SIZE_H4,
@@ -361,6 +363,81 @@ Container _textFiled(EvaluateController controller) {
           borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_5X),
         ),
       ),
+    ),
+  );
+}
+
+///
+/// shipper
+///
+Widget _viewShipper(EvaluateController controller) {
+  return Container(
+    margin: EdgeInsets.symmetric(
+      horizontal: IZIDimensions.SPACE_SIZE_2X,
+    ),
+    padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_1X),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
+      color: ColorResources.WHITE,
+    ),
+    child: Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
+          child: IZIImage(
+            IZIValidate.nullOrEmpty(controller.userResponse.avatar)
+                ? ''
+                : controller.userResponse.avatar!,
+            height: IZIDimensions.ONE_UNIT_SIZE * 120,
+            width: IZIDimensions.ONE_UNIT_SIZE * 120,
+          ),
+        ),
+        SizedBox(
+          width: IZIDimensions.SPACE_SIZE_1X,
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                IZIValidate.nullOrEmpty(controller.userResponse.fullName)
+                    ? ''
+                    : controller.userResponse.fullName!,
+                style: TextStyle(
+                  color: ColorResources.colorMain,
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w600,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                ),
+              ),
+              Text(
+                IZIValidate.nullOrEmpty(controller.userResponse.phone)
+                    ? ''
+                    : controller.userResponse.phone!,
+                style: TextStyle(
+                  color: ColorResources.GREY,
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w400,
+                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                ),
+              ),
+              Text(
+                IZIValidate.nullOrEmpty(controller.userResponse.idVehicle)
+                    ? ''
+                    : "Biển số xe : ${controller.userResponse.idVehicle}",
+                style: TextStyle(
+                  color: ColorResources.GREY,
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w400,
+                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
     ),
   );
 }

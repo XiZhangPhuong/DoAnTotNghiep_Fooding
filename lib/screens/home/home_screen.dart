@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:fooding_project/base_widget/custom_scrollbar_gridview.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
+import 'package:fooding_project/base_widget/izi_loading_card.dart';
 import 'package:fooding_project/base_widget/izi_smart_refresher.dart';
 import 'package:fooding_project/base_widget/izi_text.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
@@ -387,39 +388,11 @@ class HomeScreenPage extends GetView<HomeController> {
                 Container(
                   height: IZIDimensions.ONE_UNIT_SIZE * 320,
                   color: ColorResources.WHITE,
-                  child: controller.isLoadingProductRecomment == true
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : _listViewProductNearYou(controller)
+                 child : _listViewProductNearYou(controller)
                 ),
                 SizedBox(
                   width: IZIDimensions.SPACE_SIZE_2X,
-                ),
-
-                // view all list products
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    height: IZIDimensions.ONE_UNIT_SIZE * 320,
-                    width: IZIDimensions.ONE_UNIT_SIZE * 230,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
-                        border: Border.all(
-                            width: 0.3, color: ColorResources.colorMain)),
-                    child: Center(
-                      child: Text(
-                        'Xem tất cả',
-                        style: TextStyle(
-                            color: ColorResources.colorMain,
-                            fontSize: IZIDimensions.FONT_SIZE_H6,
-                            fontFamily: NUNITO,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  ),
-                ),
+                ),            
               ],
             ),
           ),
@@ -434,15 +407,17 @@ class HomeScreenPage extends GetView<HomeController> {
   ///  list view products Near You
   ///
   Widget _listViewProductNearYou(HomeController controller) {
-    return ListView.builder(
+    return 
+    controller.isLoadingProductAll==false ? ShimmerListCart():
+    ListView.builder(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
-      itemCount: controller.listProductRecommend.length,
+      itemCount: controller.listProductAll.length,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
             controller
-                .gotoDetailFood(controller.listProductRecommend[index].id!);
+                .gotoDetailFood(controller.listProductAll[index].id!);
           },
           child: Card(
             elevation: 1,
@@ -460,7 +435,7 @@ class HomeScreenPage extends GetView<HomeController> {
                     borderRadius:
                         BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
                     child: IZIImage(
-                      controller.listProductRecommend[index].image!.first,
+                      controller.listProductAll[index].image!.first,
                       height: IZIDimensions.ONE_UNIT_SIZE * 200,
                       width: IZIDimensions.ONE_UNIT_SIZE * 230,
                       fit: BoxFit.cover,
@@ -472,7 +447,7 @@ class HomeScreenPage extends GetView<HomeController> {
                   Padding(
                     padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
                     child: Text(
-                      controller.listProductRecommend[index].name!.capitalize!,
+                      controller.listProductAll[index].name!.capitalize!,
                       style: TextStyle(
                         color: ColorResources.titleLogin,
                         fontFamily: NUNITO,
@@ -487,9 +462,9 @@ class HomeScreenPage extends GetView<HomeController> {
                     child: Row(
                       children: [
                         Text(
-                          controller.listProductRecommend[index].priceDiscount==0  ? 
-                          '${IZIPrice.currencyConverterVND((controller.listProductRecommend[index].price!.toDouble()))}đ' : 
-                          '${IZIPrice.currencyConverterVND((controller.listProductRecommend[index].priceDiscount!.toDouble()))}đ',
+                          controller.listProductAll[index].priceDiscount==0  ? 
+                          '${IZIPrice.currencyConverterVND((controller.listProductAll[index].price!.toDouble()))}đ' : 
+                          '${IZIPrice.currencyConverterVND((controller.listProductAll[index].priceDiscount!.toDouble()))}đ',
                           style: TextStyle(
                             color: ColorResources.colorMain,
                             fontFamily: NUNITO,
@@ -541,7 +516,9 @@ class HomeScreenPage extends GetView<HomeController> {
   ///  list view products flash sale
   ///
   Widget _listViewProductFlashSale(HomeController controller) {
-    return ListView.builder(
+    return
+
+     ListView.builder(
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       itemCount: controller.listProducts.length,
@@ -707,9 +684,7 @@ class HomeScreenPage extends GetView<HomeController> {
           SizedBox(
             height: IZIDimensions.iziSize.height * .34,
             child: controller.isLoadingCategory
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
+                ? ShimmerCategory()
                 : CustomScrollbar(
                     itemCount: controller.listCategory.length,
                     alignment: Alignment.bottomCenter,
