@@ -106,6 +106,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('nameCategory', isEqualTo: idCategory)
+          .where('isShow', isEqualTo: true)
           .limit(limit)
           .get();
       onSucess(querySnapshot.docs
@@ -129,6 +130,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('name', isEqualTo: nameProduct)
+           .where('isShow', isEqualTo: true)
           .limit(limit)
           .get();
       onSucess(querySnapshot.docs
@@ -154,6 +156,7 @@ class ProductsRepository {
           .collection('products')
           .where('nameCategory', isEqualTo: idCategory)
           .where('idUser', isEqualTo: idUser)
+           .where('isShow', isEqualTo: true)
           .limit(limit)
           .get();
       onSucess(querySnapshot.docs
@@ -177,6 +180,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('name', isGreaterThanOrEqualTo: value)
+           .where('isShow', isEqualTo: true)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -200,6 +204,7 @@ class ProductsRepository {
           .collection('products')
           .where('idProduct', isEqualTo: idProduct)
           .orderBy('price', descending: true)
+           .where('isShow', isEqualTo: true)
           .limit(limit)
           .get();
       onSucess(querySnapshot.docs
@@ -223,6 +228,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('idUser', isEqualTo: idStore)
+          
           .get();
       onSucess(querySnapshot.docs.length);
     } catch (e) {
@@ -242,6 +248,7 @@ class ProductsRepository {
       final query = await FirebaseFirestore.instance
           .collection('products')
           .doc(idProduct)
+          
           .get();
       onSucess(Products.fromMap(query.data() as Map<String, dynamic>));
     } catch (e) {
