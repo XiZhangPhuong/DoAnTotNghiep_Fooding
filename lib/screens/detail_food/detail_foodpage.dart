@@ -85,8 +85,8 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                 size: IZIDimensions
                                                         .ONE_UNIT_SIZE *
                                                     40,
-                                                color: controller
-                                                        .isCheckFavorite
+                                                color: controller.isCheckFavorite==true
+                                                        
                                                     ? ColorResources.colorMain
                                                     : ColorResources.BLACK),
                                           ),
@@ -483,9 +483,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                   height: IZIDimensions.ONE_UNIT_SIZE * 320,
                   color: ColorResources.WHITE,
                   child: controller.isLoadingProduct == true
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
+                      ? ShimmerListCart()
                       : _listViewProduct(controller),
                 ),
                 SizedBox(

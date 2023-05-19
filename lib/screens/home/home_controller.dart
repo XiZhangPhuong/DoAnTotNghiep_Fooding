@@ -85,7 +85,6 @@ class HomeController extends GetxController {
     getAllProduct();
     final bot = Get.find<BottomBarController>();
     bot.countCartByIDStore();
-    bot.listenData();
     bot.update();
     refreshController.resetNoData();
     refreshController.refreshCompleted();
@@ -157,49 +156,45 @@ class HomeController extends GetxController {
   ///
   /// get all Product
   ///
-Future<void> getAllProduct() async {
-  _productsRepository.getAllListProduct(
-    onSucess: (listProduct) async {
-      listProductAll = listProduct;
+  Future<void> getAllProduct() async {
+    _productsRepository.getAllListProduct(
+      onSucess: (listProduct) async {
+        listProductAll = listProduct;
 
-      for (final item in listProduct) {
-        storeResponse = await findStore(item.idUser!);
-        currentLocation ??= await Geolocator.getLastKnownPosition();
-        lat1 = currentLocation!.latitude;
-        lon1 = currentLocation!.longitude;
-        List<String> list = storeResponse.latLong!.split(';');
-        lat2 = double.parse(list[0]);
-        lon2 = double.parse(list[1]);
-        listKm.add(Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000);
-        print(Geolocator.distanceBetween(lat1, lon1, lat2, lon2));
-      }
+        for (final item in listProduct) {
+          storeResponse = await findStore(item.idUser!);
+          currentLocation ??= await Geolocator.getLastKnownPosition();
+          lat1 = currentLocation!.latitude;
+          lon1 = currentLocation!.longitude;
+          List<String> list = storeResponse.latLong!.split(';');
+          lat2 = double.parse(list[0]);
+          lon2 = double.parse(list[1]);
+          listKm.add(Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000);
+          print(Geolocator.distanceBetween(lat1, lon1, lat2, lon2));
+        }
 
-      for (int i = 0; i < listProductAll.length; i++) {
-        for (int j = i + 1; j < listProductAll.length; j++) {
-          if (listKm[i] > listKm[j]) {
-            var tempProduct = listProductAll[i];
-            listProductAll[i] = listProductAll[j];
-            listProductAll[j] = tempProduct;
+        for (int i = 0; i < listProductAll.length; i++) {
+          for (int j = i + 1; j < listProductAll.length; j++) {
+            if (listKm[i] > listKm[j]) {
+              var tempProduct = listProductAll[i];
+              listProductAll[i] = listProductAll[j];
+              listProductAll[j] = tempProduct;
 
-            var tempKm = listKm[i];
-            listKm[i] = listKm[j];
-            listKm[j] = tempKm;
+              var tempKm = listKm[i];
+              listKm[i] = listKm[j];
+              listKm[j] = tempKm;
+            }
           }
         }
-      }
 
-      isLoadingProductAll = true;
-      update();
-    },
-    onError: (error) {
-      print(error);
-    },
-  );
-}
-
-
-
-
+        isLoadingProductAll = true;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
 
   ///
   /// go to category
@@ -260,6 +255,11 @@ Future<void> getAllProduct() async {
       limit: 10,
       onSucess: (listProduct) async {
         listProductRecommend = listProduct;
+        listProductRecommend.sort(
+          (a, b) {
+            return b.sold!.compareTo(a.sold!);
+          },
+        );
         isLoadingProductRecomment = false;
         update();
       },

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, iterable_contains_unrelated_type
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +42,7 @@ class DetailFoodController extends GetxController {
   List<Products> listProducts = [];
   List<Products> listProductsCart = [];
   List<Products> listProductFavorite = [];
+  List<String> listFavorite = [];
   List<CommentRequets> listComment = [];
   List<User> listUser = [];
   User userReponse = User();
@@ -75,12 +76,27 @@ class DetailFoodController extends GetxController {
       idUser: idUser,
       onSuccess: (data) {
         listProductsCart = data;
+        for (final i in listProductsCart) {
+          print(i.name!);
+        }
         update();
       },
       onError: (error) {
         print(error);
       },
     );
+  }
+
+  ///
+  /// checkIdStore
+  ///
+  bool checkIDStore(String idStore) {
+    for (final i in listProductsCart) {
+      if (idStore != i.idUser) {
+        return true;
+      }
+    }
+    return false;
   }
 
   ///
@@ -140,8 +156,8 @@ class DetailFoodController extends GetxController {
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
     getListProductCartByIdUser();
-    checkLikeProduct();
     getAllComment();
+    getListFavorite();
   }
 
   ///
@@ -199,22 +215,28 @@ class DetailFoodController extends GetxController {
       IZIAlert().error(message: 'Đã có trong giỏ hàng');
       return;
     }
-    if (checkIdStore(products.idUser!)) {
+    if (checkIDStore(products.idUser!)) {
       Get.dialog(showDialog(idUser, products));
       return;
     }
-    addCartToFireStore();
+    addCartToFireStore(products);
   }
 
   ///
   /// add cart
   ///
-  void addCartToFireStore() {
-    EasyLoading.show(status: "Đang cập nhật");
-    final CartRquest cartRquest = CartRquest();
-    cartRquest.idUser = idUser;
-    listProductsCart.add(productsModel!);
-    cartRquest.listProduct = listProductsCart;
+  void addCartToFireStore(Products products) {
+  EasyLoading.show(status: "Đang cập nhật");
+  final CartRquest cartRquest = CartRquest();
+  cartRquest.idUser = idUser;
+
+  List<Products> listProductsCart1 = [];
+  bool isDuplicate = listProductsCart1.any((item) => item.id == products.id);
+  
+  if (!isDuplicate) {
+    listProductsCart1.add(products);
+    cartRquest.listProduct = listProductsCart1;
+
     _cartRepository.addCart(
       idUser: idUser,
       data: cartRquest,
@@ -225,10 +247,16 @@ class DetailFoodController extends GetxController {
       onSuccess: () {
         IZIAlert().success(message: 'Thêm món ăn thành công');
         EasyLoading.dismiss();
+        final bot = Get.find<BottomBarController>();
+        bot.countCartByIDStore();
+        bot.update();
         update();
       },
     );
+  } else {
+    print('Sản phẩm đã tồn tại trong giỏ hàng');
   }
+}
 
   ///
   /// showDialog if !idStore
@@ -239,13 +267,20 @@ class DetailFoodController extends GetxController {
       agree: 'Có',
       cancel1: 'Không',
       onTapConfirm: () {
-        _productsRepository.deleteCartByUserId(id);
-        IZIAlert().success(message: 'Thay thế cửa hàng thành công');
-        Get.back();
+        final CartRquest cartRquest = CartRquest();
         listProductsCart.clear();
         listProductsCart.add(products);
-        Get.find<BottomBarController>().update();
-        update();
+        cartRquest.listProduct = listProductsCart;
+        _cartRepository.updateCart(
+          cartRquest: cartRquest,
+          onSucess: () {
+            Get.back();
+            update();
+            IZIAlert().success(message: 'Thay thế cửa hàng thành công');
+          },
+          onError: (error) {},
+        );
+  
       },
       onTapCancle: () {
         Get.back();
@@ -281,21 +316,6 @@ class DetailFoodController extends GetxController {
     idProduct = idProducts;
     findProductByID(idProduct);
     update();
-  }
-
-  ///
-  /// push product to firestore
-  ///
-  Future<void> pushProductToFireStore(
-      String userId, List<Products> listProduct) async {
-    final cart = CartRquest(idUser: userId, listProduct: listProduct);
-    final CollectionReference collectionCart =
-        FirebaseFirestore.instance.collection("carts");
-    final cartDoc = await collectionCart.doc(userId).get();
-    if (cartDoc.exists) {
-      await collectionCart.doc(cart.idUser!).update(cart.toMap());
-    }
-    await collectionCart.doc(cart.idUser!).set(cart.toMap());
   }
 
   ///
@@ -377,14 +397,6 @@ class DetailFoodController extends GetxController {
   ///
   /// check idStore add cart
   ///
-  bool checkIdStore(String idStore) {
-    for (int i = 0; i < listProductsCart.length; i++) {
-      if (idStore != listProductsCart[i].idUser) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   ///
   /// check opening hours
@@ -417,55 +429,73 @@ class DetailFoodController extends GetxController {
   /// add favorite
   ///
   Future<void> addFavoriteToFireStore({required Products product}) async {
-    clickFavorite();
-    List<String> listUser = [];
-    if (listUser.contains(idUser)) {
-      listUser.remove(idUser);
-    } else {
-      listUser.add(idUser);
-    }
-    product.id = product.id;
-    product.favorites = listUser;
-
-    _productsRepository.updateProduct(
-      idProduct: idProduct,
-      product: product,
-      onSucess: () {
-        print('Yêu thích thành công');
-        print(product.id);
-      },
-      onError: (error) {
-        print(error);
-      },
-    );
-  }
-
-  ///
-  /// click favorite
-  ///
-  void clickFavorite() {
     if (IZIValidate.nullOrEmpty(idUser)) {
       Get.find<BottomBarController>().showLoginDialog();
       return;
     }
-    isCheckFavorite = !isCheckFavorite;
-    update();
-  }
-
-  ///
-  /// check like product
-  ///
-  Future<void> checkLikeProduct() async {
-    _productsRepository.checkUserLikeProduct(
-      idUser: idUser,
+    if (isCheckFavorite == true) {
+      listFavorite.remove(idUser);
+      isCheckFavorite = false;
+      IZIAlert().success(message: 'Đã hủy yêu thích');
+    } else {
+      if (listFavorite.contains(idUser)) {
+        return;
+      }
+      listFavorite.add(idUser);
+      isCheckFavorite = true;
+      IZIAlert().success(message: 'Yêu thích thành công');
+    }
+    product.id = product.id;
+    product.favorites = listFavorite;
+    _productsRepository.updateProduct(
       idProduct: idProduct,
-      onSucess: (data) {
-        isCheckFavorite = data;
-        print(isCheckFavorite);
+      product: product,
+      onSucess: () {
+        update();
       },
       onError: (error) {
         print(error);
       },
     );
   }
+
+  ///
+  /// get list favorite product
+  ///
+  Future<void> getListFavorite() async {
+    _productsRepository.getListFavorite(
+      idProduct: idProduct,
+      onSuccess: (data) {
+        listFavorite = data;
+        for (final i in listFavorite) {
+          print(i.toString());
+          if (listFavorite.contains(idUser)) {
+            isCheckFavorite = true;
+          } else {
+            isCheckFavorite = false;
+          }
+        }
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+  ///
+  /// bool check user like favorite
+  ///
+  bool checkUserLikeProduct() {
+    for (final i in listFavorite) {
+      if (i == idUser) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  ///
+  ///
+  ///
 }
