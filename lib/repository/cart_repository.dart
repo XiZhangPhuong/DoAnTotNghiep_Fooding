@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
 import 'package:fooding_project/model/product/product_new.dart';
 import 'package:fooding_project/model/product/products.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
 class CartRepository {
   ///
@@ -82,18 +84,15 @@ class CartRepository {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('carts')
-          .where('idUser', isEqualTo: idUser)
+          .doc(idUser)
           .get();
 
-      final List<Products> productList = querySnapshot.docs.map((doc) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        // Truy cập trường "listProduct" trong tài liệu Firestore để lấy danh sách sản phẩm
-        final List<dynamic> listProductData = data['listProduct'];
-        // Tạo một đối tượng Products từ dữ liệu tương ứng trong tài liệu
-        return Products.fromMap(listProductData as Map<String, dynamic>);
-      }).toList();
-
-      onSuccess(productList);
+      if (querySnapshot.exists) {
+        List<dynamic> list = querySnapshot.data()!['listProduct'];
+        List<Products> listProducts =
+            list.map((e) => Products.fromMap(e)).toList();
+        onSuccess(listProducts);
+      }
     } catch (e) {
       onError(e);
     }
@@ -124,6 +123,25 @@ class CartRepository {
         }
         onSucess(countList);
       });
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  ///
+  /// update cart
+  ///
+  Future<void> updateCart({
+    required CartRquest cartRquest,
+    required Function() onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      FirebaseFirestore.instance
+          .collection('carts')
+          .doc(sl<SharedPreferenceHelper>().getIdUser)
+          .update(cartRquest.toMap());
+      onSucess();
     } catch (e) {
       onError(e);
     }

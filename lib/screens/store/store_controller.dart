@@ -24,7 +24,7 @@ class StoreController extends GetxController {
   bool isLoadingProduct = false;
   bool isLoadingNameCategory = false;
   bool isLoadingCountCart = false;
-  String idStore = Get.arguments as String;
+  String idStore = Get.arguments as String; 
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   Store storeResponse = Store();
   String idUser = sl<SharedPreferenceHelper>().getIdUser;
@@ -46,6 +46,26 @@ class StoreController extends GetxController {
     super.onInit();
     findStoreByID();
     getNameCategoy();
+    getListProductCartByIdUser();
+  }
+
+    ///
+  /// get list product cart by idUser
+  ///
+  void getListProductCartByIdUser() {
+    _cartRepository.getListProduct(
+      idUser: idUser,
+      onSuccess: (data) {
+        listProductsCart = data;
+        for (final i in listProductsCart) {
+          print(i.name!);
+        }
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
   
 
@@ -255,36 +275,46 @@ class StoreController extends GetxController {
       IZIAlert().error(message: 'Đã có trong giỏ hàng');
       return;
     }
-    // trung id
-    if (checkIdStore(products.idUser!)) {
-      Get.dialog(showDialog(idUser, products));
-      return;
-    }
     addCartToFireStore(products);
     EasyLoading.dismiss();
   }
 
-  ///
+   ///
   /// add cart
   ///
   void addCartToFireStore(Products products) {
-    final CartRquest cartRquest = CartRquest();
-    cartRquest.idUser = idUser;
-    listProductsCart.add(products);
-    cartRquest.listProduct = listProductsCart;
+  EasyLoading.show(status: "Đang cập nhật");
+  final CartRquest cartRquest = CartRquest();
+  cartRquest.idUser = idUser;
+
+  List<Products> listProductsCart1 = [];
+  bool isDuplicate = listProductsCart1.any((item) => item.id == products.id);
+  
+  if (!isDuplicate) {
+    listProductsCart1.add(products);
+    cartRquest.listProduct = listProductsCart1;
+
     _cartRepository.addCart(
       idUser: idUser,
       data: cartRquest,
-   
       onError: (error) {
+        EasyLoading.dismiss();
         print(error);
-      }, onSuccess: () { 
-       IZIAlert().success(message: 'Thêm món ăn thành công');
-        countCartByIDStore();
+      },
+      onSuccess: () {
+        IZIAlert().success(message: 'Thêm món ăn thành công');
+        EasyLoading.dismiss();
+        final bot = Get.find<BottomBarController>();
+        bot.countCartByIDStore();
+        bot.update();
         update();
-       },
+      },
     );
+  } else {
+    print('Sản phẩm đã tồn tại trong giỏ hàng');
   }
+}
+
 
   ///
   /// showDialog if !idStore
@@ -295,14 +325,20 @@ class StoreController extends GetxController {
       agree: 'Có',
       cancel1: 'Không',
       onTapConfirm: () {
-        _productsRepository.deleteCartByUserId(id);
-        IZIAlert().success(message: 'Thay thế cửa hàng thành công');
-        Get.back();
+        final CartRquest cartRquest = CartRquest();
         listProductsCart.clear();
         listProductsCart.add(products);
-        addCartToFireStore(products);
-        Get.find<BottomBarController>().update();
-        update();
+        cartRquest.listProduct = listProductsCart;
+        _cartRepository.updateCart(
+          cartRquest: cartRquest,
+          onSucess: () {
+            Get.back();
+            update();
+            IZIAlert().success(message: 'Thay thế cửa hàng thành công');
+          },
+          onError: (error) {},
+        );
+  
       },
       onTapCancle: () {
         Get.back();

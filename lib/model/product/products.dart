@@ -49,7 +49,7 @@ class Products {
       if (!IZIValidate.nullOrEmpty(price)) 'price': price,
       if (!IZIValidate.nullOrEmpty(price)) 'priceDiscount': priceDiscount,
       if (!IZIValidate.nullOrEmpty(sold)) 'sold': sold,
-      if (!IZIValidate.nullOrEmpty(sold)) 'isShow': isShow,
+      if (!IZIValidate.nullOrEmpty(isShow)) 'isShow': isShow,
       if (!IZIValidate.nullOrEmpty(sold)) 'favorites': favorites,
       if (!IZIValidate.nullOrEmpty(sold)) 'km': km,
     };

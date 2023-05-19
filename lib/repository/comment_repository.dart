@@ -74,6 +74,7 @@ class CommentRepository{
      final ref = await FirebaseFirestore.instance.collection('comments')
      .where('idUser',isEqualTo: idUser)
      .where('idOrder',isEqualTo: idOrder)
+     .where('typeUser',isEqualTo: 'PRODUCT')
      .get();
      onSuccess(ref.docs.map((e) => CommentRequets.fromMap(e.data())).toList());
     }catch(e){

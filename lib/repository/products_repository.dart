@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/product/products.dart';
+import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
 class ProductsRepository {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
@@ -223,6 +226,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('idUser', isEqualTo: idStore)
+          .where('isShow', isEqualTo: true)
           .get();
       onSucess(querySnapshot.docs.length);
     } catch (e) {
@@ -250,17 +254,6 @@ class ProductsRepository {
   }
 
   ///
-  /// post data product to firebase store
-  ///
-  Future<void> post(
-      {required Function(Products data) onSucess,
-      required Function(dynamic error) onError}) async {
-    try {} catch (e) {
-      onError(e);
-    }
-  }
-
-  ///
   /// paginate recommmend list product
   ///
   Future<void> paginateRecommendProducts({
@@ -271,9 +264,7 @@ class ProductsRepository {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
-          .orderBy('sold', descending: true)
-          .where('sold', isGreaterThan: 0)
-          .limit(limit)
+          .where('isShow', isEqualTo: true)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -295,7 +286,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('priceDiscount', isGreaterThan: 0)
-          .limit(limit)
+          .where('isShow', isEqualTo: true)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -364,6 +355,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('idUser', isEqualTo: idStore)
+          .where('isShow', isEqualTo: true)
           .get();
 
       int count = 0;
@@ -413,11 +405,13 @@ class ProductsRepository {
     required Function(dynamic error) onError,
   }) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('products')
-          .doc(idProduct)
-          .update(product.toMap());
-      onSucess();
+      if (!IZIValidate.nullOrEmpty(idProduct)) {
+        await FirebaseFirestore.instance
+            .collection('products')
+            .doc(idProduct)
+            .update(product.toMap());
+        onSucess();
+      } else {}
     } catch (e) {
       onError(e);
     }
@@ -435,6 +429,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('favorites', arrayContains: idUser)
+          .where('isShow', isEqualTo: true)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -460,6 +455,28 @@ class ProductsRepository {
           .where(FieldPath.documentId, isEqualTo: idProduct)
           .get();
       onSucess(querySnapshot.docs.isNotEmpty);
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  ///
+  /// get list favorite product
+  ///
+  Future<void> getListFavorite({
+    required String idProduct,
+    required Function(List<String> data) onSuccess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      final ref = await FirebaseFirestore.instance
+          .collection('products')
+          .doc(idProduct)
+          .get();
+      if (ref.exists) {
+        List<dynamic> listFavo = ref['favorites'];
+        onSuccess(listFavo.map((e) => e.toString()).toList());
+      }
     } catch (e) {
       onError(e);
     }

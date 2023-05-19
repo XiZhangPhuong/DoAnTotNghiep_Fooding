@@ -134,6 +134,7 @@ class BottomBarController extends GetxController {
           print(countCart);
           isLoading = true;
           listenData();
+          update();
         },
         onError: (error) {  
           print(error.toString());
