@@ -342,86 +342,101 @@ class PaymentController extends GetxController {
   ///
   void onClickPay() async {
     if (handleValidate()) {
-      if (flagSpam) {
-        _orderResponsitory.checkOrderExists(
-          onSuccess: (onSuccess) async {
-            if (onSuccess) {
-              IZIAlert().error(message: "Bạn đang có đơn hàng chưa hoàn thành");
-            } else {
-              flagSpam = false;
-              EasyLoading.show(status: "Đang cập nhật dữ liệu");
-              OrderResponse order = OrderResponse();
-              order.id = const Uuid().v1();
-              order.address = location.address;
-              order.phone = location.phone;
-              if (!IZIValidate.nullOrEmpty(myVourcher)) {
-                order.discount = myVourcher!.discountMoney!.toDouble();
-              }
-              order.listProduct = cartResponse.listProduct;
-              order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
-              order.latLong = location.latlong;
-              order.note = noteEditingController.text;
-              order.shipPrice = priceShip;
-              order.name = location.name;
-              order.typePayment = typePayment;
-              order.timePeding = IZIDate.formatDate(DateTime.now(),
-                  format: "HH:mm dd/MM/yyyy");
-              order.statusOrder = "PENDING";
-              order.totalPrice = totalPay().toDouble();
-              order.note = descriptionController.text.trim();
-              if (!IZIValidate.nullOrEmpty(myVourcher)) {
-                order.idVoucher = myVourcher!.id;
-              }
-              if (!IZIValidate.nullOrEmpty(timeDelivery)) {
-                final split = timeDelivery!.split(' ');
-                order.timeDelivery = (double.parse(split[0]) + 20).toString();
-              }
-              if (typePayment == CASH) {
-                await _orderResponsitory.addOrder(
-                  orderRequest: order,
-                  onSucces: () async {
-                    await _orderResponsitory.deleteCart();
-                    flagSpam = true;
-
-                    //
-                    // Add idCustomer to voucher
+      Get.dialog(
+        DialogCustom(
+          description: "Bạn có chắc chắn đặt hàng không?",
+          agree: "Đồng ý",
+          cancel1: "Từ chối",
+          onTapCancle: () {
+            Get.back();
+          },
+          onTapConfirm: () {
+            if (flagSpam) {
+              _orderResponsitory.checkOrderExists(
+                onSuccess: (onSuccess) async {
+                  if (onSuccess) {
+                    IZIAlert()
+                        .error(message: "Bạn đang có đơn hàng chưa hoàn thành");
+                  } else {
+                    Get.back();
+                    flagSpam = false;
+                    EasyLoading.show(status: "Đang cập nhật dữ liệu");
+                    OrderResponse order = OrderResponse();
+                    order.id = const Uuid().v1();
+                    order.address = location.address;
+                    order.phone = location.phone;
                     if (!IZIValidate.nullOrEmpty(myVourcher)) {
-                      await _voucherRepository.addidCustomerToVoucher(
-                        idvoucher: myVourcher!.id!,
-                        onSuccess: () {},
-                        error: (e) {
+                      order.discount = myVourcher!.discountMoney!.toDouble();
+                    }
+                    order.listProduct = cartResponse.listProduct;
+                    order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
+                    order.latLong = location.latlong;
+                    order.note = noteEditingController.text;
+                    order.shipPrice = priceShip;
+                    order.name = location.name;
+                    order.typePayment = typePayment;
+                    order.timePeding = IZIDate.formatDate(DateTime.now(),
+                        format: "HH:mm dd/MM/yyyy");
+                    order.statusOrder = "PENDING";
+                    order.totalPrice = totalPay().toDouble();
+                    order.note = descriptionController.text.trim();
+                    if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                      order.idVoucher = myVourcher!.id;
+                    }
+                    if (!IZIValidate.nullOrEmpty(timeDelivery)) {
+                      final split = timeDelivery!.split(' ');
+                      order.timeDelivery =
+                          (double.parse(split[0]) + 20).toString();
+                    }
+                    if (typePayment == CASH) {
+                      await _orderResponsitory.addOrder(
+                        orderRequest: order,
+                        onSucces: () async {
+                          await _orderResponsitory.deleteCart();
+                          flagSpam = true;
+
+                          //
+                          // Add idCustomer to voucher
+                          if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                            await _voucherRepository.addidCustomerToVoucher(
+                              idvoucher: myVourcher!.id!,
+                              onSuccess: () {},
+                              error: (e) {
+                                IZIAlert().error(message: e.toString());
+                              },
+                            );
+                          }
+
+                          final bot = Get.find<BottomBarController>();
+                          bot.countCartByIDStore();
+                          bot.update();
+                          IZIAlert().success(message: "Đặt hàng thành công");
+                          EasyLoading.dismiss();
+                          Get.back();
+                        },
+                        onError: (e) {
                           IZIAlert().error(message: e.toString());
+                          EasyLoading.dismiss();
                         },
                       );
+                      IZIAlert().success(message: "Đặt hàng thành công");
+                      EasyLoading.dismiss();
+                      Get.back();
+                    } else {
+                      //
+                      // Pay with zalo.
+                      payWithZaloPay(totalPay().toInt().toString(), order);
                     }
-
-                    final bot = Get.find<BottomBarController>();
-                    bot.countCartByIDStore();
-                    bot.update();
-                    IZIAlert().success(message: "Đặt hàng thành công");
-                    EasyLoading.dismiss();
-                    Get.back();
-                  },
-                  onError: (e) {
-                    IZIAlert().error(message: e.toString());
-                    EasyLoading.dismiss();
-                  },
-                );
-                IZIAlert().success(message: "Đặt hàng thành công");
-                EasyLoading.dismiss();
-                Get.back();
-              } else {
-                //
-                // Pay with zalo.
-                payWithZaloPay(totalPay().toInt().toString(), order);
-              }
+                  }
+                },
+                onError: (erorr) {
+                  IZIAlert().error(message: erorr.toString());
+                },
+              );
             }
           },
-          onError: (erorr) {
-            IZIAlert().error(message: erorr.toString());
-          },
-        );
-      }
+        ),
+      );
     }
   }
 

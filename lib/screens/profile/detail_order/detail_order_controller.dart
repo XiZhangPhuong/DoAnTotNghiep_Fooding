@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
@@ -41,7 +42,7 @@ class DetailOrderController extends GetxController {
     findOrderDetail();
   }
 
-   ///
+  ///
   /// gotoDetailFood
   ///
   void gotoDetailFood(String id) {
@@ -51,27 +52,30 @@ class DetailOrderController extends GetxController {
   ///
   /// check Comment
   ///
-  bool checkCommentProduct({required String idProduct}){
+  bool checkCommentProduct({required String idProduct}) {
     bool hasComment = false;
-    _commentRepository.checkComment(idUser: sl<SharedPreferenceHelper>().getIdUser,
-     idProduct: idProduct, 
-     onSuccess: (check) {
-      print(check);
-       update();
-       hasComment = check;
-     }, onError:
-      (e) {
+    _commentRepository.checkComment(
+      idUser: sl<SharedPreferenceHelper>().getIdUser,
+      idProduct: idProduct,
+      onSuccess: (check) {
+        print(check);
+        update();
+        hasComment = check;
+      },
+      onError: (e) {
         print(e);
-      },);
-      return hasComment;
+      },
+    );
+    return hasComment;
   }
-  
+
   ///
   /// go to evualate
   ///
-  void gotoEvaluate(String idOrder,String idProduct ){
-    Get.toNamed(DetailOrderRoutes.EVALUATE,arguments: [idOrder,idProduct]);
+  void gotoEvaluate(String idOrder, String idProduct) {
+    Get.toNamed(DetailOrderRoutes.EVALUATE, arguments: [idOrder, idProduct]);
   }
+
   ///
   /// find order detail.
   ///
@@ -164,14 +168,27 @@ class DetailOrderController extends GetxController {
   /// Handle cancle order.
   ///
   void handleCancleOrder() {
-    _orderRepository.updateOrder(
-      idOrder: idOrder,
-      orderResponse: OrderResponse(statusOrder: "CANCEL"),
-      onSuccess: () {
-        IZIAlert().success(message: "Hủy đơn hàng thành công");
-        Get.back(result: SUCCESS);
-      },
-      onError: (erorr) {},
+    Get.dialog(
+      DialogCustom(
+        description: "Bạn có chắc chắn hủy đơn hàng không?",
+        agree: "Đồng ý",
+        cancel1: "Hủy",
+        onTapCancle: () {
+          Get.back();
+        },
+        onTapConfirm: () async {
+          await _orderRepository.updateOrder(
+            idOrder: idOrder,
+            orderResponse: OrderResponse(statusOrder: "CANCEL"),
+            onSuccess: () {
+              IZIAlert().success(message: "Hủy đơn hàng thành công");
+              Get.back();
+              Get.back(result: SUCCESS);
+            },
+            onError: (erorr) {},
+          );
+        },
+      ),
     );
   }
 }
