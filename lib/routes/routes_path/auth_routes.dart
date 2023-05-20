@@ -9,6 +9,7 @@ import 'package:fooding_project/screens/auth/reset_password/reset_password_page.
 import 'package:fooding_project/screens/auth/singup/singup_page.dart';
 import 'package:fooding_project/screens/introduction/introduction_binding.dart';
 import 'package:fooding_project/screens/introduction/introduction_page.dart';
+import 'package:fooding_project/screens/rate/rate_binding.dart';
 import 'package:fooding_project/screens/splash/splash_binding.dart';
 import 'package:fooding_project/screens/splash/splash_screen.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ import '../../screens/auth/login/login_binding.dart';
 import '../../screens/auth/otp/otp_binding.dart';
 import '../../screens/auth/reset_password/reset_password_binding.dart';
 import '../../screens/auth/singup/singup_binding.dart';
+import '../../screens/rate/rate_page.dart';
 
 class AuthRoutes {
   static const LOGIN = '/login';
@@ -28,14 +30,14 @@ class AuthRoutes {
   static const OTP = '/otp';
   static const FORGOT_PASSWORD = '/forgot_password';
   static const RESET = '/reset';
-    static const HOME_SHIPPER = '/home_shipper';
+  static const HOME_SHIPPER = '/home_shipper';
+  static const RATE = '/rate';
   static List<GetPage> list = [
     GetPage(
       name: LOGIN,
       page: () => const LoginPage(),
       binding: LoginBinding(),
     ),
-
     GetPage(
       name: SPLASH,
       page: () => const SplashScreen(),
@@ -66,11 +68,15 @@ class AuthRoutes {
       page: () => const ResetPasswordPage(),
       binding: ResetPasswordBinding(),
     ),
-
-     GetPage(
+    GetPage(
       name: HOME_SHIPPER,
       page: () => const HomeShipperPage(),
       binding: HomeShipperBinding(),
+    ),
+    GetPage(
+      name: RATE,
+      page: () => const RatePage(),
+      binding: RateBinding(),
     ),
   ];
 }

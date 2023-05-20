@@ -77,7 +77,7 @@ class OrderResponse {
       if (!IZIValidate.nullOrEmpty(listProduct))
         'listProduct': listProduct?.map((x) => x.toMap()).toList(),
       if (!IZIValidate.nullOrEmpty(listImage))
-        'listProduct': listImage?.map((x) => x.toString()).toList(),
+        'listImage': listImage?.map((x) => x.toString()).toList(),
     };
   }
 

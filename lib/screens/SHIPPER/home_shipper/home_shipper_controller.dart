@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
@@ -23,6 +24,7 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../model/user.dart';
+import '../../../routes/routes_path/auth_routes.dart';
 
 class HomeShipperController extends GetxController {
   bool isCheckOline = false;
@@ -163,23 +165,36 @@ class HomeShipperController extends GetxController {
         statusOrder = "Thành công";
         update();
       } else if (IZIValidate.nullOrEmpty(orderResponse!.timeDone)) {
-        if (_timer != null) {
-          _timer!.cancel();
-        }
-        orderResponse!.statusOrder = DONE;
-        orderResponse!.timeDone =
-            DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
-        await updateStatusOrder(orderResponse: orderResponse!);
-        // FcmNotification.sendNotification(
-        //     token: custommerReponse!.deviceId!,
-        //     body: "Tài xế đã giao hàng thành công",
-        //     title: "Giao hàng thành công");
-        statusOrder = 'Nhận đơn';
-        isLoadingUser = false;
-        isLoadingOrder = false;
-        isLoadingCustommer = false;
-        orderResponse = null;
-        update();
+        Get.dialog(
+          DialogCustom(
+            description: "Xác nhận giao hàng",
+            agree: "Đồng ý",
+            cancel1: "Hủy",
+            onTapConfirm: () async {
+              if (_timer != null) {
+                _timer!.cancel();
+              }
+              orderResponse!.statusOrder = DONE;
+              orderResponse!.timeDone =
+                  DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
+              await updateStatusOrder(orderResponse: orderResponse!);
+              // FcmNotification.sendNotification(
+              //     token: custommerReponse!.deviceId!,
+              //     body: "Tài xế đã giao hàng thành công",
+              //     title: "Giao hàng thành công");
+              statusOrder = 'Nhận đơn';
+              isLoadingUser = false;
+              isLoadingOrder = false;
+              isLoadingCustommer = false;
+              orderResponse = null;
+              Get.back();
+              update();
+            },
+            onTapCancle: () {
+              Get.back();
+            },
+          ),
+        );
       }
     }
 
@@ -389,10 +404,20 @@ class HomeShipperController extends GetxController {
       });
     }
   }
+
   ///
   /// On click cancel.
   ///
-  void onClickCancle(){
-    
+  void onClickCancle(String type) {
+    Get.toNamed(AuthRoutes.RATE, arguments: [orderResponse!.id!, type])
+        ?.then((value) {
+      if (!IZIValidate.nullOrEmpty(value)) {
+        isLoadingUser = false;
+        isLoadingOrder = true;
+        isLoadingCustommer = false;
+        orderResponse = null;
+        update();
+      }
+    });
   }
 }

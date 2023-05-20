@@ -543,14 +543,19 @@ Widget _viewInforOrder(HomeShipperController controller) {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                width: IZIDimensions.iziSize.width * 0.5,
-                child: P45Button(
-                  title: 'Hủy',
-                  color: Colors.blue,
-                  onPressed: () {},
-                ),
-              ),
+              if (!IZIValidate.nullOrEmpty(controller.orderResponse))
+                if (!IZIValidate.nullOrEmpty(
+                    controller.orderResponse!.idEmployee))
+                  SizedBox(
+                    width: IZIDimensions.iziSize.width * 0.5,
+                    child: P45Button(
+                      title: 'Hủy',
+                      color: Colors.blue,
+                      onPressed: () {
+                        controller.onClickCancle(CANCEL);
+                      },
+                    ),
+                  ),
               SizedBox(
                 width: IZIDimensions.iziSize.width * 0.5,
                 child: P45Button(
