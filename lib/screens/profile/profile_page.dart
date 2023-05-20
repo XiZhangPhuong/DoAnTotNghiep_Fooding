@@ -70,6 +70,16 @@ class ProfilePage extends GetView {
                         ),
                         _itemFuction(
                           ontap: () {
+                            Get.toNamed(ProfileRoutes.HELP);
+                          },
+                          image: Icons.help,
+                          text: 'Thông tin liên hệ',
+                        ),
+                        SizedBox(
+                          height: IZIDimensions.SPACE_SIZE_3X,
+                        ),
+                        _itemFuction(
+                          ontap: () {
                             controller.logout();
                           },
                           image: Icons.exit_to_app,
