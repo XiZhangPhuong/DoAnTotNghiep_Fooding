@@ -14,53 +14,6 @@ class OrderResponsitory {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   ///
-  /// get all cart.
-  ///
-  Future<void> getCart(
-    Function(CartRquest onSucces) onSucces,
-    Function(dynamic e) onError,
-  ) async {
-    try {
-      final querysnapshot = await _fireStore
-          .collection("carts")
-          .where("idUser", isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
-          .get();
-      CartRquest cart = CartRquest.fromMap(querysnapshot.docs[0].data());
-      onSucces(cart);
-    } catch (e) {
-      onError(e);
-    }
-  }
-
-  ///
-  /// Update increment cart.
-  ///
-  Future<void> updateCart({required CartRquest cartRquest}) async {
-    try {
-      await _fireStore
-          .collection("carts")
-          .doc(sl<SharedPreferenceHelper>().getIdUser)
-          .set(cartRquest.toMap());
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  ///
-  ///Delete Cart.
-  ///
-  Future<void> deleteCart() async {
-    try {
-      await _fireStore
-          .collection("carts")
-          .doc(sl<SharedPreferenceHelper>().getIdUser)
-          .delete();
-    } catch (e) {
-      IZIAlert().error(message: e.toString());
-    }
-  }
-
-  ///
   /// Put Order.
   ///
   Future<void> addOrder({
@@ -115,19 +68,19 @@ class OrderResponsitory {
   /// check order.
   ///
   Future<void> checkOrderExists({
-    required Function(bool onSuccess) onSuccess,
+    required Function(OrderResponse onSuccess) onSuccess,
     required Function(dynamic erorr) onError,
   }) async {
     try {
       final ref = await _fireStore
           .collection("orders")
-          .where('idCustomer',
+          .where('idEmployee',
               isEqualTo: sl<SharedPreferenceHelper>().getIdUser)
           .get();
       if (ref.docs.isNotEmpty) {
-        onSuccess(true);
+        onSuccess(OrderResponse.fromMap(ref.docs.first.data()));
       } else {
-        onSuccess(false);
+        onError("errorr");
       }
     } catch (e) {
       onError(e);

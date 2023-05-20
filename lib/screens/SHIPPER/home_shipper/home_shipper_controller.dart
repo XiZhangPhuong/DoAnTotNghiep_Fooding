@@ -3,9 +3,12 @@
 import 'dart:async';
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
@@ -20,22 +23,19 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
-
-import '../../../base_widget/izi_button.dart';
-import '../../../base_widget/izi_image.dart';
-import '../../../helper/izi_dimensions.dart';
 import '../../../model/user.dart';
-import '../../../utils/color_resources.dart';
-import '../../../utils/images_path.dart';
+import '../../../routes/routes_path/auth_routes.dart';
 
 class HomeShipperController extends GetxController {
   bool isCheckOline = false;
   bool isLoadingUser = false;
   bool isLoadingOrder = false;
   bool isLoadingCustommer = false;
+  bool isLoadingStore = false;
   String idUser = sl<SharedPreferenceHelper>().getIdUser;
   User? shipperReponse;
   User? custommerReponse;
+  User? storeResponse;
   OrderResponse? orderResponse;
   List<OrderResponse> listOrder = [];
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
@@ -50,6 +50,8 @@ class HomeShipperController extends GetxController {
   );
   StreamSubscription<Position>? positionStream;
   Position? currentPostion;
+
+  String statusOrder = 'Nhận đơn';
   @override
   void onInit() {
     super.onInit();
@@ -99,12 +101,23 @@ class HomeShipperController extends GetxController {
   }
 
   ///
+  /// Find user.
+  ///
+  Future<void> findUserStore(String idStore) async {
+    storeResponse = await _userRepository.findbyId(idUser: idStore);
+    isLoadingStore = true;
+    update();
+  }
+
+  ///
   /// update status order
   ///
   Future<void> updateStatusOrder({required OrderResponse orderResponse}) async {
     _orderResponsitory.updateOrder(
       updatedOrder: orderResponse,
-      onSuccess: () {},
+      onSuccess: () {
+        IZIAlert().success(message: "Đã cập nhật dữ liệu");
+      },
       onError: (e) {
         print(e);
       },
@@ -114,22 +127,78 @@ class HomeShipperController extends GetxController {
   ///
   /// click confirm
   ///
-  void clickConfirm({required OrderResponse orderResponse}) {
+  Future<void> clickConfirm() async {
     EasyLoading.show(status: 'Đang cập nhập');
-    if (orderResponse.statusOrder == PENDING) {
-      // đang giao
-      orderResponse.statusOrder = DELIVERING;
-      orderResponse.timeDelivering =
-          DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
-      orderResponse.idEmployee = idUser;
-    } else if (orderResponse.statusOrder == DELIVERING) {
-      orderResponse.timeDone =
-          DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
-      orderResponse.statusOrder = DONE;
+    if (orderResponse!.statusOrder == PENDING) {
+      startTimer();
+      orderResponse!.statusOrder = DELIVERING;
+      orderResponse!.idEmployee = idUser;
+      updateStatusOrder(orderResponse: orderResponse!);
+      // FcmNotification.sendNotification(
+      //     token: custommerReponse!.deviceId!,
+      //     body: "Đơn hàng của bạn đã được nhận bởi tài xế",
+      //     title: "Đơn hàng bạn đã được nhận");
+      statusOrder = "xác nhân đến quán";
+      update();
+    } else if (orderResponse!.statusOrder == DELIVERING) {
+      if (IZIValidate.nullOrEmpty(orderResponse!.timeConfirm)) {
+        orderResponse!.timeConfirm =
+            DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
+        updateStatusOrder(orderResponse: orderResponse!);
+        // FcmNotification.sendNotification(
+        //     token: custommerReponse!.deviceId!,
+        //     body:
+        //         "Tài xế đã tới quán của bạn để xem thông tin chi tiết vào trạng thái đơn hàng ",
+        //     title: "Tài xế đã đến quán ăn");
+        statusOrder = "Giao hàng";
+        update();
+      } else if (IZIValidate.nullOrEmpty(orderResponse!.timeDelivering)) {
+        // đang giao
+        orderResponse!.timeDelivering =
+            DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
+
+        await updateStatusOrder(orderResponse: orderResponse!);
+        // FcmNotification.sendNotification(
+        //     token: custommerReponse!.deviceId!,
+        //     body: "Tài xế nhận được món ăn và đang vận chuyển",
+        //     title: "Tài xế đã nhận đơn hàng");
+        statusOrder = "Thành công";
+        update();
+      } else if (IZIValidate.nullOrEmpty(orderResponse!.timeDone)) {
+        Get.dialog(
+          DialogCustom(
+            description: "Xác nhận giao hàng",
+            agree: "Đồng ý",
+            cancel1: "Hủy",
+            onTapConfirm: () async {
+              if (_timer != null) {
+                _timer!.cancel();
+              }
+              orderResponse!.statusOrder = DONE;
+              orderResponse!.timeDone =
+                  DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
+              await updateStatusOrder(orderResponse: orderResponse!);
+              // FcmNotification.sendNotification(
+              //     token: custommerReponse!.deviceId!,
+              //     body: "Tài xế đã giao hàng thành công",
+              //     title: "Giao hàng thành công");
+              statusOrder = 'Nhận đơn';
+              isLoadingUser = false;
+              isLoadingOrder = false;
+              isLoadingCustommer = false;
+              orderResponse = null;
+              Get.back();
+              update();
+            },
+            onTapCancle: () {
+              Get.back();
+            },
+          ),
+        );
+      }
     }
-    updateStatusOrder(orderResponse: orderResponse);
+
     EasyLoading.dismiss();
-    IZIAlert().success(message: 'Cập nhập thành công');
   }
 
   ///
@@ -157,21 +226,73 @@ class HomeShipperController extends GetxController {
   /// get order
   ///
   Future<void> getOrder() async {
-    await _orderResponsitory.getOrderListTen(
-      onSuccess: (onSuccess) {
-        listOrder = onSuccess;
-        if (listOrder.isNotEmpty) {
-          orderResponse = listOrder.first;
+    FirebaseFirestore.instance
+        .collection("orders")
+        .snapshots(includeMetadataChanges: true)
+        .listen((event) async {
+      if (event.docChanges.isNotEmpty) {
+        print(event.docChanges.first.doc.data().toString());
+        if (orderResponse == null) {
+          for (final doc in event.docChanges) {
+            final order =
+                OrderResponse.fromMap(doc.doc.data() as Map<String, dynamic>);
+            if (order.statusOrder != DONE) {
+              if (order.statusOrder != CANCEL) {
+                orderResponse = order;
+                if (!IZIValidate.nullOrEmpty(orderResponse!.idEmployee)) {
+                  if (orderResponse!.idEmployee ==
+                          sl<SharedPreferenceHelper>().getIdUser &&
+                      orderResponse!.statusOrder == DELIVERING) {
+                    if (!IZIValidate.nullOrEmpty(orderResponse!.timeConfirm)) {
+                      statusOrder = "Giao hàng";
+                    } else if (!IZIValidate.nullOrEmpty(
+                        orderResponse!.timeDelivering)) {
+                      statusOrder = "Thành công";
+                    } else {
+                      statusOrder = "xác nhân đến quán";
+                    }
+                    print(orderResponse!.toJson());
+                    startTimer();
+                    await findUserCustomer(orderResponse!.idCustomer!);
+                    await findUserStore(
+                        orderResponse!.listProduct!.first.idUser!);
+                    isLoadingOrder = true;
+                    update();
+                    break;
+                  }
+                }
+                if (orderResponse!.idEmployee !=
+                        sl<SharedPreferenceHelper>().getIdUser &&
+                    orderResponse!.statusOrder == DELIVERING) {
+                  isLoadingUser = false;
+                  isLoadingOrder = true;
+                  isLoadingCustommer = false;
+                  orderResponse = null;
+                  update();
+                  continue;
+                }
+                if (IZIValidate.nullOrEmpty(orderResponse!.idEmployee) &&
+                    orderResponse!.statusOrder == PENDING) {
+                  print(orderResponse!.toJson());
+                  await findUserCustomer(orderResponse!.idCustomer!);
+                  await findUserStore(
+                      orderResponse!.listProduct!.first.idUser!);
+
+                  isLoadingOrder = true;
+                  statusOrder = "Nhận đơn";
+                  update();
+                  break;
+                }
+              }
+            }
+          }
         }
-        print(listOrder.length.toString());
+      } else {
+        print("No data change");
         isLoadingOrder = true;
-        findUserCustomer(orderResponse!.idCustomer!);
         update();
-      },
-      onError: (error) {
-        print('Loi ${error}');
-      },
-    );
+      }
+    });
   }
 
   ///
@@ -281,8 +402,22 @@ class HomeShipperController extends GetxController {
         currentPostion = value;
         update();
       });
-
-      startTimer();
     }
+  }
+
+  ///
+  /// On click cancel.
+  ///
+  void onClickCancle(String type) {
+    Get.toNamed(AuthRoutes.RATE, arguments: [orderResponse!.id!, type])
+        ?.then((value) {
+      if (!IZIValidate.nullOrEmpty(value)) {
+        isLoadingUser = false;
+        isLoadingOrder = true;
+        isLoadingCustommer = false;
+        orderResponse = null;
+        update();
+      }
+    });
   }
 }

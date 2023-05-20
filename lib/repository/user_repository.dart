@@ -14,33 +14,6 @@ class UserRepository {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   ///
-  /// Add user to database.
-  ///
-  Future<void> addUser(String phone, String password, String id) async {
-    try {
-      model.User userRequest = model.User();
-      userRequest.id = id;
-      userRequest.phone = phone;
-      userRequest.passWord = BCrypt.hashpw(
-        password,
-        BCrypt.gensalt(),
-      );
-      userRequest.avatar = "";
-      userRequest.fullName = "No Name";
-      userRequest.email = "";
-      userRequest.isDeleted = false;
-      userRequest.typeUser = "CUSTOMER";
-      await _fireStore
-          .collection("users")
-          .doc(userRequest.id)
-          .set(userRequest.toMap());
-      IZIAlert().success(message: "Đăng kí thành công");
-    } catch (e) {
-      IZIAlert().error(message: "Vui lòng thử lại sau");
-    }
-  }
-
-  ///
   /// Get user.
   ///
   Future<model.User?> getUserDetails(
@@ -67,7 +40,7 @@ class UserRepository {
     final querySnapshot = await _fireStore
         .collection("users")
         .where("phone", isEqualTo: phone)
-        .where("typeUser", isEqualTo: "CUSTOMER")
+        .where("typeUser", isEqualTo: "SHIPPER")
         .get();
     if (querySnapshot.docs.isNotEmpty) {
       return true;
