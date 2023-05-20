@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
-import 'package:fooding_project/base_widget/izi_loading_card.dart';
-import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/base_widget/p45_button.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
-import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/screens/SHIPPER/home_shipper/drawer.dart';
 import 'package:fooding_project/screens/SHIPPER/home_shipper/home_shipper_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
@@ -54,87 +51,177 @@ Widget _listviewProducts(HomeShipperController controller) {
       ? const Center(
           child: CircularProgressIndicator(),
         )
-      : Container(
-          margin: EdgeInsets.symmetric(horizontal: IZIDimensions.SPACE_SIZE_3X),
-          height: IZIDimensions.ONE_UNIT_SIZE * 200,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.orderResponse!.listProduct!.length,
-            itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
-                    color: ColorResources.WHITE),
-                height: IZIDimensions.ONE_UNIT_SIZE * 200,
-                width: IZIDimensions.iziSize.width * 0.9,
-                padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_1X),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
-                      child: IZIImage(
-                        controller
-                            .orderResponse!.listProduct![index].image!.first,
-                        height: IZIDimensions.ONE_UNIT_SIZE * 150,
-                        width: IZIDimensions.ONE_UNIT_SIZE * 150,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: IZIDimensions.SPACE_SIZE_3X,
-                    ),
-                    Expanded(
-                        child: Column(
+      : Column(
+          children: [
+            controller.isLoadingStore == false
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(
+                    width: IZIDimensions.iziSize.width,
+                    margin: EdgeInsets.symmetric(
+                        horizontal: IZIDimensions.BLUR_RADIUS_5X),
+                    padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                            IZIDimensions.BORDER_RADIUS_3X),
+                        color: ColorResources.WHITE),
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          controller.orderResponse!.listProduct![index].name!,
-                          style: TextStyle(
-                            color: ColorResources.BLACK,
-                            fontFamily: NUNITO,
-                            fontWeight: FontWeight.w600,
-                            fontSize: IZIDimensions.FONT_SIZE_H5,
-                          ),
+                        ClipOval(
+                          child: IZIImage(
+                              IZIValidate.nullOrEmpty(
+                                      controller.storeResponse!.avatar)
+                                  ? 'https://media.baobinhphuoc.com.vn/upload/news/1_2023/manchesterunitedmancity1_07061115012023.jpeg'
+                                  : controller.storeResponse!.avatar!,
+                              height: IZIDimensions.ONE_UNIT_SIZE * 100,
+                              width: IZIDimensions.ONE_UNIT_SIZE * 100),
                         ),
                         SizedBox(
-                          height: IZIDimensions.SPACE_SIZE_1X,
+                          width: IZIDimensions.SPACE_SIZE_3X,
                         ),
-                        Text(
-                          'x${controller.orderResponse!.listProduct![index].quantity!}',
-                          style: TextStyle(
-                            color: ColorResources.GREY,
-                            fontFamily: NUNITO,
-                            fontWeight: FontWeight.w600,
-                            fontSize: IZIDimensions.FONT_SIZE_H5,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                IZIValidate.nullOrEmpty(
+                                        controller.storeResponse!.fullName)
+                                    ? 'Không xấc định'
+                                    : controller.storeResponse!.fullName!,
+                                style: TextStyle(
+                                  color: ColorResources.BLACK,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                  fontFamily: NUNITO,
+                                ),
+                              ),
+                              SizedBox(
+                                height: IZIDimensions.SPACE_SIZE_1X,
+                              ),
+                              Text(
+                                IZIValidate.nullOrEmpty(
+                                        controller.storeResponse!.phone)
+                                    ? '05555555'
+                                    : controller.storeResponse!.phone!,
+                                style: TextStyle(
+                                  color: ColorResources.BLACK,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                  fontFamily: NUNITO,
+                                ),
+                              ),
+                              SizedBox(
+                                height: IZIDimensions.SPACE_SIZE_1X,
+                              ),
+                              Text(
+                                IZIValidate.nullOrEmpty(
+                                        controller.storeResponse!.address)
+                                    ? '120 Hoài Xuân'
+                                    : controller.storeResponse!.address!,
+                                style: TextStyle(
+                                  color: ColorResources.BLACK,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontFamily: NUNITO,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(
-                          height: IZIDimensions.SPACE_SIZE_1X,
-                        ),
-                        Text(
-                          controller.priceProduct(
-                              controller.orderResponse!.listProduct![index]
-                                  .priceDiscount!,
-                              controller
-                                  .orderResponse!.listProduct![index].price!),
-                          style: TextStyle(
-                            color: ColorResources.BLACK,
-                            fontFamily: NUNITO,
-                            fontWeight: FontWeight.w600,
-                            fontSize: IZIDimensions.FONT_SIZE_H6,
-                          ),
-                        ),
+                        )
                       ],
-                    ))
-                  ],
-                ),
-              );
-            },
-          ),
+                    ),
+                  ),
+            SizedBox(
+              height: IZIDimensions.SPACE_SIZE_3X,
+            ),
+            Container(
+              margin:
+                  EdgeInsets.symmetric(horizontal: IZIDimensions.SPACE_SIZE_3X),
+              height: IZIDimensions.ONE_UNIT_SIZE * 200,
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: controller.orderResponse!.listProduct!.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
+                        color: ColorResources.WHITE),
+                    height: IZIDimensions.ONE_UNIT_SIZE * 200,
+                    width: IZIDimensions.iziSize.width * 0.9,
+                    padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_1X),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              IZIDimensions.SPACE_SIZE_3X),
+                          child: IZIImage(
+                            controller.orderResponse!.listProduct![index].image!
+                                .first,
+                            height: IZIDimensions.ONE_UNIT_SIZE * 150,
+                            width: IZIDimensions.ONE_UNIT_SIZE * 150,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        SizedBox(
+                          width: IZIDimensions.SPACE_SIZE_3X,
+                        ),
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              controller
+                                  .orderResponse!.listProduct![index].name!,
+                              style: TextStyle(
+                                color: ColorResources.BLACK,
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w600,
+                                fontSize: IZIDimensions.FONT_SIZE_H5,
+                              ),
+                            ),
+                            SizedBox(
+                              height: IZIDimensions.SPACE_SIZE_1X,
+                            ),
+                            Text(
+                              'x${controller.orderResponse!.listProduct![index].quantity!}',
+                              style: TextStyle(
+                                color: ColorResources.GREY,
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w600,
+                                fontSize: IZIDimensions.FONT_SIZE_H5,
+                              ),
+                            ),
+                            SizedBox(
+                              height: IZIDimensions.SPACE_SIZE_1X,
+                            ),
+                            Text(
+                              controller.priceProduct(
+                                  controller.orderResponse!.listProduct![index]
+                                      .priceDiscount!,
+                                  controller.orderResponse!.listProduct![index]
+                                      .price!),
+                              style: TextStyle(
+                                color: ColorResources.BLACK,
+                                fontFamily: NUNITO,
+                                fontWeight: FontWeight.w600,
+                                fontSize: IZIDimensions.FONT_SIZE_H6,
+                              ),
+                            ),
+                          ],
+                        ))
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         );
 }
 

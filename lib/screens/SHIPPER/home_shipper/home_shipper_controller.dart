@@ -29,9 +29,11 @@ class HomeShipperController extends GetxController {
   bool isLoadingUser = false;
   bool isLoadingOrder = false;
   bool isLoadingCustommer = false;
+  bool isLoadingStore = false;
   String idUser = sl<SharedPreferenceHelper>().getIdUser;
   User? shipperReponse;
   User? custommerReponse;
+  User? storeResponse;
   OrderResponse? orderResponse;
   List<OrderResponse> listOrder = [];
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
@@ -93,6 +95,15 @@ class HomeShipperController extends GetxController {
   Future<void> findUserCustomer(String idCustommer) async {
     custommerReponse = await _userRepository.findbyId(idUser: idCustommer);
     isLoadingCustommer = true;
+    update();
+  }
+
+  ///
+  /// Find user.
+  ///
+  Future<void> findUserStore(String idStore) async {
+    storeResponse = await _userRepository.findbyId(idUser: idStore);
+    isLoadingStore = true;
     update();
   }
 
@@ -217,15 +228,19 @@ class HomeShipperController extends GetxController {
                   if (orderResponse!.idEmployee ==
                           sl<SharedPreferenceHelper>().getIdUser &&
                       orderResponse!.statusOrder == DELIVERING) {
-                    if(!IZIValidate.nullOrEmpty(orderResponse!.timeConfirm)){
+                    if (!IZIValidate.nullOrEmpty(orderResponse!.timeConfirm)) {
                       statusOrder = "Giao hàng";
-                    } else if(!IZIValidate.nullOrEmpty(orderResponse!.timeDelivering)){
+                    } else if (!IZIValidate.nullOrEmpty(
+                        orderResponse!.timeDelivering)) {
                       statusOrder = "Thành công";
-                    }else {
+                    } else {
                       statusOrder = "xác nhân đến quán";
                     }
                     print(orderResponse!.toJson());
+                    startTimer();
                     await findUserCustomer(orderResponse!.idCustomer!);
+                    await findUserStore(
+                        orderResponse!.listProduct!.first.idUser!);
                     isLoadingOrder = true;
                     update();
                     break;
@@ -245,6 +260,9 @@ class HomeShipperController extends GetxController {
                     orderResponse!.statusOrder == PENDING) {
                   print(orderResponse!.toJson());
                   await findUserCustomer(orderResponse!.idCustomer!);
+                  await findUserStore(
+                      orderResponse!.listProduct!.first.idUser!);
+
                   isLoadingOrder = true;
                   statusOrder = "Nhận đơn";
                   update();
@@ -370,5 +388,11 @@ class HomeShipperController extends GetxController {
         update();
       });
     }
+  }
+  ///
+  /// On click cancel.
+  ///
+  void onClickCancle(){
+    
   }
 }
