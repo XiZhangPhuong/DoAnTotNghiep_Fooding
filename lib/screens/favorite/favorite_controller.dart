@@ -1,3 +1,4 @@
+import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/repository/products_repository.dart';
@@ -46,6 +47,7 @@ class FavoriteController extends GetxController {
       onSucess: (data) {
         listProductFavorite = data;
         print(listProductFavorite.length.toString());
+        
         isLoadingFavorites = true;
         update();
       },
@@ -53,5 +55,23 @@ class FavoriteController extends GetxController {
         print(error);
       },
     );
+  }
+
+  ///
+  /// Click delete fovorite product
+  ///
+  Future<void> clickDeleteProduct({required Products productRequest}) async {
+    productRequest.favorites!.remove(idUser);
+    _productsRepository.updateProduct(
+      idProduct: productRequest.id!, 
+       product: productRequest, 
+       onSucess: () {
+         _getProductFavorite();
+         IZIAlert().success(message: 'Hủy yêu thích thành công');
+         update();
+       }, 
+       onError: (error) {
+         print(error);
+       },);
   }
 }

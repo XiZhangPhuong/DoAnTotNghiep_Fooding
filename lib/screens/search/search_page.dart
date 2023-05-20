@@ -266,8 +266,8 @@ class SearchPage extends GetView<SearchController> {
                                     IZIDimensions.BORDER_RADIUS_3X),
                                 child: IZIImage(
                                   controller.listProducts[index].image!.first,
-                                  height: IZIDimensions.ONE_UNIT_SIZE * 180,
-                                  width: IZIDimensions.ONE_UNIT_SIZE * 180,
+                                  height: IZIDimensions.ONE_UNIT_SIZE * 120,
+                                  width: IZIDimensions.ONE_UNIT_SIZE * 120,
                                   fit: BoxFit.cover,
                                 ),
                               ),
