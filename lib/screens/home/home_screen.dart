@@ -289,7 +289,7 @@ class HomeScreenPage extends GetView<HomeController> {
                     height: IZIDimensions.SPACE_SIZE_2X,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
+                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_1X),
                     child: Text(
                       controller.listProductRecommend[index].name!.capitalize!,
                       style: TextStyle(
@@ -302,7 +302,7 @@ class HomeScreenPage extends GetView<HomeController> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_2X),
+                    padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_1X),
                     child: Row(
                       children: [
                         Text(
@@ -314,7 +314,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             fontFamily: NUNITO,
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                           maxLines: 2,
                         ),
@@ -328,7 +328,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             fontFamily: NUNITO,
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                         ),
                         SizedBox(
@@ -345,7 +345,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             fontFamily: NUNITO,
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                         ),
                       ],
@@ -470,7 +470,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             fontFamily: NUNITO,
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                           maxLines: 2,
                         ),
@@ -484,7 +484,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             fontFamily: NUNITO,
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                         ),
                         SizedBox(
@@ -497,7 +497,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             fontFamily: NUNITO,
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                         ),
                       ],
@@ -606,7 +606,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             overflow: TextOverflow.ellipsis,
                             decoration: TextDecoration.lineThrough,
                             decorationThickness: 3.0,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                         ),
                         SizedBox(width: IZIDimensions.SPACE_SIZE_1X * 0.5),
@@ -617,7 +617,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             fontFamily: NUNITO,
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                         ),
                         SizedBox(width: IZIDimensions.SPACE_SIZE_1X * 0.5),
@@ -628,7 +628,7 @@ class HomeScreenPage extends GetView<HomeController> {
                             fontFamily: NUNITO,
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                            fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                           ),
                         ),
                       ],
@@ -645,7 +645,7 @@ class HomeScreenPage extends GetView<HomeController> {
                         fontFamily: NUNITO,
                         fontWeight: FontWeight.w600,
                         overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.9,
+                        fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 0.8,
                       ),
                     ),
                   ),
