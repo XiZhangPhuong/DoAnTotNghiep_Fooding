@@ -154,7 +154,7 @@ class StoreController extends GetxController {
     listProducts.clear();
     _productsRepository.paginateProductsByIDCateogryandIdStore(
       idUser: idStore,
-      idCategory: name,
+      nameCategory: name,
       limit: limit,
       onSucess: (listProduct) {
         listProducts = listProduct;
@@ -228,6 +228,9 @@ class StoreController extends GetxController {
       idStore: idStore,
       onSucess: (data) {
         listNameCategory = data;
+        for(final i in listNameCategory){
+          print(i);
+        }
         paginateProductByNameCategory(name: listNameCategory[0]);
         isLoadingNameCategory = true;
 

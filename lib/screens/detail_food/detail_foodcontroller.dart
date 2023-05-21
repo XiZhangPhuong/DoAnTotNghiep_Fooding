@@ -326,7 +326,7 @@ class DetailFoodController extends GetxController {
     listProducts.clear();
     _productsRepository.paginateProductsByIDCateogry(
       limit: limit,
-      idCategory: productsModel!.nameCategory!,
+      idCategory: productsModel!.idCategory!,
       onSucess: (listProduct) {
         listProducts = listProduct;
         listProducts.removeWhere((element) => element.id == idProduct);

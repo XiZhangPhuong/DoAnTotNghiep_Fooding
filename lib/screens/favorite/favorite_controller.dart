@@ -68,7 +68,7 @@ class FavoriteController extends GetxController {
        onSucess: () {
          getProductFavorite();
          IZIAlert().success(message: 'Hủy yêu thích thành công');
-         update();
+         update();  
        }, 
        onError: (error) {
          print(error);
