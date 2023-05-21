@@ -326,7 +326,7 @@ class DetailFoodController extends GetxController {
     listProducts.clear();
     _productsRepository.paginateProductsByIDCateogry(
       limit: limit,
-      idCategory: productsModel!.nameCategory!,
+      idCategory: productsModel!.idCategory!,
       onSucess: (listProduct) {
         listProducts = listProduct;
         listProducts.removeWhere((element) => element.id == idProduct);
@@ -437,6 +437,9 @@ class DetailFoodController extends GetxController {
     if (isCheckFavorite == true) {
       listFavorite.remove(idUser);
       isCheckFavorite = false;
+
+      Get.find<FavoriteController>().getProductFavorite();
+      Get.find<FavoriteController>().update();
       IZIAlert().success(message: 'Đã hủy yêu thích');
     } else {
       if (listFavorite.contains(idUser)) {
