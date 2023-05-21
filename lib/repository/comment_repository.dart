@@ -55,12 +55,18 @@ class CommentRepository{
   ) async {
     try{
      final ref = await FirebaseFirestore.instance.collection('comments')
-     .where('idProduct',isEqualTo: idProduct).get();
+     .where('idProduct',isEqualTo: idProduct)
+     .where('typeUser',isEqualTo: 'PRODUCT')
+     .get();
      onSuccess(ref.docs.map((e) => CommentRequets.fromMap(e.data())).toList());
     }catch(e){
        onError(e);
     }
   }
+
+  ///
+  /// get check
+  ///
 
   Future<void> get(
     {
@@ -74,7 +80,6 @@ class CommentRepository{
      final ref = await FirebaseFirestore.instance.collection('comments')
      .where('idUser',isEqualTo: idUser)
      .where('idOrder',isEqualTo: idOrder)
-     .where('typeUser',isEqualTo: 'PRODUCT')
      .get();
      onSuccess(ref.docs.map((e) => CommentRequets.fromMap(e.data())).toList());
     }catch(e){

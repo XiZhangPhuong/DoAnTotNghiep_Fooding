@@ -85,8 +85,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                 size: IZIDimensions
                                                         .ONE_UNIT_SIZE *
                                                     40,
-                                                color: controller.isCheckFavorite==true
-                                                        
+                                                color: controller
+                                                            .isCheckFavorite ==
+                                                        true
                                                     ? ColorResources.colorMain
                                                     : ColorResources.BLACK),
                                           ),
@@ -291,9 +292,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     );
   }
 
-///
-/// list Comment
-///
+  ///
+  /// list Comment
+  ///
   Widget _listComment() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,133 +323,163 @@ class DetailFoodPage extends GetView<DetailFoodController> {
           ],
         ),
         // list commet
-        controller.isLoadingListComment==false ? const CardLoadingItem(count: 10,) : 
-        controller.listComment.isEmpty ?  const DataEmpty(lable: 'Chưa có đánh giá',) : 
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.listComment.length,
-          itemBuilder: (context, index) {
-            final itemComment = controller.listComment[index];       
-            final itemUser = controller.listUser[index];    
-            return GestureDetector(
-              
-              onTap: () {},
-              child: Card(
-                elevation: 0.3,
-                child: Container(
-                  padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipOval(
-                            child: IZIImage(
-                              IZIValidate.nullOrEmpty(itemUser.avatar) ? '' :
-                              itemUser.avatar!
-                              ,
-                              height: IZIDimensions.ONE_UNIT_SIZE * 50,
-                              width: IZIDimensions.ONE_UNIT_SIZE * 50,
-                            ),
-                          ),
-                          SizedBox(
-                            width: IZIDimensions.SPACE_SIZE_3X,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                IZIValidate.nullOrEmpty(itemUser.fullName) ? 'TerryChang' : itemUser.fullName!,
-                                style: TextStyle(
-                                  color: ColorResources.BLACK,
-                                  fontFamily: NUNITO,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+        controller.isLoadingListComment == false
+            ? const CardLoadingItem(
+                count: 10,
+              )
+            : controller.listComment.isEmpty
+                ? const DataEmpty(
+                    lable: 'Chưa có đánh giá',
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.listComment.length,
+                    itemBuilder: (context, index) {
+                      final itemComment = controller.listComment[index];
+                      final itemUser = controller.listUser[index];
+                      return GestureDetector(
+                        onTap: () {},
+                        child: Card(
+                          elevation: 0.3,
+                          child: Container(
+                            padding:
+                                EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipOval(
+                                      child: IZIImage(
+                                        IZIValidate.nullOrEmpty(itemUser.avatar)
+                                            ? ''
+                                            : itemUser.avatar!,
+                                        height:
+                                            IZIDimensions.ONE_UNIT_SIZE * 50,
+                                        width: IZIDimensions.ONE_UNIT_SIZE * 50,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: IZIDimensions.SPACE_SIZE_3X,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          IZIValidate.nullOrEmpty(
+                                                  itemUser.fullName)
+                                              ? 'TerryChang'
+                                              : itemUser.fullName!,
+                                          style: TextStyle(
+                                            color: ColorResources.BLACK,
+                                            fontFamily: NUNITO,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize:
+                                                IZIDimensions.FONT_SIZE_DEFAULT,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: IZIDimensions.SPACE_SIZE_1X,
+                                        ),
+                                        RatingStars(
+                                          value: itemComment.rating!.toDouble(),
+                                          starCount: 5,
+                                          starSize:
+                                              IZIDimensions.ONE_UNIT_SIZE * 25,
+                                          starColor: Colors.yellow,
+                                          maxValueVisibility: false,
+                                          valueLabelVisibility: false,
+                                          onValueChanged: (value) {},
+                                        ),
+                                        SizedBox(
+                                          height: IZIDimensions.SPACE_SIZE_1X,
+                                        ),
+                                        Text(
+                                          IZIValidate.nullOrEmpty(
+                                                  itemComment.content)
+                                              ? ''
+                                              : itemComment.content!,
+                                          style: TextStyle(
+                                            color: ColorResources.BLACK,
+                                            fontFamily: NUNITO,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: IZIDimensions
+                                                .FONT_SIZE_SPAN_SMALL,
+                                          ),
+                                        ),
+                                        // image list comment
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    Visibility(
+                                      visible: IZIValidate.nullOrEmpty(
+                                              itemComment.timeComment)
+                                          ? false
+                                          : true,
+                                      child: Text(
+                                        IZIValidate.nullOrEmpty(
+                                                itemComment.timeComment)
+                                            ? ''
+                                            : itemComment.timeComment!,
+                                        style: TextStyle(
+                                          color: ColorResources.GREY,
+                                          fontFamily: NUNITO,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: IZIDimensions
+                                              .FONT_SIZE_SPAN_SMALL,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              SizedBox(
-                                height: IZIDimensions.SPACE_SIZE_1X,
-                              ),
-                              RatingStars(
-                                value: itemComment.rating!.toDouble(),
-                                starCount: 5,
-                                starSize: IZIDimensions.ONE_UNIT_SIZE * 25,
-                                starColor: Colors.yellow,
-                                maxValueVisibility: false,
-                                valueLabelVisibility: false,
-                                onValueChanged: (value) {},
-                              ),
-                              SizedBox(
-                                height: IZIDimensions.SPACE_SIZE_1X,
-                              ),
-                              Text(
-                                IZIValidate.nullOrEmpty(itemComment.content) ? '':
-                                itemComment.content!
-                                 ,
-                                style: TextStyle(
-                                  color: ColorResources.BLACK,
-                                  fontFamily: NUNITO,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                                ),
-                              ),
-                              // image list comment
-                            
-                            
-                            ],
-                          ),
-                          const Spacer(),
-                          Visibility(
-                            visible: IZIValidate.nullOrEmpty(itemComment.timeComment) ? false : true,
-                            child: Text(
-                              IZIValidate.nullOrEmpty(itemComment.timeComment) ? '' : itemComment.timeComment!
-                              ,
-                              style: TextStyle(
-                                color: ColorResources.GREY,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w400,
-                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                              ),
+                                IZIValidate.nullOrEmpty(
+                                        controller.listComment[index].listImage)
+                                    ? Container()
+                                    : Container(
+                                        margin: EdgeInsets.only(
+                                            left: IZIDimensions.ONE_UNIT_SIZE *
+                                                70),
+                                        height:
+                                            IZIDimensions.ONE_UNIT_SIZE * 50,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount:
+                                              itemComment.listImage!.length,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              margin: EdgeInsets.only(
+                                                  right: IZIDimensions
+                                                      .SPACE_SIZE_1X),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        IZIDimensions
+                                                            .BLUR_RADIUS_2X),
+                                                child: IZIImage(
+                                                  itemComment.listImage![index],
+                                                  height: IZIDimensions
+                                                          .ONE_UNIT_SIZE *
+                                                      50,
+                                                  width: IZIDimensions
+                                                          .ONE_UNIT_SIZE *
+                                                      50,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                        Container(
-                          margin: EdgeInsets.only(
-                                left: IZIDimensions.ONE_UNIT_SIZE*70
-                              ),
-                          height: IZIDimensions.ONE_UNIT_SIZE*50,
-                          child: ListView.builder(
-                           shrinkWrap: true,
-                           scrollDirection: Axis.horizontal,
-                           itemCount: itemComment.listImage!.length,
-                           itemBuilder: (context, index) {
-                             return Container(
-                              margin: EdgeInsets.only(
-                                right: IZIDimensions.SPACE_SIZE_1X
-                              ),
-                               child: ClipRRect(
-                                 borderRadius: BorderRadius.circular(
-                                     IZIDimensions.BLUR_RADIUS_2X),
-                                 child: IZIImage(
-                                   itemComment.listImage![index],
-                                   height: IZIDimensions.ONE_UNIT_SIZE * 50,
-                                   width: IZIDimensions.ONE_UNIT_SIZE * 50,
-                                 ),
-                               ),
-                             );
-                           },
                           ),
                         ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        )
+                      );
+                    },
+                  )
       ],
     );
   }
@@ -492,15 +523,15 @@ class DetailFoodPage extends GetView<DetailFoodController> {
 
                 // view all list products
                 Visibility(
-                  visible: controller.listProducts.length >=5 ? true : false,
+                  visible: controller.listProducts.length >= 5 ? true : false,
                   child: GestureDetector(
                     onTap: () {},
                     child: Container(
                       height: IZIDimensions.ONE_UNIT_SIZE * 320,
                       width: IZIDimensions.ONE_UNIT_SIZE * 230,
                       decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
+                          borderRadius: BorderRadius.circular(
+                              IZIDimensions.SPACE_SIZE_2X),
                           border: Border.all(
                               width: 0.3, color: ColorResources.colorMain)),
                       child: Center(
