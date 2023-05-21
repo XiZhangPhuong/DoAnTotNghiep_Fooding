@@ -44,7 +44,7 @@ class CommentRequets {
       if (!IZIValidate.nullOrEmpty(content)) 'content': content,
       if (!IZIValidate.nullOrEmpty(listImage)) 'listImage': listImage,
       if (!IZIValidate.nullOrEmpty(timeComment)) 'timeComment': timeComment,
-      if (!IZIValidate.nullOrEmpty(typeUser)) 'typeUser': content,
+      if (!IZIValidate.nullOrEmpty(typeUser)) 'typeUser': typeUser,
     };
   }
 

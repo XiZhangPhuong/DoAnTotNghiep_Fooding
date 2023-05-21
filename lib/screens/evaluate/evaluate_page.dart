@@ -24,12 +24,12 @@ class EvaluatePage extends GetView<EvaluateController> {
         return Scaffold(
           backgroundColor: ColorResources.BACK_GROUND,
           appBar:  P45AppBarP(
-            title:   IZIValidate.nullOrEmpty(controller.idShipper) ? 'Đánh giá sản phẩm' : 'Đánh giá tài xế',
+            title:   controller.type=='PRODUCT' ?'Đánh giá sản phẩm' : 'Đánh giá tài xế',
             ),
           floatingActionButton: P45Button(
             title: 'Gửi đánh giá',
             onPressed: () {
-              controller.postComment();
+              controller.postComment(controller.type);
             },
           ),
           floatingActionButtonLocation:
@@ -42,160 +42,166 @@ class EvaluatePage extends GetView<EvaluateController> {
                   children: [
                     // listview product order
                     // check
-                  IZIValidate.nullOrEmpty(controller.idShipper) ? 
+                   controller.type=='PRODUCT' ? 
                     _listViewProductOrder() : _viewShipper(controller),
                     SizedBox(
                       height: IZIDimensions.SPACE_SIZE_3X,
                     ),
                     // evaluate
                     Expanded(
-                      child: Container(
-                        height: IZIDimensions.iziSize.height,
-                        width: IZIDimensions.iziSize.width,
-                        padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
-                        color: ColorResources.WHITE,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: IZIDimensions.SPACE_SIZE_2X,
-                            ),
-                            RatingStars(
-                              value: controller.countRating.toDouble(),
-                              starCount: 5,
-                              starSpacing: 4,
-                              starSize: IZIDimensions.ONE_UNIT_SIZE * 50,
-                              starColor: Colors.yellow,
-                              valueLabelVisibility: false,
-                              onValueChanged: (value) {
-                                controller.clickRatingBar(value);
-                                print(value);
-                              },
-                            ),
-                            SizedBox(
-                              height: IZIDimensions.SPACE_SIZE_3X,
-                            ),
-                            //
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    controller.clickSatisField();
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.thumb_up,
-                                        color: controller.satisFied
-                                            ? Colors.blue
-                                            : ColorResources.GREY,
-                                        size: IZIDimensions.ONE_UNIT_SIZE * 45,
-                                      ),
-                                      Text(
-                                        'Hài lòng',
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          color: ColorResources.GREY,
-                                          fontFamily: NUNITO,
-                                          fontWeight: FontWeight.w600,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontSize: IZIDimensions.FONT_SIZE_H6,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    controller.clickSatisField();
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.thumb_down,
-                                        color: controller.satisFied
-                                            ? Colors.grey
-                                            : Colors.blue,
-                                        size: IZIDimensions.ONE_UNIT_SIZE * 45,
-                                      ),
-                                      Text(
-                                        'Không hài lòng',
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          color: ColorResources.GREY,
-                                          fontFamily: NUNITO,
-                                          fontWeight: FontWeight.w600,
-                                          overflow: TextOverflow.ellipsis,
-                                          fontSize: IZIDimensions.FONT_SIZE_H6,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                            //
-                            ,
-                            _textFiled(controller),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.only(
-                                  top: IZIDimensions.SPACE_SIZE_2X),
-                              padding: EdgeInsets.only(
-                                  left: IZIDimensions.SPACE_SIZE_2X),
-                              child: Row(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          height: IZIDimensions.iziSize.height,
+                          width: IZIDimensions.iziSize.width,
+                          padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_3X),
+                          color: ColorResources.WHITE,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: IZIDimensions.SPACE_SIZE_2X,
+                              ),
+                              RatingStars(
+                                value: controller.countRating.toDouble(),
+                                starCount: 5,
+                                starSpacing: 4,
+                                starSize: IZIDimensions.ONE_UNIT_SIZE * 50,
+                                starColor: Colors.yellow,
+                                valueLabelVisibility: false,
+                                onValueChanged: (value) {
+                                  controller.clickRatingBar(value);
+                                  print(value);
+                                },
+                              ),
+                              SizedBox(
+                                height: IZIDimensions.SPACE_SIZE_3X,
+                              ),
+                              //
+                                    
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  // pick image
                                   GestureDetector(
                                     onTap: () {
-                                      controller.pickAvatar();
+                                      controller.clickSatisField();
                                     },
-                                    child: Container(
-                                      height: IZIDimensions.ONE_UNIT_SIZE * 150,
-                                      width: IZIDimensions.ONE_UNIT_SIZE * 150,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                            IZIDimensions.SPACE_SIZE_3X),
-                                        color: ColorResources.GREY
-                                            .withOpacity(0.1),
-                                      ),
-                                      child: Center(
-                                          child: Icon(
-                                        Icons.add_a_photo,
-                                        size: IZIDimensions.ONE_UNIT_SIZE * 50,
-                                        color: ColorResources.GREY,
-                                      )),
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.thumb_up,
+                                          color: controller.satisFied
+                                              ? Colors.blue
+                                              : ColorResources.GREY,
+                                          size: IZIDimensions.ONE_UNIT_SIZE * 45,
+                                        ),
+                                        Text(
+                                          'Hài lòng',
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            color: ColorResources.GREY,
+                                            fontFamily: NUNITO,
+                                            fontWeight: FontWeight.w600,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: IZIDimensions.FONT_SIZE_H6,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: IZIDimensions.SPACE_SIZE_1X,
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.clickSatisField();
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.thumb_down,
+                                          color: controller.satisFied
+                                              ? Colors.grey
+                                              : Colors.blue,
+                                          size: IZIDimensions.ONE_UNIT_SIZE * 45,
+                                        ),
+                                        Text(
+                                          'Không hài lòng',
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            color: ColorResources.GREY,
+                                            fontFamily: NUNITO,
+                                            fontWeight: FontWeight.w600,
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: IZIDimensions.FONT_SIZE_H6,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-
-                                  //  show imager picker
-                                  _showImagePicker(controller),
                                 ],
+                              )
+                              //
+                              ,
+                              _textFiled(controller),
+                                    
+                              Visibility(
+                                visible: controller.type=='PRODUCT'?true:false,
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.only(
+                                      top: IZIDimensions.SPACE_SIZE_2X),
+                                  padding: EdgeInsets.only(
+                                      left: IZIDimensions.SPACE_SIZE_2X),
+                                  child: Row(
+                                    children: [
+                                      // pick image
+                                      GestureDetector(
+                                        onTap: () {
+                                          controller.pickAvatar();
+                                        },
+                                        child: Container(
+                                          height: IZIDimensions.ONE_UNIT_SIZE * 150,
+                                          width: IZIDimensions.ONE_UNIT_SIZE * 150,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                IZIDimensions.SPACE_SIZE_3X),
+                                            color: ColorResources.GREY
+                                                .withOpacity(0.1),
+                                          ),
+                                          child: Center(
+                                              child: Icon(
+                                            Icons.add_a_photo,
+                                            size: IZIDimensions.ONE_UNIT_SIZE * 50,
+                                            color: ColorResources.GREY,
+                                          )),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: IZIDimensions.SPACE_SIZE_1X,
+                                      ),
+                              
+                                      //  show imager picker
+                                      _showImagePicker(controller),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: IZIDimensions.SPACE_SIZE_4X,
-                            ),
-                            const Divider(),
-                            SizedBox(
-                              height: IZIDimensions.SPACE_SIZE_2X,
-                            ),
-                            Text(
-                              'Chia sẻ cảm nhận, đánh giá để cửa hàng chúng tôi ngày càng hoàn thiện hơn. \nRất cảm ơn quý khách hàng đã lựa chọn cửa hàng chúng tôi trong hàng ngàn cửa hàng ngoài kia',
-                              maxLines: 2,
-                              style: TextStyle(
-                                color: ColorResources.GREY,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                              SizedBox(
+                                height: IZIDimensions.SPACE_SIZE_4X,
                               ),
-                            ),
-                          ],
+                              const Divider(),
+                              SizedBox(
+                                height: IZIDimensions.SPACE_SIZE_2X,
+                              ),
+                              Text(
+                                'Chia sẻ cảm nhận, đánh giá để cửa hàng chúng tôi ngày càng hoàn thiện hơn. \nRất cảm ơn quý khách hàng đã lựa chọn cửa hàng chúng tôi trong hàng ngàn cửa hàng ngoài kia',
+                                maxLines: 2,
+                                style: TextStyle(
+                                  color: ColorResources.GREY,
+                                  fontFamily: NUNITO,
+                                  fontWeight: FontWeight.w600,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -386,7 +392,7 @@ Widget _viewShipper(EvaluateController controller) {
           borderRadius: BorderRadius.circular(IZIDimensions.BORDER_RADIUS_3X),
           child: IZIImage(
             IZIValidate.nullOrEmpty(controller.userResponse.avatar)
-                ? ''
+                ? 'https://thichtours.com/wp-content/uploads/2020/08/IMG_9830-copy-550x500.jpg'
                 : controller.userResponse.avatar!,
             height: IZIDimensions.ONE_UNIT_SIZE * 120,
             width: IZIDimensions.ONE_UNIT_SIZE * 120,
