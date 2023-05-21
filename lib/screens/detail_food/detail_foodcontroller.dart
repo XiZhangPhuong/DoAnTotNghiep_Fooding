@@ -437,8 +437,6 @@ class DetailFoodController extends GetxController {
     if (isCheckFavorite == true) {
       listFavorite.remove(idUser);
       isCheckFavorite = false;
-      Get.find<FavoriteController>().getProductFavorite();
-      Get.find<FavoriteController>().update();
       IZIAlert().success(message: 'Đã hủy yêu thích');
     } else {
       if (listFavorite.contains(idUser)) {
