@@ -15,7 +15,7 @@ class FavoriteController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _getProductFavorite();
+    getProductFavorite();
   }
 
     ///
@@ -41,7 +41,7 @@ class FavoriteController extends GetxController {
   ///
   /// get product favorite
   ///
-  Future<void> _getProductFavorite() async {
+  Future<void> getProductFavorite() async {
     _productsRepository.getListProductFavorite(
       idUser: idUser,
       onSucess: (data) {
@@ -66,7 +66,7 @@ class FavoriteController extends GetxController {
       idProduct: productRequest.id!, 
        product: productRequest, 
        onSucess: () {
-         _getProductFavorite();
+         getProductFavorite();
          IZIAlert().success(message: 'Hủy yêu thích thành công');
          update();
        }, 

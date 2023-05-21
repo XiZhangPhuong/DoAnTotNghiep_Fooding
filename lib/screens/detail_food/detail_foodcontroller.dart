@@ -19,6 +19,7 @@ import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
+import 'package:fooding_project/screens/favorite/favorite_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
@@ -436,6 +437,9 @@ class DetailFoodController extends GetxController {
     if (isCheckFavorite == true) {
       listFavorite.remove(idUser);
       isCheckFavorite = false;
+
+      Get.find<FavoriteController>().getProductFavorite();
+      Get.find<FavoriteController>().update();
       IZIAlert().success(message: 'Đã hủy yêu thích');
     } else {
       if (listFavorite.contains(idUser)) {
