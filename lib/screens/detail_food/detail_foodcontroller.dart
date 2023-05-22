@@ -157,8 +157,7 @@ class DetailFoodController extends GetxController {
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
     getListProductCartByIdUser();
-    getAllComment();
-    getListFavorite();
+
   }
 
   ///
@@ -227,37 +226,37 @@ class DetailFoodController extends GetxController {
   /// add cart
   ///
   void addCartToFireStore(Products products) {
-  EasyLoading.show(status: "Đang cập nhật");
-  final CartRquest cartRquest = CartRquest();
-  cartRquest.idUser = idUser;
+    EasyLoading.show(status: "Đang cập nhật");
+    final CartRquest cartRquest = CartRquest();
+    cartRquest.idUser = idUser;
 
-  List<Products> listProductsCart1 = [];
-  bool isDuplicate = listProductsCart1.any((item) => item.id == products.id);
-  
-  if (!isDuplicate) {
-    listProductsCart1.add(products);
-    cartRquest.listProduct = listProductsCart1;
+    List<Products> listProductsCart1 = [];
+    bool isDuplicate = listProductsCart1.any((item) => item.id == products.id);
 
-    _cartRepository.addCart(
-      idUser: idUser,
-      data: cartRquest,
-      onError: (error) {
-        EasyLoading.dismiss();
-        print(error);
-      },
-      onSuccess: () {
-        IZIAlert().success(message: 'Thêm món ăn thành công');
-        EasyLoading.dismiss();
-        final bot = Get.find<BottomBarController>();
-        bot.countCartByIDStore();
-        bot.update();
-        update();
-      },
-    );
-  } else {
-    print('Sản phẩm đã tồn tại trong giỏ hàng');
+    if (!isDuplicate) {
+      listProductsCart1.add(products);
+      cartRquest.listProduct = listProductsCart1;
+
+      _cartRepository.addCart(
+        idUser: idUser,
+        data: cartRquest,
+        onError: (error) {
+          EasyLoading.dismiss();
+          print(error);
+        },
+        onSuccess: () {
+          IZIAlert().success(message: 'Thêm món ăn thành công');
+          EasyLoading.dismiss();
+          final bot = Get.find<BottomBarController>();
+          bot.countCartByIDStore();
+          bot.update();
+          update();
+        },
+      );
+    } else {
+      print('Sản phẩm đã tồn tại trong giỏ hàng');
+    }
   }
-}
 
   ///
   /// showDialog if !idStore
@@ -281,7 +280,6 @@ class DetailFoodController extends GetxController {
           },
           onError: (error) {},
         );
-  
       },
       onTapCancle: () {
         Get.back();
@@ -358,9 +356,15 @@ class DetailFoodController extends GetxController {
       findAddress();
       paginateProductsByNameCateogry();
       countProductByIdStore();
-      isLoading = true;
+      getAllComment();
+      getListFavorite();
+      Future.delayed(const Duration(seconds: 1), () {
+        isLoading = true;
+        update();
+      });
+
       print(productsModel!.toMap());
-      update();
+     
     }
   }
 

@@ -25,8 +25,7 @@ class HomeScreenPage extends GetView<HomeController> {
         return Scaffold(
           backgroundColor: ColorResources.WHITE,
           body: SafeArea(
-            child: Container(
-              
+            child: Container(            
               color: ColorResources.WHITE,
               padding: EdgeInsets.symmetric(
                   horizontal: IZIDimensions.SPACE_SIZE_3X,

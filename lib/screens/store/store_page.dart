@@ -24,9 +24,7 @@ class StorePage extends GetView<StoreController> {
            floatingActionButton: _floattingButton(controller),
           floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
           body: controller.isLoadDingStore == false
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
+              ? const SimmerStorePage()
               : Column(
                   children: [
                     SizedBox(
@@ -230,8 +228,7 @@ class StorePage extends GetView<StoreController> {
                           const Spacer(),
                           GestureDetector(
                             onTap: () {
-                              print('le thi thu phuong');
-                              controller.gotoEvualate();
+                              // controller.addComment();
                             },
                             child: Text(
                               'Xem đánh giá',
@@ -294,11 +291,14 @@ Widget _listviewProducts(StoreController controller) {
               children: [
                 Row(
                   children: [
-                    IZIImage(
-                      controller.listProducts[index].image!.first,
-                      height: IZIDimensions.ONE_UNIT_SIZE * 150,
-                      width: IZIDimensions.ONE_UNIT_SIZE * 150,
-                      fit: BoxFit.cover,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
+                      child: IZIImage(
+                        controller.listProducts[index].image!.first,
+                        height: IZIDimensions.ONE_UNIT_SIZE * 150,
+                        width: IZIDimensions.ONE_UNIT_SIZE * 150,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     SizedBox(
                       width: IZIDimensions.SPACE_SIZE_3X,

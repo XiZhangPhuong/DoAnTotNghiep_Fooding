@@ -160,18 +160,20 @@ class HomeController extends GetxController {
   Future<void> getAllProduct() async {
     _productsRepository.getAllListProduct(
       onSucess: (listProduct) async {
-        listProductAll = listProduct;
-
         for (final item in listProduct) {
-          storeResponse = await findStore(item.idUser!);
-          currentLocation ??= await Geolocator.getLastKnownPosition();
-          lat1 = currentLocation!.latitude;
-          lon1 = currentLocation!.longitude;
-          List<String> list = storeResponse.latLong!.split(';');
-          lat2 = double.parse(list[0]);
-          lon2 = double.parse(list[1]);
-          listKm.add(Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000);
-          print(Geolocator.distanceBetween(lat1, lon1, lat2, lon2));
+          if (item.isDeleted == false) {
+            listProductAll.add(item);
+            storeResponse = await findStore(item.idUser!);
+            currentLocation ??= await Geolocator.getLastKnownPosition();
+            lat1 = currentLocation!.latitude;
+            lon1 = currentLocation!.longitude;
+            List<String> list = storeResponse.latLong!.split(';');
+            lat2 = double.parse(list[0]);
+            lon2 = double.parse(list[1]);
+            listKm
+                .add(Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000);
+            print(Geolocator.distanceBetween(lat1, lon1, lat2, lon2));
+          }
         }
 
         for (int i = 0; i < listProductAll.length; i++) {
@@ -229,25 +231,6 @@ class HomeController extends GetxController {
   }
 
   ///
-  /// get data products
-  ///
-  Future<void> paginateProducts() async {
-    listProducts.clear();
-    _productsRepository.paginateProducts(
-      limit: 10,
-      onSucess: (listProduct) {
-        listProducts = listProduct;
-        listProducts.shuffle();
-        isLoadingProduct = false;
-        update();
-      },
-      onError: (error) {
-        print(error);
-      },
-    );
-  }
-
-  ///
   /// get data products recommend
   ///
   Future<void> paginateProductsRecommnend() async {
@@ -278,7 +261,11 @@ class HomeController extends GetxController {
     _productsRepository.paginateFlashsaleProducts(
       limit: 10,
       onSucess: (listProduct) {
-        listProducts = listProduct;
+        for (final i in listProduct) {
+          if (i.isDeleted == false) {
+            listProducts.add(i);
+          }
+        }
         isLoadingProduct = false;
         update();
       },
