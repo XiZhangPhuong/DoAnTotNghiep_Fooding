@@ -88,9 +88,11 @@ class OrderResponse {
           map['typePayment'] != null ? map['typePayment'] as String : null,
       timePeding:
           map['timePeding'] != null ? map['timePeding'] as String : null,
-      timeDelivering:
-          map['timeDelivering'] != null ? map['timeDelivering'] as String : null,
-      timeCancel: map['timeCancel'] != null ? map['timeCancel'] as String : null,
+      timeDelivering: map['timeDelivering'] != null
+          ? map['timeDelivering'] as String
+          : null,
+      timeCancel:
+          map['timeCancel'] != null ? map['timeCancel'] as String : null,
       timeDone: map['timeDone'] != null ? map['timeDone'] as String : null,
       timeConfirm:
           map['timeConfirm'] != null ? map['timeConfirm'] as String : null,

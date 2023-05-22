@@ -303,6 +303,7 @@ class PaymentController extends GetxController {
         onSucces: (data) async {
           if (!IZIValidate.nullOrEmpty(data)) {
             await findStore(cartResponse.listProduct!.first.idUser!);
+            print(storeResponse.latLong.toString());
             List<String> listLatLongStore =
                 IZIValidate.nullOrEmpty(storeResponse.latLong)
                     ? ["16.0718593", "108.2206474"]
