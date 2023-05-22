@@ -85,16 +85,16 @@ class UserRepository {
         .get();
     return model.User.fromMap(querySnapshot.data() as Map<String, dynamic>);
   }
+
   ///
   /// Find user.
   ///
   Future<model.User> findbyId({required String idUser}) async {
-    final querySnapshot = await _fireStore
-        .collection("users")
-        .doc(idUser)
-        .get();
+    final querySnapshot =
+        await _fireStore.collection("users").doc(idUser).get();
     return model.User.fromMap(querySnapshot.data() as Map<String, dynamic>);
   }
+
   ///
   /// Update User.
   ///
@@ -252,6 +252,7 @@ class UserRepository {
   }) async {
     try {
       final query = await _fireStore.collection("users").doc(idStore).get();
+      print(Store.fromMap(query.data() as Map<String, dynamic>).toJson());
       onSucces(Store.fromMap(query.data() as Map<String, dynamic>));
     } catch (e) {
       onError(e);

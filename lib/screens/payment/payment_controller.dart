@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -302,12 +303,18 @@ class PaymentController extends GetxController {
         idLocation: userResponse.idLocation!,
         onSucces: (data) async {
           if (!IZIValidate.nullOrEmpty(data)) {
-            await findStore(cartResponse.listProduct!.first.idUser!);
-            print(storeResponse.latLong.toString());
+            final query = await FirebaseFirestore.instance
+                .collection("users")
+                .doc(cartResponse.listProduct!.first.idUser!)
+                .get();
+
+            storeResponse =
+                model.User.fromMap(query.data() as Map<String, dynamic>);
             List<String> listLatLongStore =
                 IZIValidate.nullOrEmpty(storeResponse.latLong)
                     ? ["16.0718593", "108.2206474"]
                     : storeResponse.latLong!.split(";");
+            print(listLatLongStore.toString());
             location = data;
             List<String> listLatLong = location.latlong!.split(";");
             // distance = (Geolocator.distanceBetween(
@@ -371,7 +378,6 @@ class PaymentController extends GetxController {
                     }
                     order.listProduct = cartResponse.listProduct;
                     order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
-                    order.latLong = location.latlong;
                     order.note = noteEditingController.text;
                     order.shipPrice = priceShip;
                     order.name = location.name;
@@ -490,20 +496,5 @@ class PaymentController extends GetxController {
     return priceShip + tamtinh - discount <= 0
         ? 0
         : priceShip + tamtinh - discount;
-  }
-
-  ///
-  /// Find Store.
-  ///
-  Future<void> findStore(String idStore) async {
-    await _userRepository.findStoreByID(
-      idStore: idStore,
-      onSucces: (store) {
-        storeResponse = store;
-      },
-      onError: (error) {
-        print(error.toString());
-      },
-    );
   }
 }
