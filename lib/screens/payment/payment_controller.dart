@@ -307,6 +307,7 @@ class PaymentController extends GetxController {
                 IZIValidate.nullOrEmpty(storeResponse.latLong)
                     ? ["16.0718593", "108.2206474"]
                     : storeResponse.latLong!.split(";");
+            IZIAlert().error(message: listLatLongStore.toString());
             location = data;
             List<String> listLatLong = location.latlong!.split(";");
             // distance = (Geolocator.distanceBetween(

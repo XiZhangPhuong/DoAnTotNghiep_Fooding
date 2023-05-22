@@ -629,6 +629,36 @@ class PaymentPage extends GetView<PaymentController> {
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_1X,
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Thời gian',
+                style: TextStyle(
+                  color: ColorResources.GREY,
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w400,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                ),
+              ),
+              Text(
+                IZIValidate.nullOrEmpty(controller.timeDelivery)
+                    ? "Unknow"
+                    : controller.timeDelivery.toString(),
+                style: TextStyle(
+                  color: ColorResources.GREY,
+                  fontFamily: NUNITO,
+                  fontWeight: FontWeight.w400,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_1X,
+          ),
           IZIValidate.nullOrEmpty(controller.myVourcher)
               ? const SizedBox()
               : Row(
