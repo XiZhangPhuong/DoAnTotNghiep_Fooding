@@ -10,12 +10,15 @@ import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/order/order.dart';
+import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
+import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class EvaluateController extends GetxController {
@@ -23,21 +26,35 @@ class EvaluateController extends GetxController {
   List<String> listArgument = Get.arguments as List<String>;
   String idOrder = '';
   String idProduct = '';
+  String idShipper = '';
+  String type = '';
   final CommentRepository _commentRepository = GetIt.I.get<CommentRepository>();
   TextEditingController editingController = TextEditingController();
   final _orderRepository = GetIt.I.get<OrderResponsitory>();
+  final _userRepository = GetIt.I.get<UserRepository>();
   bool isLoadingOrder = false;
   bool satisFied = true;
   double countRating = 0;
+  User userResponse = User();
   File? imageFile;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   List<File> listImageFile = [];
   @override
   void onInit() {
     super.onInit();
-    idOrder = listArgument.first;
-    idProduct = listArgument.last;
+    idOrder = listArgument[0];
+    idProduct = listArgument[1];
+    idShipper = listArgument[2];
+    type = listArgument[3];
     findOrderDetail();
+    _findUser();
+  }
+
+  ///
+  /// fint user
+  ///
+  Future<void> _findUser() async {
+    userResponse = await _userRepository.findbyId(idUser: idShipper);
   }
 
   ///
@@ -92,7 +109,7 @@ class EvaluateController extends GetxController {
   /// click rating bar
   ///
   void clickRatingBar(double value) {
-    countRating = value;
+    countRating = value.toDouble();
     update();
   }
 
@@ -117,12 +134,12 @@ class EvaluateController extends GetxController {
   ///
   /// post Comment
   ///
-  Future<void> postComment() async {
+  Future<void> postComment(String typeUser) async {
     if (countRating == 0) {
       IZIAlert().error(message: 'Bạn chưa chọn số sao');
       return;
     }
-    String idComment =  const Uuid().v1();
+    String idComment = const Uuid().v1();
     EasyLoading.show(status: 'Đang cập nhập');
     final CommentRequets _commentRequest = CommentRequets();
     _commentRequest.id = idComment;
@@ -130,13 +147,22 @@ class EvaluateController extends GetxController {
     _commentRequest.idStore = orderResponse!.listProduct![0].idUser!;
     _commentRequest.idOrder = orderResponse!.id;
     _commentRequest.satisFied = convertsatisFied();
+    _commentRequest.idShipper = idShipper;
     _commentRequest.idProduct = idProduct;
+    if (typeUser == 'SHIPPER') {
+      _commentRequest.typeUser = 'SHIPPER';
+    } else {
+      _commentRequest.typeUser = 'PRODUCT';
+    }
+
+    _commentRequest.timeComment =
+        DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
     IZIValidate.nullOrEmpty(editingController.text)
         ? ''
         : _commentRequest.content = editingController.text;
-    _commentRequest.rating = countRating;
+    _commentRequest.rating = countRating.toDouble();
     if (listImageFile.isNotEmpty) {
-      _commentRequest.listImage =  await uploadImagesToStorage(listImageFile);
+      _commentRequest.listImage = await uploadImagesToStorage(listImageFile);
     }
     await _commentRepository.addComment(
       id: idComment,
@@ -148,6 +174,7 @@ class EvaluateController extends GetxController {
         Get.back();
       },
       onError: (error) {
+        EasyLoading.dismiss();
         print(error);
       },
     );

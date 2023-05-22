@@ -38,11 +38,13 @@ class HomeController extends GetxController {
   List<Store> listStore = [];
   List<Products> listProducts = [];
   List<Products> listProductRecommend = [];
+  List<Products> listProductAll = [];
   bool isLoadingCategory = true;
   bool isLoadingProduct = true;
   bool isLoadingUser = false;
   bool isLoadingStore = false;
   bool isLoadingProductRecomment = true;
+  bool isLoadingProductAll = false;
   int limit = 10;
   double km = 0;
   User userReponse = User();
@@ -80,6 +82,7 @@ class HomeController extends GetxController {
   void onRefreshing() {
     getCategoryList();
     paginateProductsRecommnend();
+    getAllProduct();
     final bot = Get.find<BottomBarController>();
     bot.countCartByIDStore();
     bot.listenData();
@@ -115,6 +118,7 @@ class HomeController extends GetxController {
     getCategoryList();
     paginateProductsRecommnend();
     refreshController.refreshCompleted();
+    getAllProduct();
     refreshController.loadComplete();
   }
 
@@ -129,6 +133,7 @@ class HomeController extends GetxController {
     paginateFlashSaleProduct();
     getCategoryList();
     paginateProductsRecommnend();
+    getAllProduct();
     _getCurrentLocation();
 
     ;
@@ -147,6 +152,49 @@ class HomeController extends GetxController {
     double money = (priceDiscount - price).toDouble();
     str = 'Giảm ${IZIPrice.currencyConverterVND(money)}đ';
     return str;
+  }
+
+  ///
+  /// get all Product
+  ///
+  Future<void> getAllProduct() async {
+    _productsRepository.getAllListProduct(
+      onSucess: (listProduct) async {
+        listProductAll = listProduct;
+
+        for (final item in listProduct) {
+          storeResponse = await findStore(item.idUser!);
+          currentLocation ??= await Geolocator.getLastKnownPosition();
+          lat1 = currentLocation!.latitude;
+          lon1 = currentLocation!.longitude;
+          List<String> list = storeResponse.latLong!.split(';');
+          lat2 = double.parse(list[0]);
+          lon2 = double.parse(list[1]);
+          listKm.add(Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000);
+          print(Geolocator.distanceBetween(lat1, lon1, lat2, lon2));
+        }
+
+        for (int i = 0; i < listProductAll.length; i++) {
+          for (int j = i + 1; j < listProductAll.length; j++) {
+            if (listKm[i] > listKm[j]) {
+              var tempProduct = listProductAll[i];
+              listProductAll[i] = listProductAll[j];
+              listProductAll[j] = tempProduct;
+
+              var tempKm = listKm[i];
+              listKm[i] = listKm[j];
+              listKm[j] = tempKm;
+            }
+          }
+        }
+
+        isLoadingProductAll = true;
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
 
   ///
@@ -208,20 +256,11 @@ class HomeController extends GetxController {
       limit: 10,
       onSucess: (listProduct) async {
         listProductRecommend = listProduct;
-        
-        for(final item in listProduct){
-          storeResponse = await findStore(item.idUser!);
-          if(currentLocation == null){
-            currentLocation = await  Geolocator.getLastKnownPosition();
-          }
-          lat1  = currentLocation!.latitude;
-          lon1 = currentLocation!.longitude;
-          List<String> list = storeResponse.latLong!.split(';');
-          lat2 = double.parse(list[0]);
-          lon2 = double.parse(list[1]);
-          listKm.add(Geolocator.distanceBetween(lat1, lon1, lat2, lon2)/1000);
-          print(Geolocator.distanceBetween(lat1, lon1, lat2, lon2));
-        }
+        listProductRecommend.sort(
+          (a, b) {
+            return b.sold!.compareTo(a.sold!);
+          },
+        );
         isLoadingProductRecomment = false;
         update();
       },

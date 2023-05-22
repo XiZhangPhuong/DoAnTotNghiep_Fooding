@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 
 class Products {
@@ -49,7 +47,7 @@ class Products {
       if (!IZIValidate.nullOrEmpty(price)) 'price': price,
       if (!IZIValidate.nullOrEmpty(price)) 'priceDiscount': priceDiscount,
       if (!IZIValidate.nullOrEmpty(sold)) 'sold': sold,
-      if (!IZIValidate.nullOrEmpty(sold)) 'isShow': isShow,
+      if (!IZIValidate.nullOrEmpty(isShow)) 'isShow': isShow,
       if (!IZIValidate.nullOrEmpty(sold)) 'favorites': favorites,
       if (!IZIValidate.nullOrEmpty(sold)) 'km': km,
     };

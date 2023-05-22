@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, iterable_contains_unrelated_type
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +8,18 @@ import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
-import 'package:fooding_project/model/favorite/favorite.dart';
+import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
+import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
+import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/favorite_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
+import 'package:fooding_project/screens/favorite/favorite_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
@@ -27,6 +30,8 @@ class DetailFoodController extends GetxController {
   bool isLoading = false;
   bool isLoadingStore = false;
   bool isLoadingProduct = false;
+  bool isLoadingListComment = false;
+  bool isLoadingUser = false;
   int currentIndex = 0;
   String idProduct = "";
   String idStore = "";
@@ -38,13 +43,17 @@ class DetailFoodController extends GetxController {
   List<Products> listProducts = [];
   List<Products> listProductsCart = [];
   List<Products> listProductFavorite = [];
-
+  List<String> listFavorite = [];
+  List<CommentRequets> listComment = [];
+  List<User> listUser = [];
+  User userReponse = User();
   int quantity = 0;
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
+  final CommentRepository _commentRepository = GetIt.I.get<CommentRepository>();
   final FavoriteRepository _favoriteRepository =
       GetIt.I.get<FavoriteRepository>();
 
@@ -58,6 +67,58 @@ class DetailFoodController extends GetxController {
     } else {
       return '$sales đã bán';
     }
+  }
+
+  ///
+  /// get list product cart by idUser
+  ///
+  void getListProductCartByIdUser() {
+    _cartRepository.getListProduct(
+      idUser: idUser,
+      onSuccess: (data) {
+        listProductsCart = data;
+        for (final i in listProductsCart) {
+          print(i.name!);
+        }
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+  ///
+  /// checkIdStore
+  ///
+  bool checkIDStore(String idStore) {
+    for (final i in listProductsCart) {
+      if (idStore != i.idUser) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  ///
+  /// get all comment by id product
+  ///
+  Future<void> getAllComment() async {
+    _commentRepository.getAllComment(
+      idProduct: idProduct,
+      onSuccess: (data) async {
+        listComment = data;
+        for (final i in listComment) {
+          userReponse = await findUserByID(i.idUser!);
+          listUser.add(userReponse);
+        }
+        isLoadingListComment = true;
+        update();
+      },
+      onError: (e) {
+        print(e);
+      },
+    );
   }
 
   ///
@@ -95,7 +156,9 @@ class DetailFoodController extends GetxController {
     super.onInit();
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
-    checkLikeProduct();
+    getListProductCartByIdUser();
+    getAllComment();
+    getListFavorite();
   }
 
   ///
@@ -115,6 +178,13 @@ class DetailFoodController extends GetxController {
       },
       onError: (error) {},
     );
+  }
+
+  ///
+  /// fint user by id
+  ///
+  Future<User> findUserByID(String idUser) async {
+    return _userRepository.findbyId(idUser: idUser);
   }
 
   ///
@@ -146,35 +216,48 @@ class DetailFoodController extends GetxController {
       IZIAlert().error(message: 'Đã có trong giỏ hàng');
       return;
     }
-    if (checkIdStore(products.idUser!)) {
+    if (checkIDStore(products.idUser!)) {
       Get.dialog(showDialog(idUser, products));
       return;
     }
-    addCartToFireStore();
+    addCartToFireStore(products);
   }
 
   ///
   /// add cart
   ///
-  void addCartToFireStore() {
-    final CartRquest cartRquest = CartRquest();
-    cartRquest.idUser = idUser;
-    listProductsCart.add(productsModel!);
-    cartRquest.listProduct = listProductsCart;
+  void addCartToFireStore(Products products) {
+  EasyLoading.show(status: "Đang cập nhật");
+  final CartRquest cartRquest = CartRquest();
+  cartRquest.idUser = idUser;
+
+  List<Products> listProductsCart1 = [];
+  bool isDuplicate = listProductsCart1.any((item) => item.id == products.id);
+  
+  if (!isDuplicate) {
+    listProductsCart1.add(products);
+    cartRquest.listProduct = listProductsCart1;
+
     _cartRepository.addCart(
       idUser: idUser,
       data: cartRquest,
-      onSucces: () {
-        EasyLoading.show(status: "Đang cập nhật");
-        IZIAlert().success(message: 'Thêm món ăn thành công');
-        EasyLoading.dismiss();
-        update();
-      },
       onError: (error) {
+        EasyLoading.dismiss();
         print(error);
       },
+      onSuccess: () {
+        IZIAlert().success(message: 'Thêm món ăn thành công');
+        EasyLoading.dismiss();
+        final bot = Get.find<BottomBarController>();
+        bot.countCartByIDStore();
+        bot.update();
+        update();
+      },
     );
+  } else {
+    print('Sản phẩm đã tồn tại trong giỏ hàng');
   }
+}
 
   ///
   /// showDialog if !idStore
@@ -185,14 +268,20 @@ class DetailFoodController extends GetxController {
       agree: 'Có',
       cancel1: 'Không',
       onTapConfirm: () {
-        _productsRepository.deleteCartByUserId(id);
-        IZIAlert().success(message: 'Thay thế cửa hàng thành công');
-        Get.back();
+        final CartRquest cartRquest = CartRquest();
         listProductsCart.clear();
         listProductsCart.add(products);
-        pushProductToFireStore(idUser, listProductsCart);
-        Get.find<BottomBarController>().update();
-        update();
+        cartRquest.listProduct = listProductsCart;
+        _cartRepository.updateCart(
+          cartRquest: cartRquest,
+          onSucess: () {
+            Get.back();
+            update();
+            IZIAlert().success(message: 'Thay thế cửa hàng thành công');
+          },
+          onError: (error) {},
+        );
+  
       },
       onTapCancle: () {
         Get.back();
@@ -231,30 +320,16 @@ class DetailFoodController extends GetxController {
   }
 
   ///
-  /// push product to firestore
-  ///
-  Future<void> pushProductToFireStore(
-      String userId, List<Products> listProduct) async {
-    final cart = CartRquest(idUser: userId, listProduct: listProduct);
-    final CollectionReference collectionCart =
-        FirebaseFirestore.instance.collection("carts");
-    final cartDoc = await collectionCart.doc(userId).get();
-    if (cartDoc.exists) {
-      await collectionCart.doc(cart.idUser!).update(cart.toMap());
-    }
-    await collectionCart.doc(cart.idUser!).set(cart.toMap());
-  }
-
-  ///
   /// get all data products by name category
   ///
   Future<void> paginateProductsByNameCateogry() async {
     listProducts.clear();
     _productsRepository.paginateProductsByIDCateogry(
       limit: limit,
-      idCategory: productsModel!.nameCategory!,
+      idCategory: productsModel!.idCategory!,
       onSucess: (listProduct) {
         listProducts = listProduct;
+        listProducts.removeWhere((element) => element.id == idProduct);
         listProducts.shuffle();
         isLoadingProduct = false;
         update();
@@ -285,29 +360,6 @@ class DetailFoodController extends GetxController {
       countProductByIdStore();
       isLoading = true;
       print(productsModel!.toMap());
-      update();
-    }
-  }
-
-  ///
-  /// get data products : các món của cửa hàng
-  ///
-  Future<void> getProductList() async {
-    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('products')
-            .where('idUser', isEqualTo: idStore)
-            .get();
-    listProducts.clear();
-    if (querySnapshot.docs.isNotEmpty) {
-      for (var element in querySnapshot.docs) {
-        Products products = Products.fromMap(element.data());
-        if (products.id == idProduct) {
-          listProducts.insert(0, products);
-        } else {
-          listProducts.add(products);
-        }
-      }
       update();
     }
   }
@@ -346,14 +398,6 @@ class DetailFoodController extends GetxController {
   ///
   /// check idStore add cart
   ///
-  bool checkIdStore(String idStore) {
-    for (int i = 0; i < listProductsCart.length; i++) {
-      if (idStore != listProductsCart[i].idUser!) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   ///
   /// check opening hours
@@ -386,22 +430,32 @@ class DetailFoodController extends GetxController {
   /// add favorite
   ///
   Future<void> addFavoriteToFireStore({required Products product}) async {
-    clickFavorite();
-    List<String> listUser = [];
-    if(listUser.contains(idUser)){
-      listUser.remove(idUser);
-    }else{
-       listUser.add(idUser);
-    }  
-    product.id = product.id;
-    product.favorites  =  listUser;
+    if (IZIValidate.nullOrEmpty(idUser)) {
+      Get.find<BottomBarController>().showLoginDialog();
+      return;
+    }
+    if (isCheckFavorite == true) {
+      listFavorite.remove(idUser);
+      isCheckFavorite = false;
 
+      Get.find<FavoriteController>().getProductFavorite();
+      Get.find<FavoriteController>().update();
+      IZIAlert().success(message: 'Đã hủy yêu thích');
+    } else {
+      if (listFavorite.contains(idUser)) {
+        return;
+      }
+      listFavorite.add(idUser);
+      isCheckFavorite = true;
+      IZIAlert().success(message: 'Yêu thích thành công');
+    }
+    product.id = product.id;
+    product.favorites = listFavorite;
     _productsRepository.updateProduct(
       idProduct: idProduct,
       product: product,
       onSucess: () {
-        print('Yêu thích thành công');
-        print(product.id);
+        update();
       },
       onError: (error) {
         print(error);
@@ -410,29 +464,42 @@ class DetailFoodController extends GetxController {
   }
 
   ///
-  /// click favorite
+  /// get list favorite product
   ///
-  void clickFavorite() {
-    if (IZIValidate.nullOrEmpty(idUser)) {
-      Get.find<BottomBarController>().showLoginDialog();
-      return;
-    }
-    isCheckFavorite = !isCheckFavorite;
-    update();
+  Future<void> getListFavorite() async {
+    _productsRepository.getListFavorite(
+      idProduct: idProduct,
+      onSuccess: (data) {
+        listFavorite = data;
+        for (final i in listFavorite) {
+          print(i.toString());
+          if (listFavorite.contains(idUser)) {
+            isCheckFavorite = true;
+          } else {
+            isCheckFavorite = false;
+          }
+        }
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
   }
 
   ///
-  /// check like product
+  /// bool check user like favorite
   ///
-  Future<void> checkLikeProduct() async {
-    _productsRepository.checkUserLikeProduct(idUser: idUser, 
-    idProduct: idProduct, 
-    onSucess: (data) {
-      isCheckFavorite = data;
-      print(isCheckFavorite);
-    }, 
-    onError: (error) {
-      print(error);
-    },);
+  bool checkUserLikeProduct() {
+    for (final i in listFavorite) {
+      if (i == idUser) {
+        return true;
+      }
+    }
+    return false;
   }
+
+  ///
+  ///
+  ///
 }
