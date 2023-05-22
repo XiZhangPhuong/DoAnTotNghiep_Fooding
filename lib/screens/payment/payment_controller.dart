@@ -302,13 +302,13 @@ class PaymentController extends GetxController {
         idLocation: userResponse.idLocation!,
         onSucces: (data) async {
           if (!IZIValidate.nullOrEmpty(data)) {
+            print(data.toJson());
             await findStore(cartResponse.listProduct!.first.idUser!);
-            print(storeResponse.latLong.toString());
             List<String> listLatLongStore =
                 IZIValidate.nullOrEmpty(storeResponse.latLong)
                     ? ["16.0718593", "108.2206474"]
                     : storeResponse.latLong!.split(";");
-            IZIAlert().error(message: listLatLongStore.toString());
+            print(listLatLongStore.toString());
             location = data;
             List<String> listLatLong = location.latlong!.split(";");
             // distance = (Geolocator.distanceBetween(
@@ -372,7 +372,6 @@ class PaymentController extends GetxController {
                     }
                     order.listProduct = cartResponse.listProduct;
                     order.idCustomer = sl<SharedPreferenceHelper>().getIdUser;
-                    order.latLong = location.latlong;
                     order.note = noteEditingController.text;
                     order.shipPrice = priceShip;
                     order.name = location.name;
