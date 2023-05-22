@@ -45,6 +45,7 @@ class HomeController extends GetxController {
   bool isLoadingStore = false;
   bool isLoadingProductRecomment = true;
   bool isLoadingProductAll = false;
+  bool isLoadingNameProduct = false;
   int limit = 10;
   double km = 0;
   User userReponse = User();
@@ -56,6 +57,7 @@ class HomeController extends GetxController {
   double lon1 = 0;
   double lon2 = 0;
   List<double> listKm = [];
+  List<String> listNameProduct = [];
   // list string imageslidershow
   List<String> listImageSlider = [
     'https://tea-3.lozi.vn/v1/images/resized/banner-mobile-2733-1655805928?w=600&amp;type=o&quot',
@@ -135,6 +137,7 @@ class HomeController extends GetxController {
     paginateProductsRecommnend();
     getAllProduct();
     _getCurrentLocation();
+    getNameProduct();
 
     ;
   }
@@ -230,6 +233,20 @@ class HomeController extends GetxController {
     );
   }
 
+  ///
+  /// getNameProduct
+  ///
+  Future<void> getNameProduct() async {
+     _productsRepository.getNameProduct(onSuccess: (data) {
+        listNameProduct = data;
+        for(final i in data){
+          print(i);
+        }
+        update();
+     }, onError: (error) {
+       print(error);
+     },);
+  }
   ///
   /// get data products recommend
   ///

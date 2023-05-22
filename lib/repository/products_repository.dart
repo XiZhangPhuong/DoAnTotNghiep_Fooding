@@ -398,24 +398,17 @@ class ProductsRepository {
   /// get name category
   ///
   Future<void> getNameProduct({
-    required Function(List<String> data) onSucess,
+    required Function(List<String> data) onSuccess,
     required Function(dynamic error) onError,
+    
   }) async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('products').get();
-      List<Products> listProducts = querySnapshot.docs
-          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
-          .toList();
-      final name = <String>[];
-      for (int i = 0; i < listProducts.length; i++) {
-        name.add(listProducts[i].name!);
-      }
-      name.toSet().toList();
-      onSucess(name);
-    } catch (e) {
-      onError(e);
-    }
+     try{
+       final ref = await FirebaseFirestore.instance.collection('products').get();
+       List<String> listNameProduct  = ref.docs.map((e) => e.data()['name'] as String).toList();
+       onSuccess(listNameProduct);
+     }catch(e){
+       onError(e);
+     }
   }
 
   ///
