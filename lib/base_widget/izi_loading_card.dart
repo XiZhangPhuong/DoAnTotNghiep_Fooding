@@ -742,7 +742,6 @@ class SimmerStorePage extends StatelessWidget {
                           margin:
                               EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_1X),
                           child: Column(
-                          
                             children: [
                               Row(
                                 children: [
@@ -763,7 +762,6 @@ class SimmerStorePage extends StatelessWidget {
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                     
                                       children: [
                                         Container(
                                           height:
@@ -859,6 +857,32 @@ class SimmerStorePage extends StatelessWidget {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+///
+/// shimmer container
+///
+class SimmerContainer extends StatelessWidget {
+  const SimmerContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: IZIDimensions.iziSize.width,
+      alignment: Alignment.center,
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[200]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          height: IZIDimensions.ONE_UNIT_SIZE * 80,
+          width: IZIDimensions.iziSize.width * 0.9,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_3X),
+              color: ColorResources.WHITE),
         ),
       ),
     );

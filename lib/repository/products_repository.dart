@@ -395,27 +395,20 @@ class ProductsRepository {
   }
 
   ///
-  /// get name category
+  /// get name product
   ///
-  Future<void> getNameProduct({
-    required Function(List<String> data) onSucess,
+    Future<void> getNameProduct({
+    required Function(List<String> data) onSuccess,
     required Function(dynamic error) onError,
+    
   }) async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('products').get();
-      List<Products> listProducts = querySnapshot.docs
-          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
-          .toList();
-      final name = <String>[];
-      for (int i = 0; i < listProducts.length; i++) {
-        name.add(listProducts[i].name!);
-      }
-      name.toSet().toList();
-      onSucess(name);
-    } catch (e) {
-      onError(e);
-    }
+     try{
+       final ref = await FirebaseFirestore.instance.collection('products').get();
+       List<String> listNameProduct  = ref.docs.map((e) => e.data()['name'] as String).toList();
+       onSuccess(listNameProduct);
+     }catch(e){
+       onError(e);
+     }
   }
 
   ///
@@ -501,6 +494,28 @@ class ProductsRepository {
         List<dynamic> listFavo = ref['favorites'];
         onSuccess(listFavo.map((e) => e.toString()).toList());
       }
+    } catch (e) {
+      onError(e);
+    }
+  }
+
+  ///
+  /// get productby approximate name
+  ///
+   Future<void> getProductByApproximateName({
+    required String nameProduct,
+    required Function(List<Products> data) onSucess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
+          .get();
+      onSucess(querySnapshot.docs
+          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+          .toList());
     } catch (e) {
       onError(e);
     }

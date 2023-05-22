@@ -392,50 +392,53 @@ class SearchPage extends GetView<SearchController> {
   }
 
   Widget _searchView(SearchController controller) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: IZIDimensions.SPACE_SIZE_3X),
-      child: Row(
-        children: [
-          GestureDetector(
-              onTap: () {
-                Get.back();
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: ColorResources.BLACK,
-                size: IZIDimensions.ONE_UNIT_SIZE * 50,
-              )),
-          SizedBox(
-            width: IZIDimensions.SPACE_SIZE_2X,
-          ),
-          Expanded(
-            child: IZIInput(
-              type: IZIInputType.TEXT,
-              controller: controller.filter,
-              placeHolder: 'Bạn thèm món gì ?',
-              hintStyle: TextStyle(
-                color: ColorResources.GREY,
-                fontFamily: NUNITO,
-                fontSize: IZIDimensions.FONT_SIZE_H6,
-              ),
-              suffixIcon: Visibility(
-                  visible: true,
-                  child: Icon(
-                    Icons.delete_sweep,
-                    size: IZIDimensions.ONE_UNIT_SIZE * 40,
-                  )),
-              borderRadius: IZIDimensions.BORDER_RADIUS_3X,
-              fillColor: ColorResources.WHITE,
-              padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_3X),
-              // onChanged: (value) {
-              //   controller.search(value);
-              // },
-              onSubmitted: (p0) {
-                controller.search(p0.toString());
-              },
+    return Visibility(
+      visible: false,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: IZIDimensions.SPACE_SIZE_3X),
+        child: Row(
+          children: [
+            GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: Icon(
+                  Icons.arrow_back,
+                  color: ColorResources.BLACK,
+                  size: IZIDimensions.ONE_UNIT_SIZE * 50,
+                )),
+            SizedBox(
+              width: IZIDimensions.SPACE_SIZE_2X,
             ),
-          ),
-        ],
+            Expanded(
+              child: IZIInput(
+                type: IZIInputType.TEXT,
+                controller: controller.filter,
+                placeHolder: 'Bạn thèm món gì ?',
+                hintStyle: TextStyle(
+                  color: ColorResources.GREY,
+                  fontFamily: NUNITO,
+                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                ),
+                suffixIcon: Visibility(
+                    visible: true,
+                    child: Icon(
+                      Icons.delete_sweep,
+                      size: IZIDimensions.ONE_UNIT_SIZE * 40,
+                    )),
+                borderRadius: IZIDimensions.BORDER_RADIUS_3X,
+                fillColor: ColorResources.WHITE,
+                padding: EdgeInsets.only(left: IZIDimensions.SPACE_SIZE_3X),
+                // onChanged: (value) {
+                //   controller.search(value);
+                // },
+                onSubmitted: (p0) {
+                  controller.search(p0.toString());
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

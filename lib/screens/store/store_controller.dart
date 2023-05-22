@@ -16,7 +16,9 @@ import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/store_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
+import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
@@ -44,7 +46,11 @@ class StoreController extends GetxController {
       GetIt.I.get<ProductsRepository>();
 
   List<Products> listProductsCart = [];
-
+  double lat1 = 0;
+  double lat2 = 0;
+  double long1 = 0;
+  double long2 = 0;
+  String distance = '';
   @override
   void onInit() {
     super.onInit();
@@ -103,6 +109,14 @@ class StoreController extends GetxController {
         storeResponse = store;
         countSoldIDStore();
         countCartByIDStore();
+        List<String> listLatLong = storeResponse.latLong!.split(';');
+        final home = Get.find<HomeController>();
+        lat1 = home.lat1;
+        long1 = home.lon1;
+        lat2  = double.parse(listLatLong.first);
+        long2 = double.parse(listLatLong.last);
+        final km =  Geolocator.distanceBetween(lat1, long1, lat2, long2)/1000;
+        distance  = '${km.toStringAsFixed(2)}km';
         Future.delayed(const Duration(seconds: 1), () {
           isLoadDingStore = true;
           update();
