@@ -148,7 +148,7 @@ class ProductsRepository {
   /// get list product paginate page = 1 , limit = 10 by id Category and idStore
   ///
   Future<void> paginateProductsByIDCateogryandIdStore({
-    required String idCategory,
+    required String nameCategory,
     required String idUser,
     required int limit,
     required Function(List<Products> listProduct) onSucess,
@@ -157,10 +157,9 @@ class ProductsRepository {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
-          .where('nameCategory', isEqualTo: idCategory)
+          .where('nameCategory', isEqualTo: nameCategory)
           .where('idUser', isEqualTo: idUser)
            .where('isShow', isEqualTo: true)
-          .limit(limit)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))

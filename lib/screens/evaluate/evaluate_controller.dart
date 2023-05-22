@@ -27,6 +27,7 @@ class EvaluateController extends GetxController {
   String idOrder = '';
   String idProduct = '';
   String idShipper = '';
+  String type = '';
   final CommentRepository _commentRepository = GetIt.I.get<CommentRepository>();
   TextEditingController editingController = TextEditingController();
   final _orderRepository = GetIt.I.get<OrderResponsitory>();
@@ -44,7 +45,7 @@ class EvaluateController extends GetxController {
     idOrder = listArgument[0];
     idProduct = listArgument[1];
     idShipper = listArgument[2];
-
+    type = listArgument[3];
     findOrderDetail();
     _findUser();
   }
@@ -52,9 +53,10 @@ class EvaluateController extends GetxController {
   ///
   /// fint user
   ///
-   Future<void> _findUser() async {
-    userResponse = await  _userRepository.findbyId(idUser: idShipper);
-   }
+  Future<void> _findUser() async {
+    userResponse = await _userRepository.findbyId(idUser: idShipper);
+  }
+
   ///
   /// click satisField
   ///
@@ -132,12 +134,12 @@ class EvaluateController extends GetxController {
   ///
   /// post Comment
   ///
-  Future<void> postComment() async {
+  Future<void> postComment(String typeUser) async {
     if (countRating == 0) {
       IZIAlert().error(message: 'Bạn chưa chọn số sao');
       return;
     }
-    String idComment =  const Uuid().v1();
+    String idComment = const Uuid().v1();
     EasyLoading.show(status: 'Đang cập nhập');
     final CommentRequets _commentRequest = CommentRequets();
     _commentRequest.id = idComment;
@@ -145,21 +147,22 @@ class EvaluateController extends GetxController {
     _commentRequest.idStore = orderResponse!.listProduct![0].idUser!;
     _commentRequest.idOrder = orderResponse!.id;
     _commentRequest.satisFied = convertsatisFied();
-    if(!IZIValidate.nullOrEmpty(idShipper)){  
-      _commentRequest.idShipper = idShipper;
+    _commentRequest.idShipper = idShipper;
+    _commentRequest.idProduct = idProduct;
+    if (typeUser == 'SHIPPER') {
       _commentRequest.typeUser = 'SHIPPER';
-    }else{
-        _commentRequest.typeUser = 'PRODUCT';
-        _commentRequest.idProduct = idProduct;
+    } else {
+      _commentRequest.typeUser = 'PRODUCT';
     }
-  
-    _commentRequest.timeComment = DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
+
+    _commentRequest.timeComment =
+        DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
     IZIValidate.nullOrEmpty(editingController.text)
         ? ''
         : _commentRequest.content = editingController.text;
     _commentRequest.rating = countRating.toDouble();
     if (listImageFile.isNotEmpty) {
-      _commentRequest.listImage =  await uploadImagesToStorage(listImageFile);
+      _commentRequest.listImage = await uploadImagesToStorage(listImageFile);
     }
     await _commentRepository.addComment(
       id: idComment,
@@ -171,6 +174,7 @@ class EvaluateController extends GetxController {
         Get.back();
       },
       onError: (error) {
+        EasyLoading.dismiss();
         print(error);
       },
     );

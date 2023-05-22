@@ -3,6 +3,7 @@
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/order/order.dart';
+import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
@@ -16,7 +17,7 @@ import 'package:get_it/get_it.dart';
 import '../../model/user.dart';
 
 class ReviewFoodController extends GetxController{
-   String idOrder = Get.arguments as String;
+   String idOrder = '';
    OrderResponse orderResponse = OrderResponse();
    User userResponse = User();
    List<CommentRequets> listComment = [];
@@ -24,12 +25,14 @@ class ReviewFoodController extends GetxController{
   final UserRepository _userRepository  =  GetIt.I.get<UserRepository>();
   final CommentRepository _commentRepository = GetIt.I.get<CommentRepository>();
   bool isLoading = false;
+  bool isLoadingComment = false;
   List<bool> checkOrder = []; 
 
    @override
   void onInit() {
    
     super.onInit();
+    idOrder = Get.arguments as String;
     _findOrder();
 ;
   
@@ -44,7 +47,6 @@ class ReviewFoodController extends GetxController{
          print(orderResponse.toMap());
          userResponse = await  getUser(orderResponse.idEmployee!);
          getAllComment(orderResponse.id!);
-          checkOrderProduct();
          isLoading = true;
          update();
      }, onError: (erorr) {
@@ -62,23 +64,61 @@ class ReviewFoodController extends GetxController{
    ///
    /// go to evaluate product
    ///
-   void gotoEvaluateProduct(String idOrder,String idProduct,String idShipper){
-    Get.toNamed(DetailOrderRoutes.EVALUATE,arguments: [idOrder,idProduct,idShipper]);
+   void gotoEvaluateProduct(String idOrder,String idProduct,String idShipper,String type){
+    Get.toNamed(DetailOrderRoutes.EVALUATE,arguments: [idOrder,idProduct,idShipper,type]);
   }
 
   ///
   /// get List Comment
   ///
-  void getAllComment(String idOrder){
+  Future<void> getAllComment(String idOrder) async {
     _commentRepository.get(
       idOrder: idOrder,
       idUser: sl<SharedPreferenceHelper>().getIdUser, onSuccess: (data) {
         listComment = data;
+        isLoadingComment = true;
+        print(listComment.length.toString());
+   
         update();
     }, onError: (e) {
       print(e);
     },);
   }
+
+///
+/// checkEvaluateShipper
+///
+
+  bool checkEvaluateShipper(List<CommentRequets> listCommentRequest,OrderResponse orderResponse){
+    for(final i in listCommentRequest){
+      if(i.typeUser=='SHIPPER'){
+       if(orderResponse.id==i.idOrder! && orderResponse.idEmployee==i.idShipper){
+         return true;
+       }
+      }
+    }
+    return false;
+    }
+     
+/// 
+/// checkEvaluateProduct
+///  
+
+
+ List<bool> checkEvaluateProduct(List<CommentRequets> listCommentRequest, OrderResponse orderResponse) {
+  List<bool> listCheck = List.generate(orderResponse.listProduct!.length, (index) => false);
+  for (final i in listCommentRequest) {
+    if (i.typeUser == 'PRODUCT' && i.idOrder == orderResponse.id!) {
+      for (final currentIndex in orderResponse.listProduct!) {
+        if (currentIndex.id == i.idProduct) {
+          listCheck[orderResponse.listProduct!.indexOf(currentIndex)] = true;
+        }
+      }
+    }
+  }
+  return listCheck;
+}
+
 
   ///
   /// checkOrder

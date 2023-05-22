@@ -85,6 +85,7 @@ class HomeController extends GetxController {
     getAllProduct();
     final bot = Get.find<BottomBarController>();
     bot.countCartByIDStore();
+    bot.listenData();
     bot.update();
     refreshController.resetNoData();
     refreshController.refreshCompleted();
