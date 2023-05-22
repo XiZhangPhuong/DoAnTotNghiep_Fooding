@@ -35,42 +35,35 @@ class SearchController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    
+
     getNameCategory();
-    if(IZIValidate.nullOrEmpty(nameCategory)){
-          paginateProduct();
-    }else{
-       paginateProductsByNameCateogry();
+    if (IZIValidate.nullOrEmpty(nameCategory)) {
+      paginateProduct();
+    } else {
+      paginateProductsByNameCateogry();
     }
-
-    
-
   }
-
 
   ///
   ///
   ///
   Future<void> getNameCategory() async {
-    _categoryRepository.getName(
-      onSucess: (data) {
-        data.insert(0, 'Tất cả');
-        listNameCategory = data;    
-        isLoadDingNameCategory = true;
-        if(IZIValidate.nullOrEmpty(nameCategory)){
-          nameCategory = listNameCategory.first;
-        }else{
-          nameCategory = Get.arguments as String;
-        }
-        update();
-      },
-      onError: (error) {
-        print(error.toString());
-      },
-    );
+    _categoryRepository.getNameCategory(
+        onError: (error) {
+          print(error);
+        },
+        onSuccess: (List<String> data) {
+          data.insert(0, 'Tất cả');
+          listNameCategory = data;
+          isLoadDingNameCategory = true;
+          if (IZIValidate.nullOrEmpty(nameCategory)) {
+            nameCategory = listNameCategory.first;
+          } else {
+            nameCategory = Get.arguments as String;
+          }
+          update();
+        });
   }
-
-  
 
   ///
   /// on change dropdowbutton
@@ -78,31 +71,32 @@ class SearchController extends GetxController {
   void changeDropDow(String value) {
     nameCategory = value;
     print(nameCategory);
-    if(value=='Tất cả'){
+    if (value == 'Tất cả') {
       paginateProduct();
-    }else{
+    } else {
       paginateProductsByNameCateogry();
     }
     update();
-  } 
+  }
 
   ///
   /// search textfield
   ///
-   void search(String value){
-     if(IZIValidate.nullOrEmpty(value) && IZIValidate.nullOrEmpty(nameCategory)){
-        paginateProduct();
-     }else{
-       paginateProductByNameProduct();
-     }
+  void search(String value) {
+    if (IZIValidate.nullOrEmpty(value) &&
+        IZIValidate.nullOrEmpty(nameCategory)) {
+      paginateProduct();
+    } else {
+      paginateProductByNameProduct();
+    }
 
-     update();   
-   }
+    update();
+  }
 
   ///
-  /// 
   ///
- Future<void> paginateProductByNameProduct() async {
+  ///
+  Future<void> paginateProductByNameProduct() async {
     listProducts.clear();
     _productsRepository.paginateProductsByNameProduct(
       limit: limit,
@@ -138,8 +132,7 @@ class SearchController extends GetxController {
     );
   }
 
-  
-   ///
+  ///
   /// get all data products by name category
   ///
   Future<void> paginateProduct() async {

@@ -133,7 +133,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('name', isEqualTo: nameProduct)
-           .where('isShow', isEqualTo: true)
+          .where('isShow', isEqualTo: true)
           .limit(limit)
           .get();
       onSucess(querySnapshot.docs
@@ -145,25 +145,37 @@ class ProductsRepository {
   }
 
   ///
-  /// get list product paginate page = 1 , limit = 10 by id Category and idStore
+  ///
   ///
   Future<void> paginateProductsByIDCateogryandIdStore({
     required String nameCategory,
     required String idUser,
-    required int limit,
     required Function(List<Products> listProduct) onSucess,
     required Function(dynamic error) onError,
   }) async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('products')
-          .where('nameCategory', isEqualTo: nameCategory)
-          .where('idUser', isEqualTo: idUser)
-           .where('isShow', isEqualTo: true)
-          .get();
-      onSucess(querySnapshot.docs
-          .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
-          .toList());
+      if (IZIValidate.nullOrEmpty(nameCategory)) {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('products')
+            .where('isShow', isEqualTo: true)
+            .where('isDeleted', isEqualTo: false)
+            .where('idUser', isEqualTo: idUser)
+            .get();
+        onSucess(querySnapshot.docs
+            .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+            .toList());
+      } else {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('products')
+            .where('nameCategory', isEqualTo: nameCategory)
+            .where('idUser', isEqualTo: idUser)
+            .where('isShow', isEqualTo: true)
+            .where('isDeleted', isEqualTo: false)
+            .get();
+        onSucess(querySnapshot.docs
+            .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
+            .toList());
+      }
     } catch (e) {
       onError(e);
     }
@@ -182,7 +194,8 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('name', isGreaterThanOrEqualTo: value)
-           .where('isShow', isEqualTo: true)
+          .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -206,7 +219,8 @@ class ProductsRepository {
           .collection('products')
           .where('idProduct', isEqualTo: idProduct)
           .orderBy('price', descending: true)
-           .where('isShow', isEqualTo: true)
+          .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
           .limit(limit)
           .get();
       onSucess(querySnapshot.docs
@@ -229,8 +243,9 @@ class ProductsRepository {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
-          .where('idUser', isEqualTo: idStore)         
+          .where('idUser', isEqualTo: idStore)
           .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
           .get();
       onSucess(querySnapshot.docs.length);
     } catch (e) {
@@ -250,7 +265,6 @@ class ProductsRepository {
       final query = await FirebaseFirestore.instance
           .collection('products')
           .doc(idProduct)
-          
           .get();
       onSucess(Products.fromMap(query.data() as Map<String, dynamic>));
     } catch (e) {
@@ -270,6 +284,7 @@ class ProductsRepository {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
           .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -314,6 +329,7 @@ class ProductsRepository {
           .collection('products')
           .where('idUser', isEqualTo: idStore)
           .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
           .get();
       final List<dynamic> nameCategoryList =
           querySnapshot.docs.map((doc) => doc['nameCategory']).toSet().toList();
@@ -338,6 +354,7 @@ class ProductsRepository {
           .collection('products')
           .where('idUser', isEqualTo: idStore)
           .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -361,6 +378,7 @@ class ProductsRepository {
           .collection('products')
           .where('idUser', isEqualTo: idStore)
           .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
           .get();
 
       int count = 0;
@@ -435,6 +453,7 @@ class ProductsRepository {
           .collection('products')
           .where('favorites', arrayContains: idUser)
           .where('isShow', isEqualTo: true)
+          .where('isDeleted', isEqualTo: false)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))

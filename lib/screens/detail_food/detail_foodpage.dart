@@ -22,9 +22,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
       init: DetailFoodController(),
       builder: (DetailFoodController controller) {
         return controller.isLoading == false
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
+            ? const SimmerDetailProduct()
             : Scaffold(
                 //  bottomSheet: _bottomSheet(),
                 // floating button

@@ -14,6 +14,7 @@ import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
+import 'package:fooding_project/screens/review_food/review_food_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -169,8 +170,10 @@ class EvaluateController extends GetxController {
       request: _commentRequest,
       onSucces: () {
         EasyLoading.dismiss();
-
+ 
         IZIAlert().success(message: 'Đánh giá thành công');
+        Get.find<ReviewFoodController>().findOrder();
+        Get.find<ReviewFoodController>().update();
         Get.back();
       },
       onError: (error) {

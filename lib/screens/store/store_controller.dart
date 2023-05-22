@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
@@ -7,6 +8,7 @@ import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/cart/cart_request.dart';
+import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
@@ -17,14 +19,16 @@ import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:uuid/uuid.dart';
 
 class StoreController extends GetxController {
   bool isLoadDingStore = false;
   bool isLoadingProduct = false;
   bool isLoadingNameCategory = false;
   bool isLoadingCountCart = false;
-  String idStore = Get.arguments as String; 
+  String idStore = Get.arguments as String;
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
   Store storeResponse = Store();
   String idUser = sl<SharedPreferenceHelper>().getIdUser;
@@ -49,7 +53,7 @@ class StoreController extends GetxController {
     getListProductCartByIdUser();
   }
 
-    ///
+  ///
   /// get list product cart by idUser
   ///
   void getListProductCartByIdUser() {
@@ -67,7 +71,6 @@ class StoreController extends GetxController {
       },
     );
   }
-  
 
   ///
   /// change tabbar
@@ -75,7 +78,11 @@ class StoreController extends GetxController {
   void changeTabbar(int index) {
     curenIndex = index;
     print(listNameCategory[index]);
-    paginateProductByNameCategory(name: listNameCategory[index]);
+    if (index == 0) {
+      paginateProductByNameCategory(name: '');
+    } else {
+      paginateProductByNameCategory(name: listNameCategory[index]);
+    }
     update();
   }
 
@@ -96,8 +103,10 @@ class StoreController extends GetxController {
         storeResponse = store;
         countSoldIDStore();
         countCartByIDStore();
-        isLoadDingStore = true;
-        update();
+        Future.delayed(const Duration(seconds: 1), () {
+          isLoadDingStore = true;
+          update();
+        });
       },
       onError: (error) {
         print(error);
@@ -155,10 +164,8 @@ class StoreController extends GetxController {
     _productsRepository.paginateProductsByIDCateogryandIdStore(
       idUser: idStore,
       nameCategory: name,
-      limit: limit,
       onSucess: (listProduct) {
         listProducts = listProduct;
-
         isLoadingProduct = true;
         update();
       },
@@ -228,12 +235,9 @@ class StoreController extends GetxController {
       idStore: idStore,
       onSucess: (data) {
         listNameCategory = data;
-        for(final i in listNameCategory){
-          print(i);
-        }
-        paginateProductByNameCategory(name: listNameCategory[0]);
+        listNameCategory.insert(0, 'Tất cả');
         isLoadingNameCategory = true;
-
+        paginateProductByNameCategory(name: '');
         update();
       },
       onError: (error) {
@@ -282,42 +286,41 @@ class StoreController extends GetxController {
     EasyLoading.dismiss();
   }
 
-   ///
+  ///
   /// add cart
   ///
   void addCartToFireStore(Products products) {
-  EasyLoading.show(status: "Đang cập nhật");
-  final CartRquest cartRquest = CartRquest();
-  cartRquest.idUser = idUser;
+    EasyLoading.show(status: "Đang cập nhật");
+    final CartRquest cartRquest = CartRquest();
+    cartRquest.idUser = idUser;
 
-  List<Products> listProductsCart1 = [];
-  bool isDuplicate = listProductsCart1.any((item) => item.id == products.id);
-  
-  if (!isDuplicate) {
-    listProductsCart1.add(products);
-    cartRquest.listProduct = listProductsCart1;
+    List<Products> listProductsCart1 = [];
+    bool isDuplicate = listProductsCart1.any((item) => item.id == products.id);
 
-    _cartRepository.addCart(
-      idUser: idUser,
-      data: cartRquest,
-      onError: (error) {
-        EasyLoading.dismiss();
-        print(error);
-      },
-      onSuccess: () {
-        IZIAlert().success(message: 'Thêm món ăn thành công');
-        EasyLoading.dismiss();
-        final bot = Get.find<BottomBarController>();
-        bot.countCartByIDStore();
-        bot.update();
-        update();
-      },
-    );
-  } else {
-    print('Sản phẩm đã tồn tại trong giỏ hàng');
+    if (!isDuplicate) {
+      listProductsCart1.add(products);
+      cartRquest.listProduct = listProductsCart1;
+
+      _cartRepository.addCart(
+        idUser: idUser,
+        data: cartRquest,
+        onError: (error) {
+          EasyLoading.dismiss();
+          print(error);
+        },
+        onSuccess: () {
+          IZIAlert().success(message: 'Thêm món ăn thành công');
+          EasyLoading.dismiss();
+          final bot = Get.find<BottomBarController>();
+          bot.countCartByIDStore();
+          bot.update();
+          update();
+        },
+      );
+    } else {
+      print('Sản phẩm đã tồn tại trong giỏ hàng');
+    }
   }
-}
-
 
   ///
   /// showDialog if !idStore
@@ -341,11 +344,64 @@ class StoreController extends GetxController {
           },
           onError: (error) {},
         );
-  
       },
       onTapCancle: () {
         Get.back();
       },
     );
   }
+
+  ///
+  /// add comment all product
+  ///
+Future<void> addComment() async {
+  final ref = await FirebaseFirestore.instance.collection('products').get();
+  final refUser = await FirebaseFirestore.instance
+      .collection('users')
+      .where('typeUser', isEqualTo: 'CUSTOMER')
+      .get();
+  final refStore = await FirebaseFirestore.instance
+      .collection('users')
+      .where('typeUser', isEqualTo: 'STORE')
+      .get();
+
+  List<String> listIdProduct =
+      ref.docs.map((e) => e.data()['id'] as String).toList();
+  List<String> listIdUser =
+      refUser.docs.map((e) => e.data()['id'] as String).toList();
+  List<String> listIdStore =
+      refStore.docs.map((e) => e.data()['id'] as String).toList();
+
+  final CommentRequets commentRequets = CommentRequets();
+  List<String> addedComments = [];
+
+  for (int i = 0; i < listIdProduct.length; i++) {
+    for (int j = 0; j < listIdUser.length; j++) {
+      final String idUserProduct = '${listIdUser[j]}_${listIdProduct[i]}';
+
+      if (!addedComments.contains(idUserProduct)) {
+        final String id = const Uuid().v1();
+        final String idOrder = const Uuid().v1();
+        commentRequets.id = id;
+        commentRequets.idOrder = idOrder;
+        commentRequets.idUser = listIdUser[j];
+        commentRequets.idProduct = listIdProduct[i];
+        commentRequets.typeUser = 'PRODUCT';
+        commentRequets.rating = 5.toDouble();
+        commentRequets.idStore = listIdStore[0]; 
+        commentRequets.content = 'Ngon bổ rẻ sẽ ghé ủng hộ';
+        commentRequets.timeComment =
+            DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
+
+        final refComment = FirebaseFirestore.instance.collection('comments');
+        refComment.doc(commentRequets.id!).set(commentRequets.toMap());
+
+        addedComments.add(idUserProduct);
+      }
+    }
+  }
+}
+
+
+
 }

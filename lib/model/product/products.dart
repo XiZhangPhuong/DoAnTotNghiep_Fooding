@@ -15,6 +15,7 @@ class Products {
   int? priceDiscount;
   int? sold;
   bool? isShow;
+  bool? isDeleted;
   double? km;
   List<dynamic>? favorites;
 
@@ -31,6 +32,7 @@ class Products {
       this.priceDiscount,
       this.sold,
       this.isShow,
+      this.isDeleted,
       this.favorites,
       this.km});
 
@@ -48,6 +50,7 @@ class Products {
       if (!IZIValidate.nullOrEmpty(price)) 'priceDiscount': priceDiscount,
       if (!IZIValidate.nullOrEmpty(sold)) 'sold': sold,
       if (!IZIValidate.nullOrEmpty(isShow)) 'isShow': isShow,
+      if (!IZIValidate.nullOrEmpty(isDeleted)) 'isDeleted': isDeleted,
       if (!IZIValidate.nullOrEmpty(sold)) 'favorites': favorites,
       if (!IZIValidate.nullOrEmpty(sold)) 'km': km,
     };
@@ -73,6 +76,7 @@ class Products {
           map['priceDiscount'] != null ? map['priceDiscount'] as int : null,
       sold: map['sold'] != null ? map['sold'] as int : null,
       isShow: map['isShow'] != null ? map['isShow'] as bool : null,
+      isDeleted: map['isDeleted'] != null ? map['isDeleted'] as bool : null,
       favorites:
           map['favorites'] != null ? map['favorites'] as List<dynamic> : null,
       km: map['km'] != null ? map['km'] as double : null,
