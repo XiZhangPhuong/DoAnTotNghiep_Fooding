@@ -22,6 +22,7 @@ class Store extends User {
     String? banner,
     String? dateOfBirth,
     String? gender,
+    String? latLong,
     // openHour default = 8:00
     this.openHour = '8:00',
     // closeHour default = 22:00
@@ -37,6 +38,7 @@ class Store extends User {
             isDeleted: isDeleted,
             address: address,
             dateOfBirth: dateOfBirth,
+            latLong:  latLong,
             gender: gender);
 
   @override
@@ -57,6 +59,7 @@ class Store extends User {
       if (!IZIValidate.nullOrEmpty(openHour)) 'openHour': openHour,
       if (!IZIValidate.nullOrEmpty(closeHour)) 'closeHour': closeHour,
       if (!IZIValidate.nullOrEmpty(isOline)) 'isOline': isOline,
+      if (!IZIValidate.nullOrEmpty(latLong)) 'latLong': latLong,
     };
   }
 
@@ -78,6 +81,8 @@ class Store extends User {
       openHour: map['openHour'] != null ? map['openHour'] as String : '8:30',
       closeHour: map['closeHour'] != null ? map['closeHour'] as String : '22:30',
       isOline: map['isOline'] != null ? map['isOline'] as bool : true,
+         latLong:
+          map['latLong'] != null ? map['latLong'] as String : null,
     );
   }
 
