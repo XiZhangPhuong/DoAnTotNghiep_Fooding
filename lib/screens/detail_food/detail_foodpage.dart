@@ -175,38 +175,57 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                             width: IZIDimensions.SPACE_SIZE_1X,
                                           ),
                                           Text(
-                                              controller.isLoadingStore == false
-                                                  ? 'Loading'
+                                            controller.isLoadingStore == false
+                                                ? 'Loading'
+                                                : controller.checkOpeningHours(
+                                                    controller
+                                                        .userModel!.openHour!,
+                                                    controller
+                                                        .userModel!.closeHour!),
+                                            style: TextStyle(
+                                              color: ColorResources.BLACK,
+                                              fontFamily: NUNITO,
+                                              fontWeight: FontWeight.w400,
+                                              decoration: controller.isLoadingStore ==
+                                                      false
+                                                  ? null
                                                   : controller
-                                                      .checkOpeningHours(
-                                                          controller.userModel!
-                                                              .openHour!,
-                                                          controller.userModel!
-                                                              .closeHour!),
-                                              style: TextStyle(
-                                                color: ColorResources.BLACK,
-                                                fontFamily: NUNITO,
-                                                fontWeight: FontWeight.w400,
-                                                decoration: controller
-                                                            .isLoadingStore ==
-                                                        false
-                                                    ? null
-                                                    : controller
-                                                            .checkOpeningHours(
-                                                                controller
-                                                                    .userModel!
-                                                                    .openHour!,
-                                                                controller
-                                                                    .userModel!
-                                                                    .closeHour!)
-                                                            .contains(
-                                                                'Đã đóng cửa')
-                                                        ? TextDecoration
-                                                            .lineThrough
-                                                        : TextDecoration.none,
-                                                fontSize: IZIDimensions
-                                                    .FONT_SIZE_SPAN_SMALL,
-                                              )),
+                                                          .checkOpeningHours(
+                                                              controller
+                                                                  .userModel!
+                                                                  .openHour!,
+                                                              controller
+                                                                  .userModel!
+                                                                  .closeHour!)
+                                                          .contains(
+                                                              'Đã đóng cửa')
+                                                      ? TextDecoration
+                                                          .lineThrough
+                                                      : TextDecoration.none,
+                                              fontSize: IZIDimensions
+                                                  .FONT_SIZE_SPAN_SMALL,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: IZIDimensions.SPACE_SIZE_2X,
+                                          ),
+                                          Icon(Icons.location_on_outlined,color: ColorResources.colorMain.withOpacity(0.7),
+                                          size: IZIDimensions.ONE_UNIT_SIZE*25,
+                                          ),
+                                          SizedBox(
+                                            width: IZIDimensions.SPACE_SIZE_1X*0.5,
+                                          ),
+                                          Text(
+                                            controller.distance,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              color: ColorResources.BLACK,
+                                              fontFamily: NUNITO,                
+                                              overflow: TextOverflow.ellipsis,
+                                              fontSize:
+                                                  IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                                            ),
+                                          ),
                                           const Spacer(),
                                           Text(
                                             IZIValidate.nullOrEmpty(
@@ -352,7 +371,7 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                     ClipOval(
                                       child: IZIImage(
                                         IZIValidate.nullOrEmpty(itemUser.avatar)
-                                            ? ''
+                                            ? 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg'
                                             : itemUser.avatar!,
                                         height:
                                             IZIDimensions.ONE_UNIT_SIZE * 50,
@@ -412,23 +431,17 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                       ],
                                     ),
                                     const Spacer(),
-                                    Visibility(
-                                      visible: IZIValidate.nullOrEmpty(
+                                    Text(
+                                      IZIValidate.nullOrEmpty(
                                               itemComment.timeComment)
-                                          ? false
-                                          : true,
-                                      child: Text(
-                                        IZIValidate.nullOrEmpty(
-                                                itemComment.timeComment)
-                                            ? ''
-                                            : itemComment.timeComment!,
-                                        style: TextStyle(
-                                          color: ColorResources.GREY,
-                                          fontFamily: NUNITO,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: IZIDimensions
-                                              .FONT_SIZE_SPAN_SMALL,
-                                        ),
+                                          ? ''
+                                          : itemComment.timeComment!,
+                                      style: TextStyle(
+                                        color: ColorResources.GREY,
+                                        fontFamily: NUNITO,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: IZIDimensions
+                                            .FONT_SIZE_SPAN_SMALL*0.9,
                                       ),
                                     ),
                                   ],

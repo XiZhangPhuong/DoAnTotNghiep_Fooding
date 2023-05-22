@@ -11,6 +11,6 @@ class Preferences {
   static const String locale = "locale";
   static const String idTimeZoneName = "id_time_zone_name";
   static const String idUser = "id_user";
-
+  static const String listHistorySearch = "list_History_Search";
 
 }

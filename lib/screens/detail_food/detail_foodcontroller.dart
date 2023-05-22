@@ -20,8 +20,10 @@ import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/screens/dashboard/dashboard_controller.dart';
 import 'package:fooding_project/screens/favorite/favorite_controller.dart';
+import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
@@ -48,6 +50,11 @@ class DetailFoodController extends GetxController {
   List<User> listUser = [];
   User userReponse = User();
   int quantity = 0;
+  double lat1 = 0;
+  double lat2 = 0;
+  double long1 = 0;
+  double long2 = 0;
+  String distance = '';
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
@@ -157,7 +164,7 @@ class DetailFoodController extends GetxController {
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
     getListProductCartByIdUser();
-
+    
   }
 
   ///
@@ -356,8 +363,8 @@ class DetailFoodController extends GetxController {
       findAddress();
       paginateProductsByNameCateogry();
       countProductByIdStore();
-      getAllComment();
-      getListFavorite();
+      await getAllComment();
+      await getListFavorite();
       Future.delayed(const Duration(seconds: 1), () {
         isLoading = true;
         update();
@@ -380,9 +387,16 @@ class DetailFoodController extends GetxController {
     if (querySnapshot.docs.isNotEmpty) {
       final Store user = Store.fromMap(querySnapshot.docs.first.data());
       userModel = user;
+       List<String> listLatLong = userModel!.latLong!.split(';');
+        final home = Get.find<HomeController>();
+        lat1 = home.lat1;
+        long1 = home.lon1;
+        lat2  = double.parse(listLatLong.first);
+        long2 = double.parse(listLatLong.last);
+        final km =  Geolocator.distanceBetween(lat1, long1, lat2, long2)/1000;
+        distance  = '${km.toStringAsFixed(2)}km';
       // ignore: avoid_print1
       isLoadingStore = true;
-      print(userModel!.toMap());
       update();
     }
   }

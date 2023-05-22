@@ -21,7 +21,7 @@ class StorePage extends GetView<StoreController> {
       builder: (StoreController controller) {
         return Scaffold(
           backgroundColor: ColorResources.BACK_GROUND,
-           floatingActionButton: _floattingButton(controller),
+          floatingActionButton: _floattingButton(controller),
           floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
           body: controller.isLoadDingStore == false
               ? const SimmerStorePage()
@@ -103,30 +103,48 @@ class StorePage extends GetView<StoreController> {
                                           ? ''
                                           : controller.storeResponse.fullName!
                                               .toUpperCase(),
-                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: ColorResources.BLACK,
                                         fontFamily: NUNITO,
                                         fontWeight: FontWeight.w600,
-                                        overflow: TextOverflow.ellipsis,
                                         fontSize: IZIDimensions.FONT_SIZE_H4,
                                       ),
                                     ),
                                     SizedBox(
                                       height: IZIDimensions.SPACE_SIZE_3X,
                                     ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              IZIDimensions.SPACE_SIZE_2X),
+                                      child: Text(
+                                        IZIValidate.nullOrEmpty(controller
+                                                .storeResponse.address)
+                                            ? ''
+                                            : controller.storeResponse.address!,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: ColorResources.GREY,
+                                          fontFamily: NUNITO,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: IZIDimensions.FONT_SIZE_H6,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: IZIDimensions.SPACE_SIZE_2X,
+                                    ),
                                     Text(
-                                      IZIValidate.nullOrEmpty(
-                                              controller.storeResponse.address)
-                                          ? ''
-                                          : controller.storeResponse.address!,
+                                      controller.distance,
                                       maxLines: 1,
                                       style: TextStyle(
                                         color: ColorResources.GREY,
                                         fontFamily: NUNITO,
                                         fontWeight: FontWeight.w600,
                                         overflow: TextOverflow.ellipsis,
-                                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                                        fontSize:
+                                            IZIDimensions.FONT_SIZE_H6,
                                       ),
                                     ),
                                   ],
@@ -158,22 +176,23 @@ class StorePage extends GetView<StoreController> {
                             width: IZIDimensions.SPACE_SIZE_1X,
                           ),
                           Text(
-                              controller.checkOpeningHours(
-                                  controller.storeResponse.openHour!,
-                                  controller.storeResponse.closeHour!),
-                              style: TextStyle(
-                                color: ColorResources.BLACK,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w400,
-                                decoration: controller
-                                        .checkOpeningHours(
-                                            controller.storeResponse.openHour!,
-                                            controller.storeResponse.closeHour!)
-                                        .contains('Đã đóng cửa')
-                                    ? TextDecoration.lineThrough
-                                    : TextDecoration.none,
-                                fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
-                              )),
+                            controller.checkOpeningHours(
+                                controller.storeResponse.openHour!,
+                                controller.storeResponse.closeHour!),
+                            style: TextStyle(
+                              color: ColorResources.BLACK,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w400,
+                              decoration: controller
+                                      .checkOpeningHours(
+                                          controller.storeResponse.openHour!,
+                                          controller.storeResponse.closeHour!)
+                                      .contains('Đã đóng cửa')
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                              fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -225,23 +244,6 @@ class StorePage extends GetView<StoreController> {
                               fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                             ),
                           ),
-                          const Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              // controller.addComment();
-                            },
-                            child: Text(
-                              'Xem đánh giá',
-                              maxLines: 1,
-                              style: TextStyle(
-                                color: ColorResources.colorMain,
-                                fontFamily: NUNITO,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -259,13 +261,18 @@ class StorePage extends GetView<StoreController> {
                       },
                       colorText: ColorResources.colorMain,
                       colorUnderLine: ColorResources.colorMain,
-                    ),                 
-                    Expanded(child: SingleChildScrollView(
-                      child: 
-                       // ignore: unrelated_type_equality_checks
-                       controller.listProducts==false ? const CardLoadingItem(count: 10,) : 
-                       controller.listProducts.isEmpty  ? const DataEmpty() : 
-                      _listviewProducts(controller),
+                    ),
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child:
+                          // ignore: unrelated_type_equality_checks
+                          controller.listProducts == false
+                              ? const CardLoadingItem(
+                                  count: 10,
+                                )
+                              : controller.listProducts.isEmpty
+                                  ? const DataEmpty()
+                                  : _listviewProducts(controller),
                     ))
                   ],
                 ),
@@ -292,7 +299,8 @@ Widget _listviewProducts(StoreController controller) {
                 Row(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
+                      borderRadius:
+                          BorderRadius.circular(IZIDimensions.SPACE_SIZE_2X),
                       child: IZIImage(
                         controller.listProducts[index].image!.first,
                         height: IZIDimensions.ONE_UNIT_SIZE * 150,
@@ -320,8 +328,8 @@ Widget _listviewProducts(StoreController controller) {
                             height: IZIDimensions.SPACE_SIZE_1X,
                           ),
                           Text(
-                            controller
-                                .formatSold(controller.listProducts[index].sold!),
+                            controller.formatSold(
+                                controller.listProducts[index].sold!),
                             style: TextStyle(
                               color: ColorResources.GREY,
                               fontFamily: NUNITO,
@@ -348,7 +356,8 @@ Widget _listviewProducts(StoreController controller) {
                               // click add to cart
                               GestureDetector(
                                 onTap: () {
-                                    controller.addCart(controller.listProducts[index]);
+                                  controller
+                                      .addCart(controller.listProducts[index]);
                                 },
                                 child: Container(
                                   padding: EdgeInsets.all(
@@ -383,8 +392,6 @@ Widget _listviewProducts(StoreController controller) {
     ),
   );
 }
-
-
 
 ///
 /// floatting button cart

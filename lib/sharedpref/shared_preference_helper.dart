@@ -117,4 +117,17 @@ class SharedPreferenceHelper {
   void removeLogin() {
     _sharedPreference.remove(Preferences.isLogin);
   }
+  
+  // list history search
+  void setHistorySearch(List<String> listHistorySearch){
+    _sharedPreference.setStringList(Preferences.listHistorySearch, listHistorySearch);
+  }
+
+  void removeItemHistorySearch(List<String> listHistorySearch,String value){
+     listHistorySearch.remove(value);
+  }
+
+  List<String> getListHistorySearch(){
+    return _sharedPreference.getStringList(Preferences.listHistorySearch) ?? [];
+  }
 }

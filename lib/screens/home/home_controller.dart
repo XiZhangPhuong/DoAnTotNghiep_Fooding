@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_price.dart';
@@ -39,12 +38,14 @@ class HomeController extends GetxController {
   List<Products> listProducts = [];
   List<Products> listProductRecommend = [];
   List<Products> listProductAll = [];
+  List<String> listNameProduct = [];
   bool isLoadingCategory = true;
   bool isLoadingProduct = true;
   bool isLoadingUser = false;
   bool isLoadingStore = false;
   bool isLoadingProductRecomment = true;
   bool isLoadingProductAll = false;
+  bool isLoadingNameProduct = false;
   int limit = 10;
   double km = 0;
   User userReponse = User();
@@ -65,16 +66,7 @@ class HomeController extends GetxController {
 
   List<Banners> listBanners = [];
   String street = "Không xác định";
-  int index = 0;
-  void onChanGeSlideShow(int value) {
-    index = value;
-    if (value == listImageSlider.length - 1) {
-      Timer(const Duration(seconds: 1), () {
-        pageController.jumpToPage(0);
-      });
-    }
-    update();
-  }
+  int currentInDeName = 0;
 
   ///
   /// On Refreshing.
@@ -92,6 +84,28 @@ class HomeController extends GetxController {
   }
 
   ///
+  /// On loading.
+  ///
+  void onLoading() {
+    paginateFlashSaleProduct();
+    getCategoryList();
+    paginateProductsRecommnend();
+    refreshController.refreshCompleted();
+    getAllProduct();
+    refreshController.loadComplete();
+  }
+
+  ///
+  /// start animation list name product
+  ///
+  Future<void> startAnimation() async {
+  await Future.delayed(const Duration(seconds: 3));
+  currentInDeName = (currentInDeName + 1) % listNameProduct.length;
+  update();
+  startAnimation();
+}
+
+  ///
   /// Find user.
   ///
   Future<void> findUser() async {
@@ -104,22 +118,27 @@ class HomeController extends GetxController {
   }
 
   ///
+  /// getNameProduct
+  ///
+  Future<void> getNameProduct() async {
+    _productsRepository.getNameProduct(
+      onSuccess: (data) {
+        listNameProduct = data;
+        isLoadingNameProduct = true;
+        startAnimation();
+        update();
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+  }
+
+  ///
   /// find store
   ///
   Future<User> findStore(String idStore) async {
     return await _userRepository.findbyId(idUser: idStore);
-  }
-
-  ///
-  /// On loading.
-  ///
-  void onLoading() {
-    paginateFlashSaleProduct();
-    getCategoryList();
-    paginateProductsRecommnend();
-    refreshController.refreshCompleted();
-    getAllProduct();
-    refreshController.loadComplete();
   }
 
   ///
@@ -135,8 +154,8 @@ class HomeController extends GetxController {
     paginateProductsRecommnend();
     getAllProduct();
     _getCurrentLocation();
-
-    ;
+    getNameProduct();
+    
   }
 
   @override
@@ -158,6 +177,7 @@ class HomeController extends GetxController {
   /// get all Product
   ///
   Future<void> getAllProduct() async {
+    listProductAll.clear();
     _productsRepository.getAllListProduct(
       onSucess: (listProduct) async {
         for (final item in listProduct) {
@@ -172,21 +192,22 @@ class HomeController extends GetxController {
             lon2 = double.parse(list[1]);
             listKm
                 .add(Geolocator.distanceBetween(lat1, lon1, lat2, lon2) / 1000);
-            print(Geolocator.distanceBetween(lat1, lon1, lat2, lon2));
           }
         }
 
         for (int i = 0; i < listProductAll.length; i++) {
-          for (int j = i + 1; j < listProductAll.length; j++) {
-            if (listKm[i] > listKm[j]) {
-              var tempProduct = listProductAll[i];
-              listProductAll[i] = listProductAll[j];
-              listProductAll[j] = tempProduct;
+          if(listProductAll[i].isDeleted==false){
+            for (int j = i + 1; j < listProductAll.length; j++) {
+           if (listKm[i] > listKm[j]) {
+                var tempProduct = listProductAll[i];
+                listProductAll[i] = listProductAll[j];
+                listProductAll[j] = tempProduct;
 
-              var tempKm = listKm[i];
-              listKm[i] = listKm[j];
-              listKm[j] = tempKm;
-            }
+                var tempKm = listKm[i];
+                listKm[i] = listKm[j];
+                listKm[j] = tempKm;
+              }
+          }
           }
         }
 
@@ -209,6 +230,10 @@ class HomeController extends GetxController {
   ///
   /// go to SearchPage
   ///
+  void gotoSearchPageNew() {
+    Get.toNamed(HomeRoutes.SEARCH_NEW);
+  }
+
   void gotoSearchPage(String name) {
     Get.toNamed(HomeRoutes.SEARCH, arguments: name);
   }
