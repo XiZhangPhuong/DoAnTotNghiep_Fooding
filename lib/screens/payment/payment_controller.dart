@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -302,8 +303,13 @@ class PaymentController extends GetxController {
         idLocation: userResponse.idLocation!,
         onSucces: (data) async {
           if (!IZIValidate.nullOrEmpty(data)) {
-            print(data.toJson());
-            await findStore(cartResponse.listProduct!.first.idUser!);
+            final query = await FirebaseFirestore.instance
+                .collection("users")
+                .doc(cartResponse.listProduct!.first.idUser!)
+                .get();
+
+            storeResponse =
+                model.User.fromMap(query.data() as Map<String, dynamic>);
             List<String> listLatLongStore =
                 IZIValidate.nullOrEmpty(storeResponse.latLong)
                     ? ["16.0718593", "108.2206474"]
@@ -490,20 +496,5 @@ class PaymentController extends GetxController {
     return priceShip + tamtinh - discount <= 0
         ? 0
         : priceShip + tamtinh - discount;
-  }
-
-  ///
-  /// Find Store.
-  ///
-  Future<void> findStore(String idStore) async {
-    await _userRepository.findStoreByID(
-      idStore: idStore,
-      onSucces: (store) {
-        storeResponse = store;
-      },
-      onError: (error) {
-        print(error.toString());
-      },
-    );
   }
 }
