@@ -399,10 +399,10 @@ class FeelRatingPage extends GetView<FeelRatingController> {
                                           ),
                                           const Spacer(),
                                           Text(
-                                         '- ${IZIPrice.currencyConverterVND(
+                                         IZIPrice.currencyConverterVND(
                                                     controller.tinhVoucher
                                                     ( controller.tinhTamTinh(controller.listOrder[index].listProduct!), 
-                                                    controller.listOrder[index].shipPrice!,   controller.listOrder[index].totalPrice!))}',
+                                                    controller.listOrder[index].shipPrice!,   controller.listOrder[index].totalPrice!)),
                                             style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize:

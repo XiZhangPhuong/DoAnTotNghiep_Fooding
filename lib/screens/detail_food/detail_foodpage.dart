@@ -316,28 +316,14 @@ class DetailFoodPage extends GetView<DetailFoodController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Bình luận',
-              style: TextStyle(
-                color: ColorResources.BLACK,
-                fontFamily: NUNITO,
-                fontWeight: FontWeight.w600,
-                fontSize: IZIDimensions.FONT_SIZE_H6,
-              ),
-            ),
-            Text(
-              'Xem tất cả',
-              style: TextStyle(
-                color: ColorResources.colorMain,
-                fontFamily: NUNITO,
-                fontWeight: FontWeight.w600,
-                fontSize: IZIDimensions.FONT_SIZE_H6,
-              ),
-            ),
-          ],
+        Text(
+          'Bình luận (${controller.listComment.length})',
+          style: TextStyle(
+            color: ColorResources.BLACK,
+            fontFamily: NUNITO,
+            fontWeight: FontWeight.w600,
+            fontSize: IZIDimensions.FONT_SIZE_H6,
+          ),
         ),
         // list commet
         controller.isLoadingListComment == false
