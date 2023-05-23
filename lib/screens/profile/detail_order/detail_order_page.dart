@@ -1,12 +1,11 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
-import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/base_widget/p45_button.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
-import 'package:fooding_project/screens/components/button_app.dart';
 import 'package:fooding_project/screens/profile/detail_order/detail_order_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -146,8 +145,8 @@ class DetailOrderPage extends GetView {
                                     controller.orderResponse.timeConfirm))
                                   _itemTime(
                                     title: "Lấy thành công, đang giao",
-                                    content:
-                                        controller.orderResponse.timeDelivering!,
+                                    content: controller
+                                        .orderResponse.timeDelivering!,
                                   ),
                                 if (!IZIValidate.nullOrEmpty(
                                     controller.orderResponse.timeDone))
@@ -186,14 +185,13 @@ class DetailOrderPage extends GetView {
                       visible: true,
                       child: P45Button(
                         title: controller.orderResponse.statusOrder == PENDING
-                          ? "Hủy đơn hàng"
-                          : controller.orderResponse.statusOrder == DELIVERING
-                              ? "Trạng thái giao hàng"
-                              : "Đánh giá",
-                      onPressed: () {
-                        controller.handleTypeOrder();
-                      },
-
+                            ? "Hủy đơn hàng"
+                            : controller.orderResponse.statusOrder == DELIVERING
+                                ? "Trạng thái giao hàng"
+                                : "Đánh giá",
+                        onPressed: () {
+                          controller.handleTypeOrder();
+                        },
                       ),
                     ))
                 : const SizedBox();
@@ -394,8 +392,10 @@ class DetailOrderPage extends GetView {
                   ),
                 ),
               ),
-            
-             const  Icon(Icons.keyboard_arrow_right_outlined,color: ColorResources.colorMain,)
+              const Icon(
+                Icons.keyboard_arrow_right_outlined,
+                color: ColorResources.colorMain,
+              )
             ],
           ),
           SizedBox(
@@ -473,7 +473,6 @@ class DetailOrderPage extends GetView {
                                 SizedBox(
                                   width: IZIDimensions.SPACE_SIZE_1X,
                                 ),
-                               
                               ],
                             ),
                             Text(
@@ -664,121 +663,151 @@ class DetailOrderPage extends GetView {
         ),
         color: Colors.white,
       ),
-      child: Column(
+      child: Stack(
         children: [
-          Row(
+          Column(
             children: [
-              Icon(
-                Icons.delivery_dining,
-                color: Colors.redAccent,
-                size: IZIDimensions.ONE_UNIT_SIZE * 50,
+              Row(
+                children: [
+                  Icon(
+                    Icons.delivery_dining,
+                    color: Colors.redAccent,
+                    size: IZIDimensions.ONE_UNIT_SIZE * 50,
+                  ),
+                  SizedBox(
+                    width: IZIDimensions.SPACE_SIZE_2X,
+                  ),
+                  Text(
+                    "Thông tin tài xế",
+                    style: TextStyle(
+                      fontFamily: NUNITO,
+                      fontWeight: FontWeight.w700,
+                      fontSize: IZIDimensions.FONT_SIZE_H6,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
-                width: IZIDimensions.SPACE_SIZE_2X,
+                height: IZIDimensions.SPACE_SIZE_2X,
               ),
-              Text(
-                "Thông tin tài xế",
-                style: TextStyle(
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w700,
-                  fontSize: IZIDimensions.FONT_SIZE_H6,
-                ),
+              Row(
+                children: [
+                  ClipOval(
+                    child: IZIImage(
+                      IZIValidate.nullOrEmpty(controller.shipperResponse.avatar)
+                          ? ImagesPath.placeHolder
+                          : controller.shipperResponse.avatar!,
+                      height: IZIDimensions.ONE_UNIT_SIZE * 150,
+                      width: IZIDimensions.ONE_UNIT_SIZE * 150,
+                    ),
+                  ),
+                  SizedBox(
+                    width: IZIDimensions.SPACE_SIZE_4X,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              color: ColorResources.BLACK,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: "Họ và tên: ",
+                              ),
+                              TextSpan(
+                                text: IZIValidate.nullOrEmpty(
+                                        controller.shipperResponse.fullName)
+                                    ? "không xác định"
+                                    : controller.shipperResponse.fullName!,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: IZIDimensions.SPACE_SIZE_3X,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              color: ColorResources.BLACK,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: "Số điện thoại: ",
+                              ),
+                              TextSpan(
+                                text: IZIValidate.nullOrEmpty(
+                                        controller.shipperResponse.phone)
+                                    ? "không xác định"
+                                    : controller.shipperResponse.phone!,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: IZIDimensions.SPACE_SIZE_3X,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              color: ColorResources.BLACK,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: "Biển số xe: ",
+                              ),
+                              TextSpan(
+                                text: IZIValidate.nullOrEmpty(
+                                        controller.shipperResponse.idVehicle)
+                                    ? "không xác định"
+                                    : controller.shipperResponse.idVehicle!,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ],
           ),
-          SizedBox(
-            height: IZIDimensions.SPACE_SIZE_2X,
-          ),
-          Row(
-            children: [
-              ClipOval(
-                child: IZIImage(
-                  IZIValidate.nullOrEmpty(controller.shipperResponse.avatar)
-                      ? ImagesPath.placeHolder
-                      : controller.shipperResponse.avatar!,
-                  height: IZIDimensions.ONE_UNIT_SIZE * 150,
-                  width: IZIDimensions.ONE_UNIT_SIZE * 150,
-                ),
-              ),
-              SizedBox(
-                width: IZIDimensions.SPACE_SIZE_4X,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          color: ColorResources.BLACK,
-                          fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                          fontWeight: FontWeight.w400,
+          Positioned(
+            top: 0,
+            right: 0,
+            child: controller.orderResponse.statusOrder == DELIVERING
+                ? GestureDetector(
+                    onTap: () {
+                      controller.gotoCallPhone();
+                    },
+                    child: AvatarGlow(
+                      glowColor: ColorResources.colorMain,
+                      duration: const Duration(
+                        milliseconds: 700,
+                      ),
+                      endRadius: IZIDimensions.ONE_UNIT_SIZE * 50,
+                      child: CircleAvatar(
+                        backgroundColor: ColorResources.colorMain,
+                        child: Icon(
+                          Icons.phone,
+                          color: ColorResources.WHITE,
+                          size: IZIDimensions.ONE_UNIT_SIZE * 40,
                         ),
-                        children: [
-                          const TextSpan(
-                            text: "Họ và tên: ",
-                          ),
-                          TextSpan(
-                            text: IZIValidate.nullOrEmpty(
-                                    controller.shipperResponse.fullName)
-                                ? "không xác định"
-                                : controller.shipperResponse.fullName!,
-                          ),
-                        ],
                       ),
                     ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_3X,
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          color: ColorResources.BLACK,
-                          fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        children: [
-                          const TextSpan(
-                            text: "Số điện thoại: ",
-                          ),
-                          TextSpan(
-                            text: IZIValidate.nullOrEmpty(
-                                    controller.shipperResponse.phone)
-                                ? "không xác định"
-                                : controller.shipperResponse.phone!,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: IZIDimensions.SPACE_SIZE_3X,
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          color: ColorResources.BLACK,
-                          fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        children: [
-                          const TextSpan(
-                            text: "Biển số xe: ",
-                          ),
-                          TextSpan(
-                            text: IZIValidate.nullOrEmpty(
-                                    controller.shipperResponse.idVehicle)
-                                ? "không xác định"
-                                : controller.shipperResponse.idVehicle!,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
+                  )
+                : const SizedBox(),
+          )
         ],
       ),
     );

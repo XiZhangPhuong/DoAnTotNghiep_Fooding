@@ -120,23 +120,23 @@ class OTPPage extends GetView {
                       ),
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text: const TextSpan(
-                            style: TextStyle(
+                        text:  TextSpan(
+                            style: const TextStyle(
                               fontFamily: 'Outfit',
                               color: ColorResources.colorTextContentForgot,
                             ),
                             children: [
-                              TextSpan(
+                              const TextSpan(
                                 text: 'Bạn chưa nhận được mã? ',
                               ),
                               TextSpan(
                                 text: 'Gửi lại',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                 ),
-                                // recognizer: TapGestureRecognizer()
-                                //   ..onTap =
-                                //       () => controller.onClickOtpSendAgain(),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap =
+                                      () => controller.onClickOtpSendAgain(),
                               ),
                             ]),
                       ),
