@@ -89,9 +89,14 @@ class StatusOrderPage extends GetView {
                                                             .listProduct!
                                                             .isEmpty
                                                         ? "Không xác định"
-                                                        : controller
-                                                            .userResponse
-                                                            .fullName!,
+                                                        : IZIValidate.nullOrEmpty(
+                                                                controller
+                                                                    .userResponse
+                                                                    .fullName)
+                                                            ? ""
+                                                            : controller
+                                                                .userResponse
+                                                                .fullName!,
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.w700,
