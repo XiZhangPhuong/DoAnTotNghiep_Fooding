@@ -1,3 +1,4 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/izi_loading_card.dart';
@@ -122,8 +123,9 @@ class StorePage extends GetView<StoreController> {
                                         IZIValidate.nullOrEmpty(controller
                                                 .storeResponse.address)
                                             ? ''
-                                            : controller.storeResponse.address!,
+                                            : '${controller.storeResponse.address!} - ${controller.distance}',
                                         textAlign: TextAlign.center,
+                                        maxLines: 2,
                                         style: TextStyle(
                                           color: ColorResources.GREY,
                                           fontFamily: NUNITO,
@@ -133,18 +135,35 @@ class StorePage extends GetView<StoreController> {
                                       ),
                                     ),
                                     SizedBox(
-                                      height: IZIDimensions.SPACE_SIZE_2X,
+                                      height: IZIDimensions.SPACE_SIZE_1X,
                                     ),
-                                    Text(
-                                      controller.distance,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        color: ColorResources.GREY,
-                                        fontFamily: NUNITO,
-                                        fontWeight: FontWeight.w600,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontSize:
-                                            IZIDimensions.FONT_SIZE_H6,
+                                    GestureDetector(
+                                      onTap: () {
+                                        controller.showDiaLogCheckCallStore(phoneNumber: controller.isLoadDingStore==true ? controller.storeResponse.phone! : '');
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.bottomRight,
+                                        padding: EdgeInsets.only(
+                                          right: IZIDimensions.SPACE_SIZE_3X
+                                        ),
+                                        child: AvatarGlow(
+                                          glowColor: ColorResources.colorMain,
+                                          duration: const Duration(
+                                            milliseconds: 700,
+                                          ),
+                                          endRadius:
+                                              IZIDimensions.ONE_UNIT_SIZE * 30,
+                                          child: CircleAvatar(
+                                            backgroundColor:
+                                                ColorResources.colorMain,
+                                            child: Icon(
+                                              Icons.phone,
+                                              color: ColorResources.WHITE,
+                                              size:
+                                                  IZIDimensions.ONE_UNIT_SIZE * 40,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ],

@@ -42,7 +42,6 @@ class ReviewFoodController extends GetxController {
       idOrder: idOrder,
       onSuccess: (order) async {
         orderResponse = order;
-        print(orderResponse.toMap());
         userResponse = await getUser(orderResponse.idEmployee!);
         getAllComment(orderResponse.id!);
         isLoading = true;

@@ -23,6 +23,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 class StoreController extends GetxController {
@@ -416,6 +417,41 @@ Future<void> addComment() async {
   }
 }
 
+///
+/// show Dialog Check Call Store
+///
+showDiaLogCheckCallStore({required String phoneNumber})  {
+   if(IZIValidate.nullOrEmpty(phoneNumber)){
+      IZIAlert().error(message: 'Không thể thực hiện cuộc gọi này');
+      return;
+    }
+  Get.dialog(
+     DialogCustom(
+      description: 'Xác nhận thực hiện cuộc gọi', 
+      agree: 'Có'
+      , cancel1: 'Không',
+      onTapConfirm: () {
+        _makePhoneCall(phoneNumber);
+        Get.back();
+      },
+      onTapCancle: () {
+        Get.back();
+      },
+      )
+  );
+}
 
+///
+/// call store
+///
+void _makePhoneCall(String phoneNumber) async { 
+    if (await canLaunch('tel:$phoneNumber')) {
+      await launch('tel:$phoneNumber');
+    } else {
+      throw 'Không thể gọi số điện thoại $phoneNumber';
+    }
 
 }
+}
+
+  

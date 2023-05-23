@@ -243,7 +243,7 @@ class DetailFoodController extends GetxController {
     if (!isDuplicate) {
       listProductsCart1.add(products);
       cartRquest.listProduct = listProductsCart1;
-
+        Get.back();
       _cartRepository.addCart(
         idUser: idUser,
         data: cartRquest,

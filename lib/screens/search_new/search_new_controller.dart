@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
@@ -46,7 +47,7 @@ class SearchNewController extends GetxController {
     txtfilter.text = '';
     search = '';
     filterSearch = value;
-    getProductBuApproxtmateName();  
+    getProductBuApproxtmateName();
     update();
   }
 
@@ -96,9 +97,13 @@ class SearchNewController extends GetxController {
     _productsRepository.getProductByApproximateName(
       nameProduct: filterSearch,
       onSucess: (data) {
-        for (final i in data) {
-          if (i.name!.toLowerCase().contains(filterSearch.toLowerCase())) {
-            listProductSearch.add(i);
+        for (final item in data) {
+          String normalizedItem = removeDiacritics(item.name!.toLowerCase());
+          String normalizedFilter =
+              removeDiacritics(filterSearch.toLowerCase());
+
+          if (normalizedItem.contains(normalizedFilter)) {
+            listProductSearch.add(item);
           }
         }
         isLoadingProductSearch = true;
@@ -127,5 +132,20 @@ class SearchNewController extends GetxController {
     } else {
       return '$sales đã bán';
     }
+  }
+
+  String removeVietnamese(String text) {
+    // Các ký tự tiếng Việt và ký tự tương ứng không dấu
+    const vietnameseCharacters =
+        'àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ';
+    const nonVietnameseCharacters =
+        'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd';
+
+    for (var i = 0; i < vietnameseCharacters.length; i++) {
+      text =
+          text.replaceAll(vietnameseCharacters[i], nonVietnameseCharacters[i]);
+    }
+
+    return text;
   }
 }
