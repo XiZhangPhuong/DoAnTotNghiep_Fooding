@@ -27,7 +27,7 @@ class HomeShipperPage extends GetView<HomeShipperController> {
               centerTitle: true,
             ),
             backgroundColor: ColorResources.BACK_GROUND,
-            floatingActionButton: _checkOline(controller),
+            //floatingActionButton: _checkOline(controller),
             body: controller.isLoadingOrder == false
                 ? const Center(
                     child: CircularProgressIndicator(),
