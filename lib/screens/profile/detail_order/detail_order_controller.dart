@@ -15,12 +15,11 @@ import 'package:fooding_project/routes/routes_path/detail_food_routes.dart';
 import 'package:fooding_project/routes/routes_path/detail_order_routes.dart';
 import 'package:fooding_project/screens/home/home_controller.dart';
 import 'package:fooding_project/routes/routes_path/profile_routes.dart';
-import 'package:fooding_project/screens/profile/google_map_marker/google_map_marker_page.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailOrderController extends GetxController {
   String idOrder = Get.arguments as String;
@@ -190,5 +189,22 @@ class DetailOrderController extends GetxController {
         },
       ),
     );
+  }
+
+  ///
+  /// Call phone.
+  ///
+  Future<void> gotoCallPhone() async {
+    if (!IZIValidate.nullOrEmpty(shipperResponse.phone)) {
+      final Uri launchUri = Uri(scheme: 'tel', path: shipperResponse.phone!);
+
+      if (await canLaunchUrl(launchUri)) {
+        await launchUrl(launchUri);
+      } else {
+        IZIAlert().error(message: "Wrong phone number");
+      }
+    } else {
+      IZIAlert().error(message: "Vui lòng thử lại sau");
+    }
   }
 }

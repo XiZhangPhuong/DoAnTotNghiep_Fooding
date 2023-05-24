@@ -12,7 +12,7 @@ class OTPController extends GetxController {
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
   bool isClick = false;
   Timer? timer;
-  int count = 50;
+  int count = 60;
   String otpCode = '';
   var result = [];
 
@@ -21,6 +21,15 @@ class OTPController extends GetxController {
     super.onInit();
     result = Get.arguments as List<String>;
     countDown();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (timer != null) {
+      timer!.cancel();
+    }
   }
 
   ///
@@ -75,5 +84,22 @@ class OTPController extends GetxController {
     }
 
     EasyLoading.dismiss();
+  }
+
+  ///
+  /// On click send OTP agian.
+  ///
+  Future<void> onClickOtpSendAgain() async {
+    if (isClick) {
+      EasyLoading.show(status: "Đang gửi lại OTP");
+      await _authRepository.phoneAuthentication(result[1].toString());
+      count = 60;
+      isClick = false;
+      IZIAlert().success(message: "Gửi lại OTP thành công");
+      EasyLoading.dismiss();
+      update();
+    } else {
+      IZIAlert().error(message: "Vui lòng đợi $count để gửi lại OTP");
+    }
   }
 }
