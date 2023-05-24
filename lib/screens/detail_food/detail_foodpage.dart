@@ -110,17 +110,46 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                       ),
                                       Row(
                                         children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  IZIDimensions.SPACE_SIZE_2X,
+                                            ),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        IZIDimensions
+                                                            .BORDER_RADIUS_5X),
+                                                color: ColorResources.GREY),
+                                            child: Center(
+                                              child: Text(
+                                                '${controller.averRage1.toStringAsFixed(1)} ( ${controller.totalRating1}+ )',
+                                                style: TextStyle(
+                                                    color: ColorResources.WHITE,
+                                                    fontFamily: NUNITO,
+                                                    fontSize: IZIDimensions
+                                                            .FONT_SIZE_SPAN_SMALL *
+                                                        0.9),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: IZIDimensions.SPACE_SIZE_1X,
+                                          ),
                                           RatingStars(
-                                            value: 4.5,
-                                            starCount: 5,
+                                            maxValue: 1,
+                                            value: 1,
+                                            starCount: 1,
                                             starSize:
                                                 IZIDimensions.ONE_UNIT_SIZE *
                                                     30,
                                             starColor: Colors.yellow,
+                                            maxValueVisibility: false,
+                                            valueLabelVisibility: false,
                                             onValueChanged: (value) {},
                                           ),
                                           SizedBox(
-                                            width: IZIDimensions.SPACE_SIZE_3X,
+                                            width: IZIDimensions.SPACE_SIZE_2X,
                                           ),
                                           Text(
                                             controller.formatSold(controller
@@ -130,6 +159,32 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                               fontFamily: NUNITO,
                                               overflow: TextOverflow.ellipsis,
                                               fontWeight: FontWeight.w400,
+                                              fontSize: IZIDimensions
+                                                  .FONT_SIZE_SPAN_SMALL,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: IZIDimensions.SPACE_SIZE_4X,
+                                                
+                                          ),
+                                          Icon(
+                                            Icons.location_on_outlined,
+                                            color: ColorResources.colorMain
+                                                .withOpacity(0.7),
+                                            size: IZIDimensions.ONE_UNIT_SIZE *
+                                                25,
+                                          ),
+                                          SizedBox(
+                                            width: IZIDimensions.SPACE_SIZE_1X *
+                                                0.5,
+                                          ),
+                                          Text(
+                                            controller.distance,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              color: ColorResources.BLACK,
+                                              fontFamily: NUNITO,
+                                              overflow: TextOverflow.ellipsis,
                                               fontSize: IZIDimensions
                                                   .FONT_SIZE_SPAN_SMALL,
                                             ),
@@ -204,26 +259,6 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                                       : TextDecoration.none,
                                               fontSize: IZIDimensions
                                                   .FONT_SIZE_SPAN_SMALL,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: IZIDimensions.SPACE_SIZE_2X,
-                                          ),
-                                          Icon(Icons.location_on_outlined,color: ColorResources.colorMain.withOpacity(0.7),
-                                          size: IZIDimensions.ONE_UNIT_SIZE*25,
-                                          ),
-                                          SizedBox(
-                                            width: IZIDimensions.SPACE_SIZE_1X*0.5,
-                                          ),
-                                          Text(
-                                            controller.distance,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              color: ColorResources.BLACK,
-                                              fontFamily: NUNITO,                
-                                              overflow: TextOverflow.ellipsis,
-                                              fontSize:
-                                                  IZIDimensions.FONT_SIZE_SPAN_SMALL,
                                             ),
                                           ),
                                           const Spacer(),
@@ -426,8 +461,9 @@ class DetailFoodPage extends GetView<DetailFoodController> {
                                         color: ColorResources.GREY,
                                         fontFamily: NUNITO,
                                         fontWeight: FontWeight.w400,
-                                        fontSize: IZIDimensions
-                                            .FONT_SIZE_SPAN_SMALL*0.9,
+                                        fontSize:
+                                            IZIDimensions.FONT_SIZE_SPAN_SMALL *
+                                                0.9,
                                       ),
                                     ),
                                   ],

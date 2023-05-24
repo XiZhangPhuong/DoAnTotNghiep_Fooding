@@ -231,7 +231,7 @@ class StorePage extends GetView<StoreController> {
                             width: IZIDimensions.SPACE_SIZE_1X,
                           ),
                           Text(
-                            '4.3 ( 20+ )',
+                            '${controller.averRage1.toStringAsFixed(1)} ( ${controller.totalRating1}+ )',
                             maxLines: 1,
                             style: TextStyle(
                               color: ColorResources.GREY,
@@ -375,6 +375,7 @@ Widget _listviewProducts(StoreController controller) {
                               // click add to cart
                               GestureDetector(
                                 onTap: () {
+                                  
                                   controller
                                       .addCart(controller.listProducts[index]);
                                 },
