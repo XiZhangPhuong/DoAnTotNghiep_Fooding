@@ -179,12 +179,23 @@ class DetailOrderController extends GetxController {
           await _orderRepository.updateOrder(
             idOrder: idOrder,
             orderResponse: OrderResponse(statusOrder: "CANCEL"),
-            onSuccess: () {
+            onSuccess: () async {
               IZIAlert().success(message: "Hủy đơn hàng thành công");
+              if (orderResponse.idVoucher != null) {
+                await FirebaseFirestore.instance
+                    .collection("vouchers")
+                    .doc(orderResponse.idVoucher)
+                    .update({
+                  "listCustomer": FieldValue.arrayRemove(
+                      [sl<SharedPreferenceHelper>().getIdUser])
+                });
+              }
               Get.back();
               Get.back(result: SUCCESS);
             },
-            onError: (erorr) {},
+            onError: (erorr) {
+              print(erorr.toString());
+            },
           );
         },
       ),

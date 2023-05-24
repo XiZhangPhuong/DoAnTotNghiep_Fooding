@@ -574,8 +574,9 @@ class DetailOrderPage extends GetView {
                     Text(
                       IZIValidate.nullOrEmpty(controller.orderResponse.discount)
                           ? "Không xác định"
-                          : IZIPrice.currencyConverterVND(
-                              controller.orderResponse.discount!),
+                          : "- " +
+                              IZIPrice.currencyConverterVND(
+                                  controller.orderResponse.discount!),
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: IZIDimensions.FONT_SIZE_H6,
@@ -614,35 +615,6 @@ class DetailOrderPage extends GetView {
               ),
             ],
           ),
-          SizedBox(
-            height: IZIDimensions.SPACE_SIZE_1X,
-          ),
-          if (!IZIValidate.nullOrEmpty(controller.orderResponse.discount))
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  "Voucher: ",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: IZIDimensions.FONT_SIZE_H6,
-                    color: ColorResources.camNhat,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  IZIValidate.nullOrEmpty(controller.orderResponse.discount)
-                      ? "Không xác định"
-                      : IZIPrice.currencyConverterVND(
-                          controller.orderResponse.discount!),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: IZIDimensions.FONT_SIZE_H6,
-                    color: ColorResources.camNhat,
-                  ),
-                ),
-              ],
-            ),
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_1X,
           ),
