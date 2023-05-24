@@ -113,7 +113,7 @@ class PaymentController extends GetxController {
             orderRequest: order,
             onSucces: () async {
               await _orderResponsitory.deleteCart();
-              if (!IZIValidate.nullOrEmpty(myVourcher)) {
+              if (myVourcher != null) {
                 await _voucherRepository.addidCustomerToVoucher(
                   idvoucher: myVourcher!.id!,
                   onSuccess: () {},
@@ -334,6 +334,7 @@ class PaymentController extends GetxController {
                 .rows[0].elements[0].distance.text
                 .split(' ')[0]);
             timeDelivery = distanceResponse.rows[0].elements[0].duration.text;
+            print(timeDelivery);
             priceShip = distance! * 5000;
             update();
           }
@@ -373,7 +374,7 @@ class PaymentController extends GetxController {
                     order.id = const Uuid().v1();
                     order.address = location.address;
                     order.phone = location.phone;
-                    if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                    if (myVourcher != null) {
                       order.discount = myVourcher!.discountMoney!.toDouble();
                     }
                     order.listProduct = cartResponse.listProduct;
@@ -387,10 +388,10 @@ class PaymentController extends GetxController {
                     order.statusOrder = "PENDING";
                     order.totalPrice = totalPay().toDouble();
                     order.note = descriptionController.text.trim();
-                    if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                    if (myVourcher != null) {
                       order.idVoucher = myVourcher!.id;
                     }
-                    if (!IZIValidate.nullOrEmpty(timeDelivery)) {
+                    if (timeDelivery != null) {
                       final split = timeDelivery!.split(' ');
                       order.timeDelivery =
                           (double.parse(split[0]) + 20).toString();
@@ -404,7 +405,7 @@ class PaymentController extends GetxController {
 
                           //
                           // Add idCustomer to voucher
-                          if (!IZIValidate.nullOrEmpty(myVourcher)) {
+                          if (myVourcher != null) {
                             await _voucherRepository.addidCustomerToVoucher(
                               idvoucher: myVourcher!.id!,
                               onSuccess: () {},
@@ -428,7 +429,7 @@ class PaymentController extends GetxController {
                       );
                       IZIAlert().success(message: "Đặt hàng thành công");
                       EasyLoading.dismiss();
-                      Get.back();
+                      //Get.back();
                     } else {
                       //
                       // Pay with zalo.
@@ -490,7 +491,7 @@ class PaymentController extends GetxController {
   ///
   double totalPay() {
     double discount = 0;
-    if (!IZIValidate.nullOrEmpty(myVourcher)) {
+    if (myVourcher != null) {
       discount = myVourcher!.discountMoney!.toDouble();
     }
     return priceShip + tamtinh - discount <= 0

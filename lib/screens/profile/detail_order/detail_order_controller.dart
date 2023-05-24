@@ -184,9 +184,7 @@ class DetailOrderController extends GetxController {
               Get.back();
               Get.back(result: SUCCESS);
             },
-            onError: (erorr) {
-              
-            },
+            onError: (erorr) {},
           );
         },
       ),

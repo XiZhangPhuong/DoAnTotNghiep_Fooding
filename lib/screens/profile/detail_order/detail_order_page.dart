@@ -329,10 +329,12 @@ class DetailOrderPage extends GetView {
                 IZIValidate.nullOrEmpty(controller.orderResponse.note)
                     ? "Không có ghi chú"
                     : controller.orderResponse.note!,
+                maxLines: 6,
                 style: TextStyle(
                   fontFamily: NUNITO,
                   fontWeight: FontWeight.w400,
                   fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                  overflow: TextOverflow.ellipsis,
                   color: Colors.grey,
                 ),
               ),
@@ -416,13 +418,13 @@ class DetailOrderPage extends GetView {
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: controller.orderResponse.listProduct!.length,
-              scrollDirection: Axis.vertical,
+              scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 final itemProduct =
                     controller.orderResponse.listProduct![index];
                 return Container(
                   height: IZIDimensions.iziSize.height * 0.13,
-                  width: IZIDimensions.iziSize.width,
+                  width: IZIDimensions.iziSize.width * 0.8,
                   margin: EdgeInsets.only(
                     top: IZIDimensions.SPACE_SIZE_1X,
                   ),
@@ -495,35 +497,33 @@ class DetailOrderPage extends GetView {
                                     fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
                                   ),
                                 ),
-                                Text(
-                                  IZIValidate.nullOrEmpty(itemProduct.price)
-                                      ? "không xác định"
-                                      : IZIPrice.currencyConverterVND(
-                                          itemProduct.price!.toDouble()),
-                                  style: TextStyle(
-                                    color: ColorResources.GREY,
-                                    fontFamily: NUNITO,
-                                    fontWeight: FontWeight.w400,
-                                    decoration: itemProduct.priceDiscount != 0
-                                        ? TextDecoration.lineThrough
-                                        : null,
-                                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                                if (itemProduct.priceDiscount == 0)
+                                  Text(
+                                    IZIValidate.nullOrEmpty(itemProduct.price)
+                                        ? "không xác định"
+                                        : IZIPrice.currencyConverterVND(
+                                            itemProduct.price!.toDouble()),
+                                    style: TextStyle(
+                                      color: ColorResources.GREY,
+                                      fontFamily: NUNITO,
+                                      fontWeight: FontWeight.w400,
+                                      decoration: itemProduct.priceDiscount != 0
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                                    ),
+                                  )
+                                else
+                                  Text(
+                                    IZIPrice.currencyConverterVND(
+                                        itemProduct.priceDiscount!.toDouble()),
+                                    style: TextStyle(
+                                      color: ColorResources.GREY,
+                                      fontFamily: NUNITO,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                                    ),
                                   ),
-                                ),
-                                itemProduct.priceDiscount != 0
-                                    ? Text(
-                                        IZIPrice.currencyConverterVND(
-                                            itemProduct.priceDiscount!
-                                                .toDouble()),
-                                        style: TextStyle(
-                                          color: ColorResources.GREY,
-                                          fontFamily: NUNITO,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize:
-                                              IZIDimensions.FONT_SIZE_DEFAULT,
-                                        ),
-                                      )
-                                    : const SizedBox(),
                                 Text(
                                   "vnđ",
                                   style: TextStyle(
@@ -614,6 +614,35 @@ class DetailOrderPage extends GetView {
               ),
             ],
           ),
+          SizedBox(
+            height: IZIDimensions.SPACE_SIZE_1X,
+          ),
+          if (!IZIValidate.nullOrEmpty(controller.orderResponse.discount))
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  "Voucher: ",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                    color: ColorResources.camNhat,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  IZIValidate.nullOrEmpty(controller.orderResponse.discount)
+                      ? "Không xác định"
+                      : IZIPrice.currencyConverterVND(
+                          controller.orderResponse.discount!),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: IZIDimensions.FONT_SIZE_H6,
+                    color: ColorResources.camNhat,
+                  ),
+                ),
+              ],
+            ),
           SizedBox(
             height: IZIDimensions.SPACE_SIZE_1X,
           ),
