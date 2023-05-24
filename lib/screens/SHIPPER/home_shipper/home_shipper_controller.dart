@@ -133,7 +133,7 @@ class HomeShipperController extends GetxController {
       startTimer();
       orderResponse!.statusOrder = DELIVERING;
       orderResponse!.idEmployee = idUser;
-      updateStatusOrder(orderResponse: orderResponse!);
+      await updateStatusOrder(orderResponse: orderResponse!);
       FcmNotification.sendNotification(
           token: custommerReponse!.deviceId!,
           body: "Đơn hàng của bạn đã được nhận bởi tài xế",
@@ -144,7 +144,7 @@ class HomeShipperController extends GetxController {
       if (IZIValidate.nullOrEmpty(orderResponse!.timeConfirm)) {
         orderResponse!.timeConfirm =
             DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
-        updateStatusOrder(orderResponse: orderResponse!);
+        await updateStatusOrder(orderResponse: orderResponse!);
         FcmNotification.sendNotification(
             token: custommerReponse!.deviceId!,
             body:
@@ -178,6 +178,10 @@ class HomeShipperController extends GetxController {
               orderResponse!.timeDone =
                   DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
               await updateStatusOrder(orderResponse: orderResponse!);
+              await FirebaseFirestore.instance
+                  .collection("products")
+                  .doc(orderResponse!.listProduct!.first.idUser)
+                  .update({"sold": FieldValue.increment(1)});
               FcmNotification.sendNotification(
                   token: custommerReponse!.deviceId!,
                   body: "Tài xế đã giao hàng thành công",
@@ -410,11 +414,17 @@ class HomeShipperController extends GetxController {
   ///
   void onClickCancle(String type) {
     Get.toNamed(AuthRoutes.RATE, arguments: [orderResponse!.id!, type])
-        ?.then((value) {
+        ?.then((value) async {
       if (!IZIValidate.nullOrEmpty(value)) {
         isLoadingUser = false;
         isLoadingOrder = true;
         isLoadingCustommer = false;
+        await FirebaseFirestore.instance
+            .collection("vouchers")
+            .doc(orderResponse!.idVoucher)
+            .update({
+          "listCustomer": FieldValue.arrayRemove([orderResponse!.idCustomer])
+        });
         orderResponse = null;
         update();
       }
