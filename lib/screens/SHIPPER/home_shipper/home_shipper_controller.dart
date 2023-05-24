@@ -178,10 +178,15 @@ class HomeShipperController extends GetxController {
               orderResponse!.timeDone =
                   DateFormat('HH:mm dd/MM/yyyy').format(DateTime.now());
               await updateStatusOrder(orderResponse: orderResponse!);
-              await FirebaseFirestore.instance
-                  .collection("products")
-                  .doc(orderResponse!.listProduct!.first.idUser)
-                  .update({"sold": FieldValue.increment(1)});
+              for (int i = 0; i < orderResponse!.listProduct!.length; i++) {
+                await FirebaseFirestore.instance
+                    .collection("products")
+                    .doc(orderResponse!.listProduct![i].id)
+                    .update({
+                  "sold": FieldValue.increment(
+                      orderResponse!.listProduct![i].quantity!)
+                });
+              }
               FcmNotification.sendNotification(
                   token: custommerReponse!.deviceId!,
                   body: "Tài xế đã giao hàng thành công",
