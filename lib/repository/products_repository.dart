@@ -76,7 +76,7 @@ class ProductsRepository {
   }
 
   ///
-  /// get list product paginate page = 1 , limit = 10
+  /// get list product
   ///
   Future<void> paginateProducts({
     required int limit,
@@ -86,7 +86,8 @@ class ProductsRepository {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('products')
-          .limit(limit)
+          .where('isShow',isEqualTo: true)
+          .where('isDeleted',isEqualTo: false)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -110,7 +111,7 @@ class ProductsRepository {
           .collection('products')
           .where('nameCategory', isEqualTo: idCategory)
           .where('isShow', isEqualTo: true)
-          .limit(limit)
+          .where('isDeleted',isEqualTo: false)
           .get();
       onSucess(querySnapshot.docs
           .map((e) => Products.fromMap(e.data() as Map<String, dynamic>))
@@ -520,4 +521,6 @@ class ProductsRepository {
       onError(e);
     }
   }
+
+  
 }

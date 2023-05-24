@@ -12,6 +12,7 @@ import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/repository/cart_repository.dart';
+import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/products_repository.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/store_routes.dart';
@@ -31,8 +32,9 @@ class StoreController extends GetxController {
   bool isLoadingProduct = false;
   bool isLoadingNameCategory = false;
   bool isLoadingCountCart = false;
-  String idStore = Get.arguments as String;
+  String idStore = '';
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
+  final CommentRepository _commentRepository = GetIt.I.get<CommentRepository>();
   Store storeResponse = Store();
   String idUser = sl<SharedPreferenceHelper>().getIdUser;
   List<Products> listProducts = [];
@@ -41,6 +43,10 @@ class StoreController extends GetxController {
   int limit = 10;
   int countSold = 0;
   int countCart = 0;
+  double totalStar1 = 0;
+  int totalRating1 = 0;
+  double averRage1 = 0;
+  bool checkOrder = false;
   RefreshController refreshController = RefreshController();
   final UserRepository _userRepository = GetIt.I.get<UserRepository>();
   final ProductsRepository _productsRepository =
@@ -55,9 +61,11 @@ class StoreController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    idStore  =  Get.arguments as String;
     findStoreByID();
     getNameCategoy();
     getListProductCartByIdUser();
+  
   }
 
   ///
@@ -118,8 +126,10 @@ class StoreController extends GetxController {
         long2 = double.parse(listLatLong.last);
         final km =  Geolocator.distanceBetween(lat1, long1, lat2, long2)/1000;
         distance  = '${km.toStringAsFixed(2)}km';
+        
         Future.delayed(const Duration(seconds: 1), () {
           isLoadDingStore = true;
+          averageProduct();
           update();
         });
       },
@@ -236,7 +246,7 @@ class StoreController extends GetxController {
   String formatSold(int sales) {
     if (sales >= 1000) {
       double formattedSales = sales / 1000;
-      return '${formattedSales.toStringAsFixed(1)}k sp đã bán';
+      return '${formattedSales.toStringAsFixed(1)}k đã bán';
     } else {
       return '$sales sp đã bán';
     }
@@ -297,6 +307,9 @@ class StoreController extends GetxController {
       IZIAlert().error(message: 'Đã có trong giỏ hàng');
       return;
     }
+    if(checkOrder==true){
+      return;
+    }
     addCartToFireStore(products);
     EasyLoading.dismiss();
   }
@@ -305,6 +318,10 @@ class StoreController extends GetxController {
   /// add cart
   ///
   void addCartToFireStore(Products products) {
+    if(checkOrder){
+      return;
+    }
+    checkOrder = true;
     EasyLoading.show(status: "Đang cập nhật");
     final CartRquest cartRquest = CartRquest();
     cartRquest.idUser = idUser;
@@ -325,6 +342,8 @@ class StoreController extends GetxController {
         },
         onSuccess: () {
           IZIAlert().success(message: 'Thêm món ăn thành công');
+          getListProductCartByIdUser();
+          checkOrder = false;
           EasyLoading.dismiss();
           final bot = Get.find<BottomBarController>();
           bot.countCartByIDStore();
@@ -452,6 +471,23 @@ void _makePhoneCall(String phoneNumber) async {
     }
 
 }
+
+ ///
+  /// average product
+  ///
+  void averageProduct()  {
+    _commentRepository.averRage(
+      idStore: storeResponse.id!,
+      onSuccess: (totalStar, totalRating, averageRating) {
+        totalStar1 = totalStar;
+        totalRating1 = totalRating;
+        averRage1 = averageRating;
+        update();
+      }, 
+      onError: (error) {
+        print(error);
+      },);
+  }
 }
 
   
