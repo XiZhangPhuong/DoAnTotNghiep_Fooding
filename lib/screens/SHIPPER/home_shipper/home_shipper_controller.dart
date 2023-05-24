@@ -192,6 +192,7 @@ class HomeShipperController extends GetxController {
                   body: "Tài xế đã giao hàng thành công",
                   title: "Giao hàng thành công");
               statusOrder = 'Nhận đơn';
+              isLoadingStore = false;
               isLoadingUser = false;
               isLoadingOrder = false;
               isLoadingCustommer = false;
