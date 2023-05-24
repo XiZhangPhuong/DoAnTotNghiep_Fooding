@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/izi_loading_card.dart';
@@ -24,7 +22,7 @@ class ReviewFoodPage extends GetView<ReviewFoodController> {
       builder: (ReviewFoodController controller) {
         return Scaffold(
           backgroundColor: ColorResources.BACK_GROUND,
-          appBar: const P45AppBarP(title: 'Đánh giá đơn hàng'),
+          appBar: const P45AppBarP(title: 'Đánh giá cảm nhận'),
           body: controller.isLoading == false
               ? const CardLoadingItem(
                   count: 10,
@@ -82,17 +80,19 @@ class ReviewFoodPage extends GetView<ReviewFoodController> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              IZIValidate.nullOrEmpty(item.name)
-                                                  ? "không xác định"
-                                                  : item.name!,
-                                              style: TextStyle(
-                                                color: ColorResources.colorMain,
-                                                fontFamily: NUNITO,
-                                                fontWeight: FontWeight.w600,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontSize:
-                                                    IZIDimensions.FONT_SIZE_H6,
+                                            Expanded(
+                                              child: Text(
+                                                IZIValidate.nullOrEmpty(item.name)
+                                                    ? "không xác định"
+                                                    : item.name!,
+                                                style: TextStyle(
+                                                  color: ColorResources.colorMain,
+                                                  fontFamily: NUNITO,
+                                                  fontWeight: FontWeight.w600,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  fontSize:
+                                                      IZIDimensions.FONT_SIZE_H6,
+                                                ),
                                               ),
                                             ),
                                             //
@@ -282,16 +282,18 @@ class ReviewFoodPage extends GetView<ReviewFoodController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      IZIValidate.nullOrEmpty(controller.userResponse.fullName)
-                          ? ''
-                          : controller.userResponse.fullName!,
-                      style: TextStyle(
-                        color: ColorResources.colorMain,
-                        fontFamily: NUNITO,
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                    Expanded(
+                      child: Text(
+                        IZIValidate.nullOrEmpty(controller.userResponse.fullName)
+                            ? ''
+                            : controller.userResponse.fullName!,
+                        style: TextStyle(
+                          color: ColorResources.colorMain,
+                          fontFamily: NUNITO,
+                          fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: IZIDimensions.FONT_SIZE_H6,
+                        ),
                       ),
                     ),
                     GestureDetector(

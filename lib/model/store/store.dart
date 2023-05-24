@@ -32,6 +32,7 @@ class Store extends User {
             id: id,
             fullName: fullName,
             email: email,
+            phone: phone,
             passWord: passWord,
             avatar: avatar,
             typeUser: typeUser,

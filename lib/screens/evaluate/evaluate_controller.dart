@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/di_container.dart';
+import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/comment/comment_request.dart';
 import 'package:fooding_project/model/order/order.dart';
+import 'package:fooding_project/model/product/product_new.dart';
+import 'package:fooding_project/model/product/products.dart';
 import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/repository/comment_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
@@ -23,7 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class EvaluateController extends GetxController {
-  OrderResponse? orderResponse;
+  OrderResponse orderResponse = OrderResponse();
   List<String> listArgument = Get.arguments as List<String>;
   String idOrder = '';
   String idProduct = '';
@@ -40,6 +43,7 @@ class EvaluateController extends GetxController {
   File? imageFile;
   final FirebaseStorage _storage = FirebaseStorage.instance;
   List<File> listImageFile = [];
+  Products products = Products();
   @override
   void onInit() {
     super.onInit();
@@ -117,11 +121,16 @@ class EvaluateController extends GetxController {
   ///
   /// find order by id
   ///
-  void findOrderDetail() {
+  Future<void> findOrderDetail() async {
     _orderRepository.getOrder(
       idOrder: idOrder,
       onSuccess: (onSuccess) async {
         orderResponse = onSuccess.first;
+        for(Products i in orderResponse.listProduct!){
+          if(idProduct==i.id){
+            products = i;
+          }
+        }
         isLoadingOrder = true;
         update();
       },
@@ -145,8 +154,8 @@ class EvaluateController extends GetxController {
     final CommentRequets _commentRequest = CommentRequets();
     _commentRequest.id = idComment;
     _commentRequest.idUser = sl<SharedPreferenceHelper>().getIdUser;
-    _commentRequest.idStore = orderResponse!.listProduct![0].idUser!;
-    _commentRequest.idOrder = orderResponse!.id;
+    _commentRequest.idStore = orderResponse.listProduct![0].idUser!;
+    _commentRequest.idOrder = orderResponse.id;
     _commentRequest.satisFied = convertsatisFied();
     _commentRequest.idShipper = idShipper;
     _commentRequest.idProduct = idProduct;
@@ -181,5 +190,24 @@ class EvaluateController extends GetxController {
         print(error);
       },
     );
+  }
+
+  ///
+  /// String checkPrice Or BienSoXe
+  ///
+  String checkPrice(String type){
+     String str  = '';
+     if(type=='PRODUCT'){
+       if(products.priceDiscount==0){
+        str = '${IZIPrice.currencyConverterVND(products.price!.toDouble())} đ';
+       }else{
+        str = '${IZIPrice.currencyConverterVND(products.priceDiscount!.toDouble())} đ';
+       }
+     }else{
+       if(!IZIValidate.nullOrEmpty(userResponse.idVehicle)){
+         str = 'Biển số xe : ${userResponse.idVehicle}';
+       }
+     }
+    return str;
   }
 }
