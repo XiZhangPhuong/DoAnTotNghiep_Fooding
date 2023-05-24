@@ -258,4 +258,29 @@ class UserRepository {
       onError(e);
     }
   }
+
+
+
+  ///
+  /// get all name store
+  ///
+  Future<void> getAllNameStore({
+    required Function(List<String> data) onSuccess,
+    required Function(dynamic error) onError,
+  }) async {
+    try{
+       final ref = await FirebaseFirestore.instance.collection('users')
+       .where('typeUser',isEqualTo: 'STORE')
+       .where('isDeleted',isEqualTo: false)
+       .get();
+    
+    List<String> listData = ref.docs.map((e) => e.data()['fullName'] as String).toList();
+    onSuccess(listData);
+       
+    }catch(e){
+      onError(e);
+    }
+    
+    
+  }
 }
