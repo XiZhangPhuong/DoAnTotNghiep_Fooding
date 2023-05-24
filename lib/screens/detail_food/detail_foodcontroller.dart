@@ -56,6 +56,9 @@ class DetailFoodController extends GetxController {
   double long2 = 0;
   String distance = '';
   String idUser = sl.get<SharedPreferenceHelper>().getIdUser;
+  double totalStar1 = 0;
+  int totalRating1 = 0;
+  double averRage1 = 0;
   final ProductsRepository _productsRepository =
       GetIt.I.get<ProductsRepository>();
   final CartRepository _cartRepository = GetIt.I.get<CartRepository>();
@@ -164,7 +167,6 @@ class DetailFoodController extends GetxController {
     idProduct = Get.arguments as String;
     findProductByID(idProduct);
     getListProductCartByIdUser();
-    
   }
 
   ///
@@ -243,7 +245,7 @@ class DetailFoodController extends GetxController {
     if (!isDuplicate) {
       listProductsCart1.add(products);
       cartRquest.listProduct = listProductsCart1;
-        Get.back();
+      Get.back();
       _cartRepository.addCart(
         idUser: idUser,
         data: cartRquest,
@@ -365,13 +367,13 @@ class DetailFoodController extends GetxController {
       countProductByIdStore();
       await getAllComment();
       await getListFavorite();
+      await averageProduct();
       Future.delayed(const Duration(seconds: 1), () {
         isLoading = true;
         update();
       });
 
       print(productsModel!.toMap());
-     
     }
   }
 
@@ -387,14 +389,14 @@ class DetailFoodController extends GetxController {
     if (querySnapshot.docs.isNotEmpty) {
       final Store user = Store.fromMap(querySnapshot.docs.first.data());
       userModel = user;
-       List<String> listLatLong = userModel!.latLong!.split(';');
-        final home = Get.find<HomeController>();
-        lat1 = home.lat1;
-        long1 = home.lon1;
-        lat2  = double.parse(listLatLong.first);
-        long2 = double.parse(listLatLong.last);
-        final km =  Geolocator.distanceBetween(lat1, long1, lat2, long2)/1000;
-        distance  = '${km.toStringAsFixed(2)}km';
+      List<String> listLatLong = userModel!.latLong!.split(';');
+      final home = Get.find<HomeController>();
+      lat1 = home.lat1;
+      long1 = home.lon1;
+      lat2 = double.parse(listLatLong.first);
+      long2 = double.parse(listLatLong.last);
+      final km = Geolocator.distanceBetween(lat1, long1, lat2, long2) / 1000;
+      distance = '${km.toStringAsFixed(2)}km';
       // ignore: avoid_print1
       isLoadingStore = true;
       update();
@@ -518,6 +520,19 @@ class DetailFoodController extends GetxController {
   }
 
   ///
+  /// average product
   ///
-  ///
+  Future<void> averageProduct() async {
+    _commentRepository.averRage(
+      idProduct: idProduct, 
+      onSuccess: (totalStar, totalRating, averageRating) {
+        totalStar1 = totalStar;
+        totalRating1 = totalRating;
+        averRage1 = averageRating;
+        update();
+      }, 
+      onError: (error) {
+        print(error);
+      },);
+  }
 }
