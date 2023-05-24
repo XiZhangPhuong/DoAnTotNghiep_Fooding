@@ -645,7 +645,7 @@ class PaymentPage extends GetView<PaymentController> {
               Text(
                 IZIValidate.nullOrEmpty(controller.timeDelivery)
                     ? "Unknow"
-                    : controller.timeDelivery.toString(),
+                    : "${int.parse(controller.timeDelivery.toString().split(' ')[0]) + 20} phút",
                 style: TextStyle(
                   color: ColorResources.GREY,
                   fontFamily: NUNITO,

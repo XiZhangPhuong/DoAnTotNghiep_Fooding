@@ -39,7 +39,6 @@ class LoginController extends GetxController {
       EasyLoading.show(status: "Đang đăng nhập");
       model.User? user =
           await _userRepository.getUserDetails(phoneEditingController.text);
-      print("quyen test ${phoneEditingController.text}");
       if (user != null) {
         if (user.typeUser != CUSTOMER ||
             !BCrypt.checkpw(
