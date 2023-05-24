@@ -250,7 +250,7 @@ Widget _listViewHistorySearch(SearchNewController controller) {
             ),
           ),
          
-            controller.isLoadingProductSearch==false ? const CardLoadingItem(count: 10,) : 
+            controller.isLoadingProductSearch==false ? const DataEmpty() : 
             controller.listProductSearch.isEmpty ? const DataEmpty() : 
             ListView.builder(
              shrinkWrap: true,
