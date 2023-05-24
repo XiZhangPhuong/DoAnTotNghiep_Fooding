@@ -364,7 +364,9 @@ Widget _listviewProducts(StoreController controller) {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '${IZIPrice.currencyConverterVND(controller.listProducts[index].price!.toDouble())}vnđ',
+                                controller.listProducts[index].priceDiscount==0 ? 
+                                 '${IZIPrice.currencyConverterVND(controller.listProducts[index].price!.toDouble())}vnđ' : 
+                                '${IZIPrice.currencyConverterVND(controller.listProducts[index].priceDiscount!.toDouble())}vnđ',
                                 style: TextStyle(
                                   color: ColorResources.colorMain,
                                   fontFamily: NUNITO,

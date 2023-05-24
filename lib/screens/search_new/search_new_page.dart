@@ -320,7 +320,9 @@ Widget _listViewHistorySearch(SearchNewController controller) {
                                    height: IZIDimensions.SPACE_SIZE_1X,
                                  ),
                                  Text(
-                                   '${IZIPrice.currencyConverterVND(controller.listProductSearch[index].price!.toDouble())}đ',
+                                  controller.listProductSearch[index].priceDiscount==0 ? 
+                                  '${IZIPrice.currencyConverterVND(controller.listProductSearch[index].price!.toDouble())}đ' : 
+                                   '${IZIPrice.currencyConverterVND(controller.listProductSearch[index].priceDiscount!.toDouble())}đ',
                                    style: TextStyle(
                                      color: ColorResources.colorMain,
                                      fontFamily: NUNITO,
