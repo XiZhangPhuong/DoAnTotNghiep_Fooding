@@ -87,6 +87,7 @@ class DetailOrderController extends GetxController {
       if (event.exists) {
         orderResponse =
             OrderResponse.fromMap(event.data() as Map<String, dynamic>);
+        print(orderResponse.toJson());
         isLoading = false;
         await findDeliveryMan();
         await findStore(orderResponse.listProduct!.first.idUser!);
