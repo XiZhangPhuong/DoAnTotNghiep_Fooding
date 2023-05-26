@@ -7,6 +7,8 @@ import 'package:fooding_project/screens/auth/login/login_page.dart';
 import 'package:fooding_project/screens/auth/otp/otp_page.dart';
 import 'package:fooding_project/screens/auth/reset_password/reset_password_page.dart';
 import 'package:fooding_project/screens/auth/singup/singup_page.dart';
+import 'package:fooding_project/screens/chat/chat_binding.dart';
+import 'package:fooding_project/screens/chat/chat_page.dart';
 import 'package:fooding_project/screens/introduction/introduction_binding.dart';
 import 'package:fooding_project/screens/introduction/introduction_page.dart';
 import 'package:fooding_project/screens/rate/rate_binding.dart';
@@ -32,6 +34,7 @@ class AuthRoutes {
   static const RESET = '/reset';
   static const HOME_SHIPPER = '/home_shipper';
   static const RATE = '/rate';
+  static const CHAT = '/chat';
   static List<GetPage> list = [
     GetPage(
       name: LOGIN,
@@ -77,6 +80,11 @@ class AuthRoutes {
       name: RATE,
       page: () => const RatePage(),
       binding: RateBinding(),
+    ),
+      GetPage(
+      name: CHAT,
+      page: () => const ChatPage(),
+      binding: ChatBinding(),
     ),
   ];
 }
