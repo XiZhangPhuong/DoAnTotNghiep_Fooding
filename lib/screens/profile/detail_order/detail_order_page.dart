@@ -6,6 +6,8 @@ import 'package:fooding_project/base_widget/p45_button.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/routes/routes_path/fell_rating_routes.dart';
+import 'package:fooding_project/routes/routes_path/profile_routes.dart';
 import 'package:fooding_project/screens/profile/detail_order/detail_order_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -135,14 +137,14 @@ class DetailOrderPage extends GetView {
                                       : controller.orderResponse.timePeding!,
                                 ),
                                 if (!IZIValidate.nullOrEmpty(
-                                    controller.orderResponse.timeDelivering))
+                                    controller.orderResponse.timeConfirm))
                                   _itemTime(
                                     title: "Thời gian xác nhận",
-                                    content: controller
-                                        .orderResponse.timeDelivering!,
+                                    content:
+                                        controller.orderResponse.timeConfirm!,
                                   ),
                                 if (!IZIValidate.nullOrEmpty(
-                                    controller.orderResponse.timeConfirm))
+                                    controller.orderResponse.timeDelivering))
                                   _itemTime(
                                     title: "Lấy thành công, đang giao",
                                     content: controller
@@ -176,26 +178,130 @@ class DetailOrderPage extends GetView {
           init: DetailOrderController(),
           builder: (DetailOrderController controller) {
             return controller.orderResponse.statusOrder == PENDING ||
-                    controller.orderResponse.statusOrder == DELIVERING
+                    controller.orderResponse.statusOrder == DELIVERING ||
+                    controller.orderResponse.statusOrder == DONE
                 ? Container(
+                    height: IZIDimensions.iziSize.height * 0.08,
                     margin: EdgeInsets.only(
                       bottom: IZIDimensions.SPACE_SIZE_2X,
                     ),
-                    child: Visibility(
-                      visible: true,
-                      child: P45Button(
-                        title: controller.orderResponse.statusOrder == PENDING
-                            ? "Hủy đơn hàng"
-                            : controller.orderResponse.statusOrder == DELIVERING
-                                ? "Trạng thái giao hàng"
-                                : "Đánh giá",
-                        onPressed: () {
-                          controller.handleTypeOrder();
-                        },
-                      ),
+                    child: Row(
+                      children: [
+                        if (controller.orderResponse.statusOrder == PENDING)
+                          Expanded(
+                            child: button(
+                              title: "Hủy đơn hàng",
+                              onPressed: () {
+                                controller.handleCancleOrder();
+                              },
+                            ),
+                          ),
+                        if (controller.orderResponse.statusOrder == DELIVERING)
+                          Expanded(
+                            child: Row(
+                              children: [
+                                if (controller.orderResponse.timeConfirm ==
+                                        null ||
+                                    DateTime.parse(controller
+                                                .orderResponse.timePeding!)
+                                            .add(Duration(
+                                                minutes: int.parse(controller
+                                                    .orderResponse
+                                                    .timeDelivery!)))
+                                            .millisecondsSinceEpoch <
+                                        DateTime.now().millisecondsSinceEpoch)
+                                  Expanded(
+                                    child: button(
+                                      title: "Hủy đơn hàng",
+                                      onPressed: () {
+                                        controller.handleCancleOrder();
+                                      },
+                                    ),
+                                  ),
+                                Expanded(
+                                  child: button(
+                                    title: "Trạng thái giao hàng",
+                                    onPressed: () {
+                                      controller.gotoGoogleMapMaker();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (controller.orderResponse.statusOrder == DONE)
+                          Expanded(
+                            child: button(
+                              title: "Đánh giá",
+                              onPressed: () {
+                                Get.toNamed(
+                                  FillRatingRoutes.REVIEW_FOOD,
+                                  arguments: controller.orderResponse.id,
+                                );
+                              },
+                            ),
+                          ),
+                      ],
                     ))
                 : const SizedBox();
           }),
+      floatingActionButton: GetBuilder(
+          init: DetailOrderController(),
+          builder: (controller) {
+            return controller.orderResponse.statusOrder == DELIVERING
+                ? GestureDetector(
+                    onTap: () {
+                      Get.toNamed(ProfileRoutes.CHAT,
+                          arguments: controller.orderResponse);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          bottom: IZIDimensions.iziSize.height * 0.05),
+                      height: IZIDimensions.ONE_UNIT_SIZE * 70,
+                      width: IZIDimensions.ONE_UNIT_SIZE * 70,
+                      child: Icon(
+                        Icons.message_sharp,
+                        color: Colors.red,
+                        size: IZIDimensions.ONE_UNIT_SIZE * 50,
+                      ),
+                    ),
+                  )
+                : const SizedBox();
+          }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  ///
+  /// Button.
+  ///
+  Widget button({required Function onPressed, required String title}) {
+    return GestureDetector(
+      onTap: () {
+        onPressed();
+      },
+      child: Container(
+        height: IZIDimensions.ONE_UNIT_SIZE * 80,
+        margin: EdgeInsets.only(
+            left: IZIDimensions.SPACE_SIZE_2X,
+            right: IZIDimensions.SPACE_SIZE_2X,
+            bottom: IZIDimensions.SPACE_SIZE_1X),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(IZIDimensions.SPACE_SIZE_1X),
+          color: ColorResources.colorMain,
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontFamily: 'Nunito',
+              color: ColorResources.WHITE,
+              fontSize: IZIDimensions.FONT_SIZE_H6,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
