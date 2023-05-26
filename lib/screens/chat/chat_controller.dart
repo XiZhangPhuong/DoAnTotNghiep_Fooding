@@ -3,12 +3,18 @@ import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/order/order.dart';
 import 'package:get/get.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../di_container.dart';
+import '../../model/user.dart';
+import '../../repository/user_repository.dart';
 import '../../sharedpref/shared_preference_helper.dart';
+import '../../utils/fcm_notification.dart';
 
 class ChatController extends GetxController {
+  final _userResponsitory = GetIt.I.get<UserRepository>();
+  User shipperResponse = User();
   List<types.Message> messages = [];
   final user = types.User(
     id: sl<SharedPreferenceHelper>().getIdUser,
@@ -22,7 +28,7 @@ class ChatController extends GetxController {
 
     if (!IZIValidate.nullOrEmpty(Get.arguments)) {
       order = Get.arguments as OrderResponse;
-      print(order.id);
+      findDeliveryMan();
     }
 
     loadMessages();
@@ -48,6 +54,10 @@ class ChatController extends GetxController {
         .doc(order.id)
         .collection("message")
         .add(message.toJson());
+    FcmNotification.sendNotification(
+        token: shipperResponse.deviceId!,
+        body: (message as types.TextMessage).text,
+        title: "Tin nhắn từ khách hàng");
     update();
   }
 
@@ -83,5 +93,17 @@ class ChatController extends GetxController {
         }
       }
     });
+  }
+
+  ///
+  /// Find Delivery man.
+  ///
+  Future<void> findDeliveryMan() async {
+    try {
+      shipperResponse =
+          await _userResponsitory.findbyId(idUser: order.idEmployee!);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
