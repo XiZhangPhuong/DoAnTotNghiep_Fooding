@@ -7,6 +7,7 @@ import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/model/location/location_response.dart';
 import 'package:fooding_project/model/store/store.dart';
 import 'package:fooding_project/model/user.dart' as model;
+import 'package:fooding_project/model/user.dart';
 import 'package:fooding_project/sharedpref/shared_preference_helper.dart';
 
 class UserRepository {
@@ -229,5 +230,29 @@ class UserRepository {
     } catch (e) {
       onError(e);
     }
+  }
+
+
+   ///
+  /// get all name store
+  ///
+  Future<void> getAllCustommer({
+    required Function(List<User> data) onSuccess,
+    required Function(dynamic error) onError,
+  }) async {
+    try{
+       final ref = await FirebaseFirestore.instance.collection('users')
+       .where('typeUser',isEqualTo: 'CUSTOMER')
+       .where('isDeleted',isEqualTo: false)
+       .get();
+    
+    List<User> listData =  ref.docs.map((e) => User.fromMap(e.data())).toList();
+    onSuccess(listData);
+       
+    }catch(e){
+      onError(e);
+    }
+    
+    
   }
 }

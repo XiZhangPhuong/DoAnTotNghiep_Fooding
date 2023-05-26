@@ -108,61 +108,80 @@ class OrderResponsitory {
     }
   }
 
-
-
- Future<void> getOrderListTen({
-  required Function(List<OrderResponse> onSuccess) onSuccess,
-  required Function(dynamic error) onError,
-}) async {
-  try {
-    final ref = _fireStore.collection("orders");
-    QuerySnapshot snap =
-        await ref.where('statusOrder', isEqualTo: PENDING).get();
-    if (snap.docs.isNotEmpty) {
-      final orders = snap.docs.map((doc) => OrderResponse.fromMap(
-          doc.data() as Map<String, dynamic>)).toList();
-      final docRef = ref.doc(snap.docs.first.id);
-      final listener = docRef.snapshots().listen((snap) {
-        if (snap.exists) {
-          final updatedOrder = OrderResponse.fromMap(
-              snap.data() as Map<String, dynamic>);
-          final index = orders.indexWhere((order) =>
-              order.id == updatedOrder.id);
-          if (index != -1) {
-            orders[index] = updatedOrder;
-            onSuccess(orders);
+  Future<void> getOrderListTen({
+    required Function(List<OrderResponse> onSuccess) onSuccess,
+    required Function(dynamic error) onError,
+  }) async {
+    try {
+      final ref = _fireStore.collection("orders");
+      QuerySnapshot snap =
+          await ref.where('statusOrder', isEqualTo: PENDING).get();
+      if (snap.docs.isNotEmpty) {
+        final orders = snap.docs
+            .map((doc) =>
+                OrderResponse.fromMap(doc.data() as Map<String, dynamic>))
+            .toList();
+        final docRef = ref.doc(snap.docs.first.id);
+        final listener = docRef.snapshots().listen((snap) {
+          if (snap.exists) {
+            final updatedOrder =
+                OrderResponse.fromMap(snap.data() as Map<String, dynamic>);
+            final index =
+                orders.indexWhere((order) => order.id == updatedOrder.id);
+            if (index != -1) {
+              orders[index] = updatedOrder;
+              onSuccess(orders);
+            }
+          } else {
+            onSuccess([]);
           }
-        } else {
-          onSuccess([]);
-        }
-      });
-      onSuccess(orders);
-    } else {
-      onSuccess([]);
+        });
+        onSuccess(orders);
+      } else {
+        onSuccess([]);
+      }
+    } catch (e) {
+      onError(e);
     }
-  } catch (e) {
-    onError(e);
   }
-}
 
-///
-/// update order
-///
-Future<void> updateOrder({
-  required OrderResponse updatedOrder,
-  required Function() onSuccess,
-  required Function(dynamic e) onError,
-}) async {
-  try {
-    await FirebaseFirestore.instance
-        .collection('orders')
-        .doc(updatedOrder.id)
-        .update(updatedOrder.toMap());
-    onSuccess(
-        
-    );
-  } catch (e) {
-    onError(e);
+  ///
+  /// update order
+  ///
+  Future<void> updateOrder({
+    required OrderResponse updatedOrder,
+    required Function() onSuccess,
+    required Function(dynamic e) onError,
+  }) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(updatedOrder.id)
+          .update(updatedOrder.toMap());
+      onSuccess();
+    } catch (e) {
+      onError(e);
+    }
   }
-}
+
+  ///
+  /// get all order status = DONE
+  ///
+  Future<void> getAllOrder({
+    required String idUser,
+    required Function(List<OrderResponse> data) onSuccess,
+    required Function(dynamic e) onError,
+  }) async {
+    try {
+      final ref = await FirebaseFirestore.instance
+          .collection('orders')
+          .where('status', isEqualTo: DONE)
+          .where('idEmployee',isEqualTo: idUser)
+          .get();
+        List<OrderResponse> list = ref.docs.map((e) => OrderResponse.fromMap(e.data())).toList();
+        onSuccess(list);
+    } catch (e) {
+      onError(e);
+    }
+  }
 }

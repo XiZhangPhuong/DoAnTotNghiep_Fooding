@@ -36,7 +36,11 @@ class HomeShipperPage extends GetView<HomeShipperController> {
                 : Container(
                     child: _viewInforOrder(controller),
                   ),
-            drawer: const MainDrawer(),
+            drawer: 
+             controller.isLoadingCustommer1==false ? const Center(child: CircularProgressIndicator(),) :
+              MainDrawer(avatar: IZIValidate.nullOrEmpty(controller.custommerReponse1!.avatar) ? 'https://i.pinimg.com/736x/d0/15/bf/d015bf7eaad6df6dceb11aa0e43b9f06.jpg': controller.custommerReponse1!.avatar!, 
+              fullName: IZIValidate.nullOrEmpty(controller.custommerReponse1!.fullName) ? 'No name' : controller.custommerReponse1!.fullName!
+              )
           ),
         );
       },
