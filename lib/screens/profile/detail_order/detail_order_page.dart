@@ -7,6 +7,7 @@ import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/routes/routes_path/fell_rating_routes.dart';
+import 'package:fooding_project/routes/routes_path/profile_routes.dart';
 import 'package:fooding_project/screens/profile/detail_order/detail_order_controller.dart';
 import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
@@ -244,6 +245,30 @@ class DetailOrderPage extends GetView {
                     ))
                 : const SizedBox();
           }),
+      floatingActionButton: GetBuilder(
+          init: DetailOrderController(),
+          builder: (controller) {
+            return controller.orderResponse.statusOrder == DELIVERING
+                ? GestureDetector(
+                    onTap: () {
+                      Get.toNamed(ProfileRoutes.CHAT,
+                          arguments: controller.orderResponse);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          bottom: IZIDimensions.iziSize.height * 0.05),
+                      height: IZIDimensions.ONE_UNIT_SIZE * 70,
+                      width: IZIDimensions.ONE_UNIT_SIZE * 70,
+                      child: Icon(
+                        Icons.message_sharp,
+                        color: Colors.red,
+                        size: IZIDimensions.ONE_UNIT_SIZE * 50,
+                      ),
+                    ),
+                  )
+                : const SizedBox();
+          }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
