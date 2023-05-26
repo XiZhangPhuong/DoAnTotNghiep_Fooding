@@ -754,7 +754,7 @@ Widget _address(PaymentController controller) {
                 ),
                 IZIValidate.nullOrEmpty(controller.userResponse.idLocation)
                     ? const Center(
-                        child: Text("Bạn có chọn địa chỉ giao hàng"),
+                        child: Text("Bạn chưa có địa chỉ giao hàng"),
                       )
                     : Row(
                         children: [

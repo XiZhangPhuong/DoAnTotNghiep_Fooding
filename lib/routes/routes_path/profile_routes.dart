@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:fooding_project/screens/chat/chat_binding.dart';
+import 'package:fooding_project/screens/chat/chat_page.dart';
 import 'package:fooding_project/screens/feel_rating/feel_rating_binding.dart';
 import 'package:fooding_project/screens/feel_rating/feel_rating_page.dart';
 import 'package:fooding_project/screens/profile/detail_order/detail_order_page.dart';
@@ -24,6 +26,7 @@ class ProfileRoutes {
   static const GG_MAP_MARKER = '/gg_map_marker';
   static const FEEL_RATING = '/feel_rating';
   static const HELP = '/HELP';
+  static const CHAT = '/chat';
   static List<GetPage> list = [
     GetPage(
       name: PROFILE,
@@ -59,6 +62,11 @@ class ProfileRoutes {
       name: HELP,
       page: () => HelpPage(),
       binding: HelpBinding(),
+    ),
+    GetPage(
+      name: CHAT,
+      page: () => const ChatPage(),
+      binding: ChatBinding(),
     ),
   ];
 }
