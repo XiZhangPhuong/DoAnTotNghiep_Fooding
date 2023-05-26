@@ -33,7 +33,7 @@ class FcmNotification {
     required String title,
   }) async {
     try {
-      await Dio(BaseOptions(headers: {
+      final response = await Dio(BaseOptions(headers: {
         'Content-Type': 'application/json',
         'Authorization': 'key=$SERVERKEY',
       })).post(
@@ -56,6 +56,7 @@ class FcmNotification {
           },
         ),
       );
+      print(response);
     } catch (e) {
       print(e.toString());
     }
