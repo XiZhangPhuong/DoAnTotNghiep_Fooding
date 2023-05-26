@@ -40,7 +40,9 @@ class ChatController extends GetxController {
   }
 
   Future<void> _addMessage(types.Message message) async {
-    messages.insert(0, message);
+    if (!isFirst) {
+      messages.insert(0, message);
+    }
     await FirebaseFirestore.instance
         .collection("orders")
         .doc(order.id)
@@ -64,7 +66,9 @@ class ChatController extends GetxController {
                 types.Message.fromJson(
                     item.doc.data() as Map<String, dynamic>));
           }
-
+          messages.sort(
+            (a, b) => (a.createdAt! > b.createdAt! ? -1 : 1),
+          );
           isFirst = false;
           update();
         } else {
