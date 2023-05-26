@@ -1,0 +1,286 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:fooding_project/base_widget/izi_image.dart';
+import 'package:fooding_project/base_widget/izi_text.dart';
+import 'package:fooding_project/base_widget/p45_appbar.dart';
+import 'package:fooding_project/helper/izi_dimensions.dart';
+import 'package:fooding_project/helper/izi_validate.dart';
+import 'package:fooding_project/screens/SHIPPER/profile_shipper/profile_shipper_controller.dart';
+import 'package:fooding_project/utils/color_resources.dart';
+import 'package:get/get.dart';
+
+class ProfileShipperPage extends GetView<ProfileShipperController> {
+  const ProfileShipperPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder(
+      init: ProfileShipperController(),
+      builder: (controller) {
+        return Scaffold(
+          appBar: const P45AppBarP(
+            title: 'Trang cá nhân',
+          ),
+          body: controller.isLoading == false
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _trangCaNhan(controller),
+                      SizedBox(
+                        height: IZIDimensions.SPACE_SIZE_3X,
+                      ),
+                      _editProfile(controller),
+                      SizedBox(
+                        height: IZIDimensions.SPACE_SIZE_3X,
+                      ),
+                      _itemFuction(
+                        ontap: (
+                          
+                        ) {
+                          controller.gotoChart();
+                        },
+                        image: Icons.exit_to_app,
+                        text: 'Thống kê',
+                      ),
+                      SizedBox(
+                        height: IZIDimensions.SPACE_SIZE_3X,
+                      ),
+                      _itemFuction(
+                        ontap: () {
+                          controller.logout();
+                        },
+                        image: Icons.exit_to_app,
+                        text: 'Đăng xuất',
+                      ),
+                    ],
+                  ),
+                ),
+        );
+      },
+    );
+  }
+}
+
+///
+/// item Function
+///
+Widget _itemFuction({
+  required Function ontap,
+  required IconData image,
+  required String text,
+}) {
+  return GestureDetector(
+    onTap: () {
+      ontap();
+    },
+    child: Container(
+      color: ColorResources.WHITE,
+      padding: EdgeInsets.all(
+        IZIDimensions.SPACE_SIZE_4X,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            image,
+            color: Colors.red,
+          ),
+          SizedBox(
+            width: IZIDimensions.BLUR_RADIUS_4X,
+          ),
+          Text(
+            text,
+            style: TextStyle(
+              color: const Color(0xff37306B),
+              fontFamily: 'Nunito',
+              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+///
+/// Trang cá nhân
+///
+Widget _trangCaNhan(ProfileShipperController controller) {
+  return Container(
+    width: IZIDimensions.iziSize.width,
+    margin: EdgeInsets.only(
+      top: IZIDimensions.SPACE_SIZE_5X,
+    ),
+    padding: EdgeInsets.only(
+      bottom: IZIDimensions.SPACE_SIZE_3X,
+    ),
+    color: const Color.fromRGBO(255, 255, 255, 1),
+    child: Column(
+      children: [
+        SizedBox(
+          height: IZIDimensions.SPACE_SIZE_1X,
+        ),
+        SizedBox(
+          height: IZIDimensions.SPACE_SIZE_5X * 4.5,
+          width: IZIDimensions.SPACE_SIZE_5X * 4.5,
+          child: ClipOval(
+            child: IZIValidate.nullOrEmpty(controller.user!.avatar)
+                ? IZIImage(
+                    'https://i.pinimg.com/736x/d0/15/bf/d015bf7eaad6df6dceb11aa0e43b9f06.jpg',
+                    height: IZIDimensions.ONE_UNIT_SIZE * 100,
+                    width: IZIDimensions.ONE_UNIT_SIZE * 100,
+                  )
+                : IZIImage(
+                    controller.user!.avatar!,
+                    height: IZIDimensions.ONE_UNIT_SIZE * 100,
+                    width: IZIDimensions.ONE_UNIT_SIZE * 100,
+                  ),
+          ),
+        ),
+        SizedBox(
+          height: IZIDimensions.SPACE_SIZE_1X,
+        ),
+        IZIText(
+          text: IZIValidate.nullOrEmpty(controller.user!.fullName)
+              ? "No Name"
+              : controller.user!.fullName!,
+          style: TextStyle(
+            color: ColorResources.BLACK,
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w700,
+            fontSize: IZIDimensions.FONT_SIZE_H6,
+          ),
+        ),
+        SizedBox(
+          height: IZIDimensions.ONE_UNIT_SIZE * 5,
+        ),
+        IZIText(
+          text: "Thành viên",
+          style: TextStyle(
+            color: ColorResources.BLACK,
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w400,
+            fontSize: IZIDimensions.FONT_SIZE_SPAN,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+///
+///  edit profile
+///
+Widget _editProfile(ProfileShipperController controller) {
+  return Container(
+    color: ColorResources.WHITE,
+    padding: EdgeInsets.all(
+      IZIDimensions.SPACE_SIZE_4X,
+    ),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              "Thông tin cá nhân",
+              style: TextStyle(
+                color: ColorResources.BLACK,
+                fontSize: IZIDimensions.FONT_SIZE_DEFAULT * 1.1,
+                fontFamily: 'Nunito',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: () async {
+                await controller.gotoEditProfile();
+              },
+              child: Text(
+                "Sửa",
+                style: TextStyle(
+                  color: ColorResources.BLACK,
+                  fontSize: IZIDimensions.FONT_SIZE_SPAN,
+                  fontFamily: 'Nunito',
+                  fontWeight: FontWeight.w600,
+                  
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: IZIDimensions.SPACE_SIZE_3X,
+        ),
+        _itemEdit(
+            Icons.person,
+            "Họ và tên",
+            IZIValidate.nullOrEmpty(controller.user!.fullName)
+                ? "No Name"
+                : controller.user!.fullName!),
+        SizedBox(
+          height: IZIDimensions.SPACE_SIZE_2X,
+        ),
+        _itemEdit(Icons.phone, "Số điện thoại", controller.user!.phone!),
+        SizedBox(
+          height: IZIDimensions.SPACE_SIZE_2X,
+        ),
+        _itemEdit(
+          Icons.date_range,
+          "Ngày tháng năm sinh",
+          IZIValidate.nullOrEmpty(controller.user!.dateOfBirth)
+              ? "Chưa có dữ liệu"
+              : controller.user!.dateOfBirth!,
+        ),
+        SizedBox(
+          height: IZIDimensions.SPACE_SIZE_2X,
+        ),
+      ],
+    ),
+  );
+}
+
+Row _itemEdit(IconData image, String label, String fullname) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Icon(
+        image,
+        color: Colors.red,
+        size: IZIDimensions.ONE_UNIT_SIZE * 40,
+      ),
+      SizedBox(
+        width: IZIDimensions.SPACE_SIZE_1X,
+      ),
+      Text(
+        label,
+        style: TextStyle(
+          color: ColorResources.BLACK,
+          fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+          fontFamily: 'Nunito',
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      SizedBox(
+        width: IZIDimensions.SPACE_SIZE_2X,
+      ),
+      Expanded(
+        child: Text(
+          fullname,
+          style: TextStyle(
+            color: ColorResources.BLACK,
+            fontSize: IZIDimensions.FONT_SIZE_SPAN_SMALL,
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      SizedBox(
+        width: IZIDimensions.SPACE_SIZE_2X,
+      ),
+    ],
+  );
+}

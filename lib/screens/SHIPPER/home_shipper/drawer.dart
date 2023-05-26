@@ -1,12 +1,25 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
+import 'package:fooding_project/routes/routes_path/profile_routes.dart';
+import 'package:fooding_project/utils/app_constants.dart';
 import 'package:fooding_project/utils/color_resources.dart';
 import 'package:get/get.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({super.key});
+  final String avatar;
+  final String fullName;
+
+     const MainDrawer({
+    Key? key,
+    required this.avatar,
+    required this.fullName,
+  }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +32,21 @@ class MainDrawer extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
-              CircleAvatar(
-                radius: 50.0,
-                backgroundImage: NetworkImage(
-                  "https://images.unsplash.com/photo-1594616838951-c155f8d978a0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80",
+            children:  [
+              ClipOval(
+                child: IZIImage(avatar,height: IZIDimensions.ONE_UNIT_SIZE*100,
+                width: IZIDimensions.ONE_UNIT_SIZE*100,
                 ),
               ),
               SizedBox(
                 height: 5.0,
               ),
               Text(
-                "Trương Đình Quyền",
+                fullName,
                 style: TextStyle(
-                  fontSize: 22.0,
+                  fontSize: IZIDimensions.FONT_SIZE_H6,
+                  fontFamily: NUNITO,
+                  
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -55,7 +69,9 @@ class MainDrawer extends StatelessWidget {
         //Now let's Add the button for the Menu
         //and let's copy that and modify it
         ListTile(
-          onTap: () {},
+          onTap: () {
+            Get.toNamed(ProfileRoutes.PROFILE);
+          },
           leading: const Icon(
             Icons.person,
             color: Colors.black,
@@ -73,7 +89,9 @@ class MainDrawer extends StatelessWidget {
         ),
 
         ListTile(
-          onTap: () {},
+          onTap: () {
+            Get.toNamed(ProfileRoutes.CHART);
+          },
           leading: const Icon(
             Icons.assessment,
             color: Colors.black,

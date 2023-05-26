@@ -31,10 +31,12 @@ class HomeShipperController extends GetxController {
   bool isLoadingUser = false;
   bool isLoadingOrder = false;
   bool isLoadingCustommer = false;
+  bool isLoadingCustommer1 = false;
   bool isLoadingStore = false;
   String idUser = sl<SharedPreferenceHelper>().getIdUser;
   User? shipperReponse;
   User? custommerReponse;
+  User? custommerReponse1;
   User? storeResponse;
   OrderResponse? orderResponse;
   List<OrderResponse> listOrder = [];
@@ -55,9 +57,11 @@ class HomeShipperController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     // get order
     getOrder();
     findUserShipper();
+    findUserCustomer1();
     _getCurrentLocation();
   }
 
@@ -99,7 +103,16 @@ class HomeShipperController extends GetxController {
     isLoadingCustommer = true;
     update();
   }
-
+ 
+ ///
+ /// Find user. 1
+ /// 
+   Future<void> findUserCustomer1() async {
+     custommerReponse1 = await _userRepository.findUser();
+     print(custommerReponse1!.toMap());
+     isLoadingCustommer1 =true;
+     update();
+  }
   ///
   /// Find user.
   ///
