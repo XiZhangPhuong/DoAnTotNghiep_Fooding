@@ -69,8 +69,10 @@ class ChatController extends GetxController {
       if (event.docChanges.isNotEmpty) {
         if (isFirst) {
           for (final item in event.docChanges) {
-            messages.add(types.Message.fromJson(
-                item.doc.data() as Map<String, dynamic>));
+            messages.insert(
+                0,
+                types.Message.fromJson(
+                    item.doc.data() as Map<String, dynamic>));
           }
 
           isFirst = false;
