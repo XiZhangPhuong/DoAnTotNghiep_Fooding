@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
 import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/base_widget/p45_button.dart';
+import 'package:fooding_project/helper/izi_date.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';
 import 'package:fooding_project/helper/izi_price.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
@@ -202,12 +203,14 @@ class DetailOrderPage extends GetView {
                               children: [
                                 if (controller.orderResponse.timeConfirm ==
                                         null ||
-                                    DateTime.parse(controller
-                                                .orderResponse.timePeding!)
+                                    IZIDate.formatDateTime(
+                                                controller
+                                                    .orderResponse.timePeding!,
+                                                format: "HH:mm dd/MM/yyyy")
                                             .add(Duration(
                                                 minutes: int.parse(controller
-                                                    .orderResponse
-                                                    .timeDelivery!)))
+                                                    .orderResponse.timeDelivery!
+                                                    .split('.')[0])))
                                             .millisecondsSinceEpoch <
                                         DateTime.now().millisecondsSinceEpoch)
                                   Expanded(
