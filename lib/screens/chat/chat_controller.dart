@@ -57,8 +57,8 @@ class ChatController extends GetxController {
 
     FcmNotification.sendNotification(
         token: custommerReponse.deviceId!,
-        body: "Tin nhắn từ tài xế",
-        title: (message as types.TextMessage).text);
+        body: (message as types.TextMessage).text,
+        title: "Tin nhắn từ tài xế");
     update();
   }
 
