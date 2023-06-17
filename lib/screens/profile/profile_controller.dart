@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/repository/user_repository.dart';
 import 'package:fooding_project/routes/routes_path/profile_routes.dart';
 import 'package:get/get.dart';
@@ -36,11 +37,22 @@ class ProfileController extends GetxController {
   /// Log out.
   ///
   void logout() async {
-    await FirebaseAuth.instance.signOut();
-    sl<SharedPreferenceHelper>().removeLogin();
-    sl<SharedPreferenceHelper>().removeIdUser();
-    Get.offNamed(AuthRoutes.LOGIN);
-    IZIAlert().success(message: "Đăng xuất thành công");
+    Get.dialog(DialogCustom(
+      description: 'Bạn có muốn đăng xuất ? ',
+      cancel1: 'Không',
+      agree: 'Có',
+      onTapCancle: () {
+        Get.back();
+      },
+      onTapConfirm: () async {
+        await FirebaseAuth.instance.signOut();
+        sl<SharedPreferenceHelper>().removeLogin();
+        sl<SharedPreferenceHelper>().removeIdUser();
+        Get.offNamed(AuthRoutes.LOGIN);
+        Get.back();
+        IZIAlert().success(message: "Đăng xuất thành công");
+      },
+    ));
   }
 
   ///

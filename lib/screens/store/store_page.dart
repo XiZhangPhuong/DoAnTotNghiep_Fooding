@@ -256,7 +256,7 @@ class StorePage extends GetView<StoreController> {
                             '${controller.countSold} sp đã bán',
                             maxLines: 1,
                             style: TextStyle(
-                              color: ColorResources.GREY,
+                              color: ColorResources.RED,
                               fontFamily: NUNITO,
                               fontWeight: FontWeight.w600,
                               overflow: TextOverflow.ellipsis,

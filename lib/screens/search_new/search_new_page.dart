@@ -24,15 +24,9 @@ class SearchNewPage extends GetView<SearchNewController> {
             children: [
               _searchView(controller),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      IZIValidate.nullOrEmpty(controller.filterSearch) ? 
-                      _listViewHistorySearch(controller)
-                      : _listViewSearch(controller),
-                    ],
-                  ),
-                ),
+                child: IZIValidate.nullOrEmpty(controller.filterSearch)
+                    ? _listViewHistorySearch(controller)
+                    : _listViewSearch(controller),
               ),
             ],
           ),
@@ -46,8 +40,7 @@ class SearchNewPage extends GetView<SearchNewController> {
 /// searchView
 ///
 Widget _searchView(SearchNewController controller) {
-  return 
-  Container(
+  return Container(
     padding: EdgeInsets.only(
         top: IZIDimensions.ONE_UNIT_SIZE * 80,
         bottom: IZIDimensions.SPACE_SIZE_2X),
@@ -112,236 +105,336 @@ Widget _searchView(SearchNewController controller) {
 /// listview history search
 ///
 Widget _listViewHistorySearch(SearchNewController controller) {
-  return
-  !IZIValidate.nullOrEmpty(controller.filterSearch) ? Container() :
-   Container(
-    height: IZIDimensions.iziSize.height,
-    color: ColorResources.WHITE,
-    padding: EdgeInsets.symmetric(
-      vertical: IZIDimensions.SPACE_SIZE_2X,
-      horizontal: IZIDimensions.SPACE_SIZE_3X,
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  return !IZIValidate.nullOrEmpty(controller.filterSearch)
+      ? Container()
+      : Container(
+          height: IZIDimensions.iziSize.height,
+          color: ColorResources.WHITE,
+          padding: EdgeInsets.symmetric(
+            vertical: IZIDimensions.SPACE_SIZE_2X,
+            horizontal: IZIDimensions.SPACE_SIZE_3X,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Tìm kiếm gần đây',
-                style: TextStyle(
-                  color: ColorResources.BLACK,
-                  fontFamily: NUNITO,
-                  fontWeight: FontWeight.w600,
-                  fontSize: IZIDimensions.FONT_SIZE_H6,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  controller.deleteAllSeach();
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: IZIDimensions.SPACE_SIZE_4X,
-                    vertical: IZIDimensions.SPACE_SIZE_1X * 0.5,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(IZIDimensions.SPACE_SIZE_5X),
-                    color: const Color(0xff677275),
-                  ),
-                  child: Text(
-                    'Xóa',
-                    style: TextStyle(
-                      color: ColorResources.WHITE,
-                      fontFamily: NUNITO,
-                      fontWeight: FontWeight.w500,
-                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Tìm kiếm gần đây',
+                      style: TextStyle(
+                        color: ColorResources.BLACK,
+                        fontFamily: NUNITO,
+                        fontWeight: FontWeight.w600,
+                        fontSize: IZIDimensions.FONT_SIZE_H6,
+                      ),
                     ),
-                  ),
+                    if (controller.listHistorySearch.isNotEmpty)
+                      GestureDetector(
+                        onTap: () {
+                          controller.deleteAllSeach();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: IZIDimensions.SPACE_SIZE_4X,
+                            vertical: IZIDimensions.SPACE_SIZE_1X * 0.5,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                                IZIDimensions.SPACE_SIZE_5X),
+                            color: const Color(0xff677275),
+                          ),
+                          child: Text(
+                            'Xóa',
+                            style: TextStyle(
+                              color: ColorResources.WHITE,
+                              fontFamily: NUNITO,
+                              fontWeight: FontWeight.w500,
+                              fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
+              controller.listHistorySearch.isEmpty
+                  ? const DataEmpty()
+                  : SingleChildScrollView(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: controller.listHistorySearch.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              controller.onClickItemHistorySearch(
+                                  controller.listHistorySearch[index]);
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                bottom: IZIDimensions.SPACE_SIZE_3X,
+                              ),
+                              padding: EdgeInsets.only(
+                                left: IZIDimensions.SPACE_SIZE_1X,
+                                right: IZIDimensions.SPACE_SIZE_3X,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    controller.listHistorySearch[index],
+                                    style: TextStyle(
+                                      color: ColorResources.GREY,
+                                      fontFamily: NUNITO,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.deleteItemSearch(
+                                          controller.listHistorySearch[index]);
+                                    },
+                                    child: Icon(
+                                      Icons.close,
+                                      size: IZIDimensions.ONE_UNIT_SIZE * 30,
+                                      color: ColorResources.GREY,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
             ],
           ),
-        ),
-        controller.listHistorySearch.isEmpty ? const DataEmpty() : 
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.listHistorySearch.length,
-          itemBuilder: (context, index) {
-        return GestureDetector(
-           behavior: HitTestBehavior.opaque,
-          onTap: () {
-            controller.onClickItemHistorySearch(controller.listHistorySearch[index]);
-          },
-          child: Container(
-            margin: EdgeInsets.only(
-              bottom: IZIDimensions.SPACE_SIZE_3X,
-            ),
-            padding: EdgeInsets.only(
-              left: IZIDimensions.SPACE_SIZE_1X,
-              right: IZIDimensions.SPACE_SIZE_3X,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  controller.listHistorySearch[index],
-                  style: TextStyle(
-                    color: ColorResources.GREY,
-                    fontFamily: NUNITO,
-                    fontWeight: FontWeight.w600,
-                    fontSize: IZIDimensions.FONT_SIZE_DEFAULT,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    controller.deleteItemSearch(controller.listHistorySearch[index]);
-                  },
-                  child: Icon(Icons.close,size: IZIDimensions.ONE_UNIT_SIZE*30,color: ColorResources.GREY,),
-                ),
-              ],
-            ),
-          ),
         );
-          },
-        )
-      ],
-    ),
-  );
 }
 
-
- ///
-  /// listview search
-  ///
-  Widget _listViewSearch(SearchNewController controller) {
-    return  IZIValidate.nullOrEmpty(controller.filterSearch) ? Container() : 
-     GestureDetector(
-      onHorizontalDragEnd:(details) {
-        if(details.velocity.pixelsPerSecond.dx>0){
-          controller.filterSearch=='';
-          controller.update();
-        }else{
-          controller.filterSearch = '';
-          controller.update();
-        }
-      },
-       child: Column(
-         crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-          
-          Container(
-            padding: EdgeInsets.only(
-              top: IZIDimensions.SPACE_SIZE_2X,
-              left: IZIDimensions.SPACE_SIZE_2X,
-            ),
-            child: Text(
-              'Tìm thấy ${controller.listProductSearch.length} món ăn',
-              style: TextStyle(
-                color: ColorResources.BLACK,
-                fontFamily: NUNITO,
-                fontWeight: FontWeight.w600,
-                fontSize: IZIDimensions.FONT_SIZE_H6,
+///
+/// listview search
+///
+Widget _listViewSearch(SearchNewController controller) {
+  return IZIValidate.nullOrEmpty(controller.filterSearch)
+      ? Container()
+      : Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                top: IZIDimensions.SPACE_SIZE_2X,
+                left: IZIDimensions.SPACE_SIZE_2X,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        controller.onChangePageView(0);
+                      },
+                      child: Container(
+                        width: IZIDimensions.iziSize.width,
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Món ăn (${controller.listProductSearch.length})',
+                          style: TextStyle(
+                            color: ColorResources.colorMain,
+                            fontFamily: NUNITO,
+                            fontWeight: FontWeight.w600,
+                            fontSize: IZIDimensions.FONT_SIZE_H5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: IZIDimensions.SPACE_SIZE_1X * 0.5,
+                    height: IZIDimensions.SPACE_SIZE_5X,
+                    color: ColorResources.BLACK,
+                  ),
+                  Expanded(
+                    child: Container(
+                      width: IZIDimensions.iziSize.width,
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Cửa hàng (${controller.listProductSearch.length})',
+                        style: TextStyle(
+                          color: ColorResources.colorMain,
+                          fontFamily: NUNITO,
+                          fontWeight: FontWeight.w600,
+                          fontSize: IZIDimensions.FONT_SIZE_H5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-         
-            controller.isLoadingProductSearch==false ? const DataEmpty() : 
-            controller.listProductSearch.isEmpty ? const DataEmpty() : 
-            ListView.builder(
-             shrinkWrap: true,
-             physics: const NeverScrollableScrollPhysics(),
-             itemCount: controller.listProductSearch.length,
-             itemBuilder: (context, index) {
-               return GestureDetector(
-                 onTap: () {
-                   controller.gotoDetailFood(controller.listProductSearch[index].id!);               
-                 },
-                 child: Container(
-                   padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
-                   margin: EdgeInsets.only(
-                       top: IZIDimensions.SPACE_SIZE_1X * 0,
-                       bottom: IZIDimensions.SPACE_SIZE_2X,
-                       left: IZIDimensions.SPACE_SIZE_3X,
-                       right: IZIDimensions.SPACE_SIZE_3X),
-                   decoration: BoxDecoration(
-                     borderRadius: BorderRadius.circular(
-                         IZIDimensions.BORDER_RADIUS_3X),
-                     color: ColorResources.WHITE,
-                   ),
-                   child: Column(
-                     children: [
-                       Row(
-                         children: [
-                           ClipRRect(
-                             borderRadius: BorderRadius.circular(
-                                 IZIDimensions.BORDER_RADIUS_3X),
-                             child: IZIImage(
-                               controller.listProductSearch[index].image!.first,
-                               height: IZIDimensions.ONE_UNIT_SIZE * 120,
-                               width: IZIDimensions.ONE_UNIT_SIZE * 120,
-                               fit: BoxFit.cover,
-                             ),
-                           ),
-                           SizedBox(
-                             width: IZIDimensions.SPACE_SIZE_3X,
-                           ),
-                           Expanded(
-                             child: Column(
-                               crossAxisAlignment: CrossAxisAlignment.start,
-                               children: [
-                                 Text(
-                                   controller.listProductSearch[index].name!,
-                                   style: TextStyle(
-                                     color: ColorResources.BLACK,
-                                     fontFamily: NUNITO,
-                                     fontWeight: FontWeight.w600,
-                                     fontSize: IZIDimensions.FONT_SIZE_H5,
-                                   ),
-                                 ),
-                                 SizedBox(
-                                   height: IZIDimensions.SPACE_SIZE_1X,
-                                 ),
-                                 Text(
-                                   controller.formatSold(controller.listProductSearch[index].sold!),
-                                   style: TextStyle(
-                                     color: ColorResources.GREY,
-                                     fontFamily: NUNITO,
-                                     fontWeight: FontWeight.w600,
-                                     fontSize:
-                                         IZIDimensions.FONT_SIZE_DEFAULT,
-                                   ),
-                                 ),
-                                 SizedBox(
-                                   height: IZIDimensions.SPACE_SIZE_1X,
-                                 ),
-                                 Text(
-                                  controller.listProductSearch[index].priceDiscount==0 ? 
-                                  '${IZIPrice.currencyConverterVND(controller.listProductSearch[index].price!.toDouble())}đ' : 
-                                   '${IZIPrice.currencyConverterVND(controller.listProductSearch[index].priceDiscount!.toDouble())}đ',
-                                   style: TextStyle(
-                                     color: ColorResources.colorMain,
-                                     fontFamily: NUNITO,
-                                     fontWeight: FontWeight.w600,
-                                     fontSize: IZIDimensions.FONT_SIZE_H6,
-                                   ),
-                                 ),
-                               ],
-                             ),
-                           ),
-                         ],
-                       ),
-                     ],
-                   ),
-                 ),
-               );
-             },
-           ),
-         ],
-       ),
-     );
-  }
+            //
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                alignment: controller.currenIndex == 0
+                    ? Alignment.centerLeft
+                    : Alignment.centerRight,
+                child: Container(
+                  margin: EdgeInsets.only(top: IZIDimensions.SPACE_SIZE_2X),
+                  height: IZIDimensions.SPACE_SIZE_1X * 0.5,
+                  width: IZIDimensions.iziSize.width / 2,
+                  color: ColorResources.colorMain,
+                ),
+              ),
+            ),
+            controller.isLoadingProductSearch == false
+                ? const DataEmpty()
+                : controller.listProductSearch.isEmpty
+                    ? const DataEmpty()
+                    : Expanded(
+                        child: PageView.builder(
+                        itemCount: 2,
+                        onPageChanged: (value) {
+                          controller.onChangePageView(value);
+                        },
+                        itemBuilder: (context, index) {
+                          return 
+                          index==0?
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: controller.listProductSearch.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  controller.gotoDetailFood(
+                                      controller.listProductSearch[index].id!);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(
+                                      IZIDimensions.SPACE_SIZE_2X),
+                                  margin: EdgeInsets.only(
+                                      top: IZIDimensions.SPACE_SIZE_1X * 0,
+                                      bottom: IZIDimensions.SPACE_SIZE_2X,
+                                      left: IZIDimensions.SPACE_SIZE_3X,
+                                      right: IZIDimensions.SPACE_SIZE_3X),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        IZIDimensions.BORDER_RADIUS_3X),
+                                    color: ColorResources.WHITE,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                                IZIDimensions.BORDER_RADIUS_3X),
+                                            child: IZIImage(
+                                              controller
+                                                  .listProductSearch[index]
+                                                  .image!
+                                                  .first,
+                                              height:
+                                                  IZIDimensions.ONE_UNIT_SIZE *
+                                                      120,
+                                              width:
+                                                  IZIDimensions.ONE_UNIT_SIZE *
+                                                      120,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: IZIDimensions.SPACE_SIZE_3X,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  controller
+                                                      .listProductSearch[index]
+                                                      .name!,
+                                                  style: TextStyle(
+                                                    color: ColorResources.BLACK,
+                                                    fontFamily: NUNITO,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: IZIDimensions
+                                                        .FONT_SIZE_H5,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: IZIDimensions
+                                                      .SPACE_SIZE_1X,
+                                                ),
+                                                Text(
+                                                  controller.formatSold(
+                                                      controller
+                                                          .listProductSearch[
+                                                              index]
+                                                          .sold!),
+                                                  style: TextStyle(
+                                                    color: ColorResources.GREY,
+                                                    fontFamily: NUNITO,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: IZIDimensions
+                                                        .FONT_SIZE_DEFAULT,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: IZIDimensions
+                                                      .SPACE_SIZE_1X,
+                                                ),
+                                                Text(
+                                                  controller
+                                                              .listProductSearch[
+                                                                  index]
+                                                              .priceDiscount ==
+                                                          0
+                                                      ? '${IZIPrice.currencyConverterVND(controller.listProductSearch[index].price!.toDouble())}đ'
+                                                      : '${IZIPrice.currencyConverterVND(controller.listProductSearch[index].priceDiscount!.toDouble())}đ',
+                                                  style: TextStyle(
+                                                    color: ColorResources
+                                                        .colorMain,
+                                                    fontFamily: NUNITO,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: IZIDimensions
+                                                        .FONT_SIZE_H6,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          )  : _listviewStore(controller);
+                        },
+                      )),
+          ],
+        );
+}
+
+///
+/// list view store
+///
+Widget _listviewStore(SearchNewController controller){
+  return Container(
+     padding: EdgeInsets.all(IZIDimensions.SPACE_SIZE_2X),
+     child: ListView.builder(
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        
+     },)
+  );
+}

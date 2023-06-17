@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fooding_project/base_widget/izi_alert.dart';
 import 'package:fooding_project/base_widget/izi_button.dart';
@@ -16,6 +17,7 @@ import 'package:fooding_project/repository/cart_repository.dart';
 import 'package:fooding_project/repository/order_repository.dart';
 import 'package:fooding_project/routes/routes_path/auth_routes.dart';
 import 'package:fooding_project/routes/routes_path/dash_board_routes.dart';
+import 'package:fooding_project/screens/QNA365/homework_page.dart';
 import 'package:fooding_project/screens/favorite/favorite_page.dart';
 import 'package:fooding_project/screens/home/home_screen.dart';
 import 'package:fooding_project/screens/no_login/no_login_page.dart';
@@ -36,6 +38,7 @@ class BottomBarController extends GetxController {
   String statusOrder = '';
   String idOrder = '';
   RxBool isFooter = false.obs;
+  var isWifiConnected = false.obs;
   String idUser = sl<SharedPreferenceHelper>().getIdUser;
   final List<Map<String, dynamic>> pages = [
     {
@@ -48,7 +51,7 @@ class BottomBarController extends GetxController {
       'icon': ImagesPath.icon_yeuthich,
       'page': IZIValidate.nullOrEmpty(sl<SharedPreferenceHelper>().getIdUser)
           ? const NoLoginPage()
-          : const FavoritePage(),
+          : const HomeWorkPage(),
     },
     {
       'label': "Tài khoản",
@@ -71,7 +74,7 @@ class BottomBarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+    checkWifiConnection();
     countCartByIDStore();
     if (Get.arguments != null) {
       if (Get.arguments.runtimeType == int) {
@@ -270,7 +273,24 @@ void showLoginDialog() {
     );
   }
 
-
+///
+///  check Internet
+///
+void checkWifiConnection() async {
+  ConnectivityResult connectivityResult = await Connectivity().checkConnectivity();
+  isWifiConnected.value = (connectivityResult != ConnectivityResult.none);
+  Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    isWifiConnected.value = (result != ConnectivityResult.none);
+    if (isWifiConnected.value) {
+      print('Đã kết nối Internet');
+    } else {
+      print('Ngắt kết nối');
+      Get.snackbar('Thông báo', 'Mất kết nối Internet');
+    }
+  });
+  update();
 }
+}
+
 
 

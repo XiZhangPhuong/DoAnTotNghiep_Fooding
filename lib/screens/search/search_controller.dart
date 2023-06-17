@@ -210,6 +210,9 @@ class SearchController extends GetxController {
                     listNameCategory.length,
                     (index) => GestureDetector(
                       onTap: () {
+                        if(selectedNameCategory==index){
+                          return;
+                        }
                         updateSelectNameCategory(index);
                         filterNameCategory = listNameCategory[index];
                         paginateProductsByNameCateogry();                     

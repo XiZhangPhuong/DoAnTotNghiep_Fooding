@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fooding_project/base_widget/izi_image.dart';
-import 'package:fooding_project/base_widget/izi_input.dart';
 import 'package:fooding_project/base_widget/izi_loading_card.dart';
 import 'package:fooding_project/base_widget/p45_appbar.dart';
 import 'package:fooding_project/helper/izi_dimensions.dart';

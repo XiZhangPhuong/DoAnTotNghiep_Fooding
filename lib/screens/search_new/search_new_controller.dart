@@ -1,5 +1,7 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fooding_project/base_widget/izi_alert.dart';
+import 'package:fooding_project/base_widget/my_dialog_alert_done.dart';
 import 'package:fooding_project/di_container.dart';
 import 'package:fooding_project/helper/izi_validate.dart';
 import 'package:fooding_project/model/product/products.dart';
@@ -20,12 +22,22 @@ class SearchNewController extends GetxController {
   String filterSearch = '';
   List<Products> listProductSearch = [];
   bool isLoadingProductSearch = false;
+  int currenIndex = 0;
 
   @override
   void onInit() {
     super.onInit();
   }
 
+
+  ///
+  /// on change pageview
+  ///
+   void onChangePageView(int value){
+     currenIndex = value;
+     print(currenIndex);
+     update();
+   }
   ///
   /// onTextChanged
   ///
@@ -39,8 +51,8 @@ class SearchNewController extends GetxController {
   ///
   void onSubmitted(String value) {
     if (!IZIValidate.nullOrEmpty(value) &&
-        !listHistorySearch.contains(value) &&
-        value.length >= 2) {
+        !listHistorySearch.contains(value) 
+        ) {
       listHistorySearch.add(value);
       sl<SharedPreferenceHelper>().setHistorySearch(listHistorySearch);
     }
@@ -66,9 +78,21 @@ class SearchNewController extends GetxController {
   /// deleteAllSeach
   ///
   void deleteAllSeach() {
-    listHistorySearch.clear();
-    sl<SharedPreferenceHelper>().setHistorySearch(listHistorySearch);
-    update();
+   Get.dialog( DialogCustom(
+      description: 'Xóa tât cả lịch sử tìm kiếm',
+      agree: 'Có',
+      cancel1: 'Không',
+      onTapCancle: () {
+        Get.back();
+      },
+      onTapConfirm: () {
+        listHistorySearch.clear();
+        sl<SharedPreferenceHelper>().setHistorySearch(listHistorySearch);
+        update();
+        Get.back();
+        IZIAlert().success(message: 'Xóa lịch sử thành công');
+      },
+    ));
   }
 
   ///
